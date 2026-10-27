@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}GitHub Repository Integration — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 pb-3 border-bottom border-secondary border-opacity-25">
+        <div>
+            <div class="d-inline-flex align-items-center gap-2 badge-glow mb-2">
+                <i class="bi bi-github text-info"></i>
+                <span>GitHub Repositories Integration</span>
+            </div>
+            <h2 class="text-white fw-bold mb-1">Import Public Repositories</h2>
+            <p class="text-muted small mb-0">
+                Sync projects from your GitHub profile, refine descriptions with Gemini AI, and publish to your portfolio.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            {% if selected_portfolio_id %}
+                <a href="{{ url_for('portfolio.preview', portfolio_id=selected_portfolio_id) }}" class="btn btn-secondary-glass py-2 px-3">
+                    <i class="bi bi-eye me-1"></i> View Portfolio
+                </a>
+            {% endif %}
+            <a href="{{ url_for('portfolio.index') }}" class="btn btn-secondary-glass py-2 px-3">
+                <i class="bi bi-collection me-1"></i> All Portfolios
+            </a>
+        </div>
+    </div>
+
+    {% if not portfolios %}
+        <!-- No Portfolios Warning -->
+        <div class="glass-card p-5 text-center my-4">
+            <div class="brand-icon-box mx-auto mb-3" style="width: 58px; height: 58px; font-size: 1.6rem; color: #f59e0b; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <h4 class="text-white fw-bold mb-2">No Portfolios Found</h4>
+            <p class="text-muted max-w-600 mx-auto mb-4 small">
+                You need at least one portfolio before you can import GitHub projects. Create a portfolio first, then return here to sync your work.
+            </p>
+            <a href="{{ url_for('portfolio.create') }}" class="btn btn-primary-gradient px-4 py-2 fw-semibold">
+                <i class="bi bi-plus-lg me-1"></i> Create a Portfolio First
+            </a>
+        </div>
+    {% else %}
+        <!-- Search & Configuration Card -->
+        <div class="glass-card p-4 mb-4">
+            <div class="row g-3 align-items-end">
+                <!-- Target Portfolio Selection -->
+                <div class="col-md-5">
+                    <label for="portfolioSelect" class="form-label text-light fw-semibold small">
+                        <i class="bi bi-folder2-open text-primary me-1"></i> Target Portfolio Destination:
+                    </label>
+                    <select id="portfolioSelect" class="form-select custom-input">
+                        {% for p in portfolios %}
+                            <option value="{{ p.id }}" {% if selected_portfolio_id == p.id %}selected{% endif %}>
+                                {{ p.title }} ({{ p.projects|length }} projects)
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- GitHub Username Input -->
+                <div class="col-md-5">
+                    <label for="githubUsername" class="form-label text-light fw-semibold small">
+                        <i class="bi bi-github text-info me-1"></i> GitHub Username:
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary border-opacity-50 text-muted">@</span>
+                        <input type="text" id="githubUsername" class="form-control custom-input" placeholder="e.g. octocat" value="{{ default_username }}">
+                    </div>
+                </div>
+
+                <!-- Fetch Button -->
+                <div class="col-md-2">
+                    <button type="button" id="btnFetchRepos" class="btn btn-primary-gradient w-100 py-2 fw-semibold">
+                        <span id="fetchBtnSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
+                        <i id="fetchBtnIcon" class="bi bi-search me-1"></i>
+                        <span>Fetch Repos</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="statusAlert" class="alert d-none mb-4 glass-card" role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <i id="statusAlertIcon" class="bi bi-info-circle fs-5"></i>
+                <div id="statusAlertMessage" class="small"></div>
+            </div>
+        </div>
+
+        <!-- Repository Listing Container (Hidden initially until search) -->
+        <div id="reposContainer" class="d-none">
+            <!-- Filter & Selection Bar -->
+            <div class="glass-card p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox" id="selectAllCheckbox">
+                        <label class="form-check-label text-light small fw-semibold" for="selectAllCheckbox">
+                            Select All
+                        </label>
+                    </div>
+                    <span class="text-muted small">|</span>
+                    <span id="selectedCountBadge" class="badge bg-primary bg-opacity-25 text-info px-2 py-1 small">
+                        0 selected
+                    </span>
+                    <span id="totalFoundBadge" class="text-muted small"></span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 flex-grow-1 flex-md-grow-0" style="min-width: 260px;">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-dark border-secondary border-opacity-50 text-muted">
+                            <i class="bi bi-funnel"></i>
+                        </span>
+                        <input type="text" id="filterKeyword" class="form-control custom-input" placeholder="Filter by repo name, language...">
+                    </div>
+
+                    <button type="button" id="btnImportSelected" class="btn btn-sm btn-primary-gradient text-nowrap px-3 py-2 fw-semibold" disabled>
+                        <span id="importBtnSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
+                        <i id="importBtnIcon" class="bi bi-cloud-arrow-down-fill me-1"></i>
+                        <span>Import Selected</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Repository Cards Grid -->
+            <div id="repoCardsGrid" class="row g-4"></div>
+        </div>
+
+        <!-- Loading State Indicator -->
+        <div id="loadingState" class="text-center py-5 d-none">
+            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h5 class="text-white fw-bold mb-1">Connecting to GitHub REST API...</h5>
+            <p class="text-muted small mb-0">Fetching public repositories, language statistics, and topics.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Project Edit / AI Polish Modal -->
+<div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content glass-card border border-secondary border-opacity-50" style="background: #0f172a;">
+            <div class="modal-header border-bottom border-secondary border-opacity-25">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="brand-icon-box" style="width: 34px; height: 34px; font-size: 0.9rem;">
+                        <i class="bi bi-sliders"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title text-white fw-bold mb-0" id="editProjectModalLabel">Customize Project Showcase</h5>
+                        <small class="text-muted">Review, refine, or polish with Gemini AI before importing</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body text-light">
+                <form id="editProjectForm">
+                    <input type="hidden" id="modalRepoIndex">
+
+                    <div class="row g-3">
+                        <div class="col-md-7">
+                            <label for="modalProjectTitle" class="form-label small fw-semibold text-light">Project Title *</label>
+                            <input type="text" class="form-control custom-input" id="modalProjectTitle" required>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="modalLiveUrl" class="form-label small fw-semibold text-light">Live Demo URL (Optional)</label>
+                            <input type="url" class="form-control custom-input" id="modalLiveUrl" placeholder="https://myapp.vercel.app">
+                        </div>
+
+                        <div class="col-12">
+                            <label for="modalTechStack" class="form-label small fw-semibold text-light">
+                                Technologies & Topics (Comma separated)
+                            </label>
+                            <input type="text" class="form-control custom-input" id="modalTechStack" placeholder="Python, Flask, Docker, PostgreSQL">
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="modalDescription" class="form-label small fw-semibold text-light mb-0">
+                                    Project Description / Overview
+                                </label>
+                                <button type="button" id="btnModalAiPolish" class="btn btn-sm btn-secondary-glass py-1 px-2 text-warning small">
+                                    <span id="aiPolishSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                                    <i id="aiPolishIcon" class="bi bi-stars me-1"></i>
+                                    <span>Polish with Gemini AI</span>
+                                </button>
+                            </div>
+                            <textarea class="form-control custom-input" id="modalDescription" rows="4" placeholder="Enter high-impact summary or generate with Gemini AI..."></textarea>
+                            <div class="form-text text-muted small">
+                                Gemini AI strictly relies on verified repository facts without hallucinating unverified metrics.
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold text-light mb-1">GitHub Repository Link</label>
+                            <input type="text" class="form-control custom-input text-muted" id="modalGithubUrl" readonly>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer border-top border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary-glass" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="btnSaveModalChanges" class="btn btn-primary-gradient px-4">
+                    <i class="bi bi-check-lg me-1"></i> Save Changes to Card
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Duplicate Overwrite Confirmation Modal -->
+<div class="modal fade" id="conflictConfirmModal" tabindex="-1" aria-labelledby="conflictConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border border-warning border-opacity-50" style="background: #0f172a;">
+            <div class="modal-header border-bottom border-secondary border-opacity-25">
+                <h5 class="modal-title text-white fw-bold" id="conflictConfirmModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i> Project Already Exists
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-light">
+                <p id="conflictModalMessage" class="mb-3">
+                    One or more of the selected projects are already present in this portfolio.
+                </p>
+                <div class="p-3 rounded-2" style="background: rgba(245, 158, 11, 0.08); border: 1px dashed rgba(245, 158, 11, 0.3);">
+                    <small class="text-warning-emphasis">
+                        Overwriting will update the project's title, description, technologies, and star counts with the latest GitHub repository data.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary-glass" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="btnConfirmOverwrite" class="btn btn-warning fw-semibold px-4 text-dark">
+                    <i class="bi bi-arrow-repeat me-1"></i> Yes, Overwrite Existing
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/github_import.js') }}"></script>
+{% endblock %}

@@ -55,6 +55,9 @@
                 <div class="d-flex align-items-center gap-3">
                     {% if current_user.is_authenticated %}
                         <div class="d-flex align-items-center gap-2">
+                            <a href="{{ url_for('github.import_page') }}" class="nav-link px-2 d-none d-xxl-inline-block">
+                                <i class="bi bi-github text-info me-1"></i> GitHub
+                            </a>
                             <a href="{{ url_for('resume.upload_page') }}" class="nav-link px-2 d-none d-xl-inline-block">
                                 <i class="bi bi-file-earmark-pdf text-danger me-1"></i> Parse Resume
                             </a>

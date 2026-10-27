@@ -6,7 +6,7 @@ Provides CRUD endpoints for user portfolios with strict ownership verification.
 from flask import render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, current_user
 from app.extensions import db
-from app.models import Portfolio
+from app.models import Portfolio, Project
 from app.portfolio import portfolio_bp
 from app.portfolio.forms import PortfolioForm
 
@@ -132,3 +132,24 @@ def preview(portfolio_id: int):
     """View a preview of the specified portfolio owned by the current user."""
     portfolio = get_user_portfolio_or_404(portfolio_id)
     return render_template("portfolio_preview.html", portfolio=portfolio)
+
+
+@portfolio_bp.route("/<int:portfolio_id>/projects/<int:project_id>/delete", methods=["POST"])
+@login_required
+def delete_project(portfolio_id: int, project_id: int):
+    """Delete a single project associated with an owned portfolio."""
+    portfolio = get_user_portfolio_or_404(portfolio_id)
+    project = db.session.get(Project, project_id)
+    if project is None or project.portfolio_id != portfolio.id:
+        abort(404)
+
+    title = project.title
+    try:
+        db.session.delete(project)
+        db.session.commit()
+        flash(f"Project '{title}' was removed from portfolio.", "info")
+    except Exception:
+        db.session.rollback()
+        flash("Failed to delete project. Please try again.", "danger")
+
+    return redirect(url_for("portfolio.preview", portfolio_id=portfolio.id))

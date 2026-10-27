@@ -252,3 +252,41 @@ For EACH role, provide:
 - 3 Immediate Action Steps: Concrete technologies to learn or projects to build to become highly competitive for junior/mid positions in this track.
 """
         return cls._execute_prompt(prompt, system_instruction=system_instruction, temperature=0.65)
+
+    @classmethod
+    def generate_github_repo_description(
+        cls,
+        repo_name: str,
+        description: str = "",
+        language: str = "",
+        topics: list = None,
+    ) -> str:
+        """
+        Generate a professional portfolio project description from GitHub repository metadata.
+        Strictly limits inferences to verified repository facts (name, description, language, topics).
+        Prohibits inventing false performance metrics, user counts, or unlisted tools.
+        """
+        topics_str = ", ".join(topics) if (topics and isinstance(topics, list)) else (topics or "None specified")
+        system_instruction = (
+            "You are a principal technical recruiter and portfolio editor. "
+            "Your task is to transform raw GitHub repository metadata into a polished, professional portfolio project description. "
+            "CRITICAL CONSTRAINTS: "
+            "1. Only use the provided repository name, description, primary language, and topics. "
+            "2. Never invent benchmarks, user statistics, downloads, or tools that are not provided. "
+            "3. Clearly distinguish between verified repository metadata and inferred architectural capabilities. "
+            "4. Keep the output concise, recruiter-friendly, and professional."
+        )
+
+        prompt = f"""
+GitHub Repository: {repo_name}
+Raw Description: {description or 'Open source software repository.'}
+Primary Language: {language or 'Not specified'}
+Repository Topics: {topics_str}
+
+Instructions:
+1. Executive Overview: A punchy 2-sentence summary explaining what the project is and the problem it addresses based on the repository description and name.
+2. Key Architectural Highlights: 2-3 concise bullet points detailing core functionality supported by the listed language and topics.
+3. Verified Technologies: List the verified language and topics.
+4. Output cleanly without meta-introductions (do not say "Here is the description:").
+"""
+        return cls._execute_prompt(prompt, system_instruction=system_instruction, temperature=0.6)

@@ -40,6 +40,10 @@ class Config:
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
     GEMINI_MODEL = "gemini-2.5-flash"
 
+    # GitHub Integration
+    GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+    GITHUB_API_BASE_URL = "https://api.github.com"
+
     # Rate Limiting
     RATELIMIT_DEFAULT = "200 per day; 50 per hour"
     RATELIMIT_STORAGE_URI = "memory://"

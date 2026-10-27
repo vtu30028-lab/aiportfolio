@@ -418,3 +418,28 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
     background: #334155;
 }
+
+/* GitHub Repository Cards & Import UI */
+.repo-card {
+    transition: all 0.25s ease;
+}
+.repo-card:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateY(-2px);
+}
+.repo-card.border-primary {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

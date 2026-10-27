@@ -24,7 +24,7 @@ def create_app(config_name=None):
     limiter.init_app(app)
 
     # Import models and register user loader for Flask-Login
-    from app.models import User, Portfolio, AIGeneration
+    from app.models import User, Portfolio, AIGeneration, Project
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -40,6 +40,7 @@ def create_app(config_name=None):
     from app.portfolio import portfolio_bp
     from app.ai import ai_bp
     from app.resume import resume_bp
+    from app.integrations import github_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
@@ -47,6 +48,7 @@ def create_app(config_name=None):
     app.register_blueprint(portfolio_bp)
     app.register_blueprint(ai_bp)
     app.register_blueprint(resume_bp)
+    app.register_blueprint(github_bp)
 
     # Create tables automatically in development or testing if using SQLite
     with app.app_context():

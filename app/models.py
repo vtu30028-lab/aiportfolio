@@ -114,6 +114,15 @@ class Portfolio(db.Model):
         lazy=True,
     )
 
+    # 1-to-many relationship: One portfolio can have multiple projects
+    projects = db.relationship(
+        "Project",
+        backref="portfolio",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="desc(Project.created_at)",
+    )
+
     def to_dict(self) -> dict:
         """Serialize portfolio fields to a dictionary."""
         return {
@@ -129,6 +138,8 @@ class Portfolio(db.Model):
             "github_url": self.github_url,
             "linkedin_url": self.linkedin_url,
             "profile_image": self.profile_image,
+            "projects_count": len(self.projects),
+            "projects": [p.to_dict() for p in self.projects],
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
@@ -180,3 +191,58 @@ class AIGeneration(db.Model):
 
     def __repr__(self) -> str:
         return f"<AIGeneration id={self.id} feature='{self.feature_type}' user_id={self.user_id}>"
+
+
+class Project(db.Model):
+    """
+    Represents a technical project associated with a Portfolio.
+    Can be created manually or imported from GitHub / Resume.
+    """
+    __tablename__ = "projects"
+
+    id = db.Column(db.Integer, primary_key=True)
+    portfolio_id = db.Column(
+        db.Integer,
+        db.ForeignKey("portfolios.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    technologies = db.Column(db.String(255), nullable=True)
+    github_url = db.Column(db.String(255), nullable=True)
+    live_url = db.Column(db.String(255), nullable=True)
+    import_source = db.Column(db.String(50), default="manual", nullable=False)  # github, manual, resume
+    stars_count = db.Column(db.Integer, default=0, nullable=False)
+    forks_count = db.Column(db.Integer, default=0, nullable=False)
+    created_at = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+    updated_at = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    def to_dict(self) -> dict:
+        """Serialize project fields to a dictionary."""
+        return {
+            "id": self.id,
+            "portfolio_id": self.portfolio_id,
+            "title": self.title,
+            "description": self.description,
+            "technologies": self.technologies,
+            "github_url": self.github_url,
+            "live_url": self.live_url,
+            "import_source": self.import_source,
+            "stars_count": self.stars_count,
+            "forks_count": self.forks_count,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+
+    def __repr__(self) -> str:
+        return f"<Project id={self.id} title='{self.title}' portfolio_id={self.portfolio_id}>"

@@ -17,6 +17,9 @@
             <a href="{{ url_for('portfolio.index') }}" class="btn btn-sm btn-secondary-glass">
                 <i class="bi bi-arrow-left me-1"></i> Back to Portfolios
             </a>
+            <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-outline-info">
+                <i class="bi bi-github me-1"></i> Sync GitHub
+            </a>
             <a href="{{ url_for('portfolio.edit', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-primary-gradient">
                 <i class="bi bi-pencil me-1"></i> Edit Portfolio
             </a>
@@ -102,13 +105,95 @@
                 </div>
             </div>
 
-            <!-- Portfolio Projects & Skills Placeholder Notice for Future Phases -->
-            <div class="p-4 rounded-3 text-center" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.12);">
-                <i class="bi bi-diagram-3 fs-3 text-primary mb-2 d-block"></i>
-                <h6 class="text-white fw-bold mb-1">Projects & Verified Skills Integration</h6>
-                <p class="text-muted small mb-0">
-                    GitHub repository synchronizer, Gemini AI project bullet polish, and target skills gap analysis will automatically populate this section in upcoming phases.
-                </p>
+            <!-- Featured Projects Section -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h4 class="text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-code-slash text-primary"></i> Featured Projects
+                        <span class="badge bg-secondary bg-opacity-25 text-info small ms-1">{{ portfolio.projects|length }}</span>
+                    </h4>
+                    <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-outline-primary border-opacity-50">
+                        <i class="bi bi-github me-1"></i> Import More from GitHub
+                    </a>
+                </div>
+
+                {% if portfolio.projects %}
+                    <div class="row g-4">
+                        {% for project in portfolio.projects %}
+                        <div class="col-md-6">
+                            <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between position-relative">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="text-white fw-bold mb-0">{{ project.title }}</h5>
+                                        <div class="d-flex align-items-center gap-2">
+                                            {% if project.stars_count > 0 %}
+                                                <span class="badge bg-warning bg-opacity-10 text-warning small">
+                                                    <i class="bi bi-star-fill me-1"></i>{{ project.stars_count }}
+                                                </span>
+                                            {% endif %}
+                                            {% if project.forks_count > 0 %}
+                                                <span class="badge bg-secondary bg-opacity-25 text-light small">
+                                                    <i class="bi bi-diagram-2 me-1"></i>{{ project.forks_count }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    {% if project.description %}
+                                        <p class="text-light text-opacity-75 small mb-3 line-height-md" style="white-space: pre-line;">
+                                            {{ project.description }}
+                                        </p>
+                                    {% endif %}
+
+                                    {% if project.technologies %}
+                                        <div class="d-flex flex-wrap gap-1 mb-3">
+                                            {% for tech in project.technologies.split(',') %}
+                                                {% if tech.strip() %}
+                                                    <span class="badge-tag">{{ tech.strip() }}</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="border-top border-secondary border-opacity-25 pt-3 mt-2 d-flex justify-content-between align-items-center gap-2">
+                                    <div class="d-flex gap-2">
+                                        {% if project.github_url %}
+                                            <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass">
+                                                <i class="bi bi-github me-1"></i> Code
+                                            </a>
+                                        {% endif %}
+                                        {% if project.live_url %}
+                                            <a href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-info">
+                                                <i class="bi bi-box-arrow-up-right me-1"></i> Live Demo
+                                            </a>
+                                        {% endif %}
+                                    </div>
+
+                                    <form method="POST" action="{{ url_for('portfolio.delete_project', portfolio_id=portfolio.id, project_id=project.id) }}" onsubmit="return confirm('Remove project \'{{ project.title }}\' from this portfolio?');" class="mb-0">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-sm text-danger border-0 p-1" title="Delete Project">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- Empty Projects State -->
+                    <div class="p-4 rounded-3 text-center" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.12);">
+                        <i class="bi bi-github fs-2 text-primary mb-2 d-block"></i>
+                        <h6 class="text-white fw-bold mb-1">No Projects Added Yet</h6>
+                        <p class="text-muted small mb-3">
+                            Connect your GitHub profile to fetch public repositories, polish descriptions with Gemini AI, and showcase them in this portfolio.
+                        </p>
+                        <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-primary-gradient px-4 py-2">
+                            <i class="bi bi-plus-lg me-1"></i> Import GitHub Repositories
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
