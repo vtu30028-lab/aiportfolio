@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% block title %}AI Content Studio — {{ app_name }}{% endblock %}
+
+{% block extra_head %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 pb-3 border-bottom border-secondary border-opacity-25">
+        <div>
+            <div class="d-inline-flex align-items-center gap-2 badge-glow mb-2">
+                <i class="bi bi-stars text-warning"></i>
+                <span>Gemini Generative AI Studio</span>
+            </div>
+            <h2 class="text-white fw-bold mb-1">AI Portfolio Content Generator</h2>
+            <p class="text-muted small mb-0">
+                Craft professional summaries, tailored About-Me bios, STAR-format project bullets, and career skill gap analysis.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('portfolio.index') }}" class="btn btn-secondary-glass py-2 px-3">
+                <i class="bi bi-collection me-1"></i> My Portfolios
+            </a>
+            <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary-glass py-2 px-3">
+                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Banner Container for Dynamic JS Feedback -->
+    <div id="ai-alert-box" class="d-none alert alert-custom alert-dismissible fade show mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-info-circle-fill me-2 fs-5" id="ai-alert-icon"></i>
+            <div id="ai-alert-message"></div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" onclick="document.getElementById('ai-alert-box').classList.add('d-none')"></button>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Tool Selection & Inputs -->
+        <div class="col-lg-6">
+            <div class="glass-card p-4">
+                <!-- Nav Tabs for the 5 AI Generators -->
+                <ul class="nav nav-pills mb-4 flex-nowrap overflow-x-auto pb-2" id="ai-tool-tabs" role="tablist" style="border-bottom: 1px solid var(--border-glass);">
+                    <li class="nav-item me-1" role="presentation">
+                        <button class="nav-link active btn-sm text-nowrap" id="summary-tab" data-bs-toggle="pill" data-bs-target="#tab-summary" type="button" role="tab">
+                            <i class="bi bi-card-text me-1"></i> Summary
+                        </button>
+                    </li>
+                    <li class="nav-item me-1" role="presentation">
+                        <button class="nav-link btn-sm text-nowrap" id="about-tab" data-bs-toggle="pill" data-bs-target="#tab-about" type="button" role="tab">
+                            <i class="bi bi-person-lines-fill me-1"></i> About Me
+                        </button>
+                    </li>
+                    <li class="nav-item me-1" role="presentation">
+                        <button class="nav-link btn-sm text-nowrap" id="project-tab" data-bs-toggle="pill" data-bs-target="#tab-project" type="button" role="tab">
+                            <i class="bi bi-diagram-3-fill me-1"></i> Project
+                        </button>
+                    </li>
+                    <li class="nav-item me-1" role="presentation">
+                        <button class="nav-link btn-sm text-nowrap" id="skills-tab" data-bs-toggle="pill" data-bs-target="#tab-skills" type="button" role="tab">
+                            <i class="bi bi-bullseye me-1"></i> Skills Gap
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link btn-sm text-nowrap" id="career-tab" data-bs-toggle="pill" data-bs-target="#tab-career" type="button" role="tab">
+                            <i class="bi bi-signpost-2-fill me-1"></i> Career
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="ai-tab-content">
+                    <!-- Tool 1: Professional Summary Generator -->
+                    <div class="tab-pane fade show active" id="tab-summary" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-white fw-bold mb-0">Professional Summary</h5>
+                            <span class="badge bg-primary bg-opacity-25 text-info small">Bio Generator</span>
+                        </div>
+                        <p class="text-muted small mb-3">
+                            Generate a role-tailored introduction from your skills, education, and career trajectory.
+                        </p>
+
+                        <form id="form-summary" onsubmit="handleGenerate('summary', event)">
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Experience Level</label>
+                                <select class="form-select" id="summary-level" required>
+                                    <option value="beginner">Beginner / Fresh Graduate (Focus on foundation & projects)</option>
+                                    <option value="intermediate" selected>Intermediate Engineer (1-4 yrs, full-stack impact)</option>
+                                    <option value="experienced">Senior / Lead (Architecture, systems, leadership)</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Your Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="summary-name" value="{{ current_user.name }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Technical Skills <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="summary-skills" rows="2" placeholder="e.g. Python, Flask, Docker, PostgreSQL, React, AWS, Git" required></textarea>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-light small fw-semibold">Education Background</label>
+                                    <input type="text" class="form-control" id="summary-education" placeholder="e.g. B.Tech Computer Science, 2026">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-light small fw-semibold">Target Career Goal</label>
+                                    <input type="text" class="form-control" id="summary-goals" placeholder="e.g. Full-Stack Cloud Engineer">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label text-light small fw-semibold">Key Experience / Projects Summary</label>
+                                <textarea class="form-control" id="summary-experience" rows="2" placeholder="e.g. Built microservices, designed relational databases, developed full-stack capstone applications."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-gradient w-100 py-3 fw-bold" id="btn-submit-summary">
+                                <i class="bi bi-stars me-1"></i> Generate Professional Summary
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tool 2: About Me Generator -->
+                    <div class="tab-pane fade" id="tab-about" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-white fw-bold mb-0">Personalized About Me</h5>
+                            <span class="badge bg-secondary bg-opacity-25 text-primary small">First-Person Bio</span>
+                        </div>
+                        <p class="text-muted small mb-3">
+                            Craft an authentic, memorable first-person description in formal, creative, or concise tone.
+                        </p>
+
+                        <form id="form-about" onsubmit="handleGenerate('about', event)">
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-light small fw-semibold">Your Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="about-name" value="{{ current_user.name }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-light small fw-semibold">Desired Tone <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="about-tone" required>
+                                        <option value="creative" selected>Creative (Engaging & passion-driven)</option>
+                                        <option value="formal">Formal (Executive & enterprise-ready)</option>
+                                        <option value="concise">Concise (Punchy 2-3 sentence summary)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Professional Headline <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="about-headline" placeholder="e.g. Full-Stack Developer & Distributed Systems Enthusiast" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Background / Journey</label>
+                                <textarea class="form-control" id="about-background" rows="2" placeholder="e.g. Started coding in college building web apps, fascinated by cloud infrastructure and generative AI tools."></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label text-light small fw-semibold">Key Interests & Passions</label>
+                                <textarea class="form-control" id="about-interests" rows="2" placeholder="e.g. Open-source contribution, UI animations, scalable distributed backend systems."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-gradient w-100 py-3 fw-bold" id="btn-submit-about">
+                                <i class="bi bi-stars me-1"></i> Generate About Me
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tool 3: Project Description Generator -->
+                    <div class="tab-pane fade" id="tab-project" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-white fw-bold mb-0">Project Description (STAR Method)</h5>
+                            <span class="badge bg-warning bg-opacity-25 text-warning small">Recruiter Optimized</span>
+                        </div>
+                        <p class="text-muted small mb-3">
+                            Turn your project tech stack and purpose into high-impact bullets without hallucinating fake facts.
+                        </p>
+
+                        <form id="form-project" onsubmit="handleGenerate('project', event)">
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-7">
+                                    <label class="form-label text-light small fw-semibold">Project Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="project-title" placeholder="e.g. Autonomous Cloud Workload Auditor" required>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label text-light small fw-semibold">Format Style</label>
+                                    <select class="form-select" id="project-style">
+                                        <option value="star" selected>STAR Method Bullets</option>
+                                        <option value="bullets">Technical Highlights</option>
+                                        <option value="paragraph">Executive Narrative</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Technologies Used <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="project-tech" placeholder="e.g. Python, Flask, SQLite, Google Gemini API, Docker" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Project Purpose / Problem Solved <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="project-purpose" rows="2" placeholder="e.g. Helps software engineers audit unused cloud containers to reduce deployment latency and cloud compute costs." required></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label text-light small fw-semibold">Actual Architecture Facts & Features</label>
+                                <textarea class="form-control" id="project-details" rows="2" placeholder="e.g. Implemented REST API endpoints, integrated SQLite ORM models, added CSRF token security, and wrote automated Pytest suites."></textarea>
+                                <div class="form-text text-muted small">Strictly grounded: AI will not invent numbers or features not listed here.</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-gradient w-100 py-3 fw-bold" id="btn-submit-project">
+                                <i class="bi bi-stars me-1"></i> Generate Project Description
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tool 4: Skills Gap Analysis -->
+                    <div class="tab-pane fade" id="tab-skills" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-white fw-bold mb-0">Skills Gap & Learning Roadmap</h5>
+                            <span class="badge bg-info bg-opacity-25 text-info small">Career Analyzer</span>
+                        </div>
+                        <p class="text-muted small mb-3">
+                            Compare current skills against your target job title to identify missing skills and recommended portfolio projects.
+                        </p>
+
+                        <form id="form-skills" onsubmit="handleGenerate('skills', event)">
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Target Job Role / Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="skills-target" placeholder="e.g. Senior Full-Stack Engineer or Cloud DevOps Lead" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Your Current Skills <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="skills-current" rows="3" placeholder="e.g. Python, Basic JavaScript, HTML/CSS, SQL, Git, Linux command line" required></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label text-light small fw-semibold">Career Timeline & Goals (Optional)</label>
+                                <input type="text" class="form-control" id="skills-goals" placeholder="e.g. Transitioning into backend engineering within 6 months">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-gradient w-100 py-3 fw-bold" id="btn-submit-skills">
+                                <i class="bi bi-stars me-1"></i> Analyze Skills Gap
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tool 5: Career Recommendations -->
+                    <div class="tab-pane fade" id="tab-career" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-white fw-bold mb-0">Career Path Recommendations</h5>
+                            <span class="badge bg-success bg-opacity-25 text-success small">AI Advisor</span>
+                        </div>
+                        <p class="text-muted small mb-3">
+                            Discover suitable tech roles aligned with your background and concrete learning steps to land them.
+                        </p>
+
+                        <form id="form-career" onsubmit="handleGenerate('career', event)">
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Education & Background <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="career-bg" rows="2" placeholder="e.g. Computer Science undergraduate with coursework in Data Structures, Databases, and Software Engineering." required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-light small fw-semibold">Skills & Strengths <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="career-skills" rows="2" placeholder="e.g. Python, SQL, REST APIs, Git, problem-solving, documentation" required></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label text-light small fw-semibold">Work Preferences & Industry Interests</label>
+                                <input type="text" class="form-control" id="career-interests" placeholder="e.g. Cloud infrastructure, automation tools, web applications">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-gradient w-100 py-3 fw-bold" id="btn-submit-career">
+                                <i class="bi bi-stars me-1"></i> Recommend Career Roles
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Interactive Generated Content Preview & Save -->
+        <div class="col-lg-6">
+            <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between position-relative">
+                <div>
+                    <!-- Header with Status -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom border-secondary border-opacity-25">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="brand-icon-box" style="width: 32px; height: 32px; font-size: 0.9rem;">
+                                <i class="bi bi-cpu-fill"></i>
+                            </div>
+                            <h5 class="text-white fw-bold mb-0">Generated Content Preview</h5>
+                        </div>
+                        <span class="badge bg-secondary bg-opacity-25 text-light small" id="preview-status-badge">Ready</span>
+                    </div>
+
+                    <!-- Target Portfolio Selector -->
+                    <div class="mb-3">
+                        <label for="target-portfolio-select" class="form-label text-light small fw-semibold">
+                            Associate with Portfolio (Optional):
+                        </label>
+                        <select class="form-select form-select-sm" id="target-portfolio-select">
+                            <option value="">-- Do not link to a specific portfolio --</option>
+                            {% for p in portfolios %}
+                                <option value="{{ p.id }}">{{ p.title }} (#{{ p.id }})</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text text-muted small">You can optionally save this content directly to one of your existing portfolios.</div>
+                    </div>
+
+                    <!-- Editable Output Textarea with Placeholder -->
+                    <div class="mb-3 position-relative">
+                        <label for="ai-output-textarea" class="form-label text-muted small d-flex justify-content-between">
+                            <span>Editable Content (Review before saving):</span>
+                            <span id="char-count-label" class="text-muted font-monospace">0 chars</span>
+                        </label>
+                        <textarea class="form-control font-monospace text-light" id="ai-output-textarea" rows="12" placeholder="Your AI-generated content will appear here. You can freely edit or refine the text before copying or saving it..." style="font-size: 0.9rem; line-height: 1.6;"></textarea>
+
+                        <!-- Loading Overlay -->
+                        <div id="ai-loading-overlay" class="d-none position-absolute top-0 start-0 w-100 h-100 rounded-3 d-flex flex-column align-items-center justify-content-center" style="background: rgba(10, 14, 23, 0.88); backdrop-filter: blur(6px); z-index: 10;">
+                            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="text-white fw-bold mb-1">Consulting Gemini 2.5 Flash...</div>
+                            <div class="text-muted small">Analyzing inputs & crafting professional response</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Toolbar: Copy, Save, Apply -->
+                <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-secondary-glass" id="btn-copy-output" onclick="copyOutputContent()" title="Copy to Clipboard">
+                                <i class="bi bi-clipboard me-1" id="copy-icon"></i> <span id="copy-text">Copy</span>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-muted" id="btn-clear-output" onclick="clearOutputContent()" title="Clear Preview">
+                                <i class="bi bi-x-circle me-1"></i> Clear
+                            </button>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-primary-gradient px-3 fw-bold" id="btn-save-content" onclick="saveGeneratedContent(false)">
+                                <i class="bi bi-bookmark-check-fill me-1"></i> Save to Profile
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-info border-opacity-50" id="btn-apply-portfolio" onclick="saveGeneratedContent(true)">
+                                <i class="bi bi-arrow-down-left-square-fill me-1"></i> Apply to Portfolio
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if saved_generations %}
+        <!-- Recent AI Generations History -->
+        <div class="glass-card p-4 mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                <h5 class="text-white fw-bold mb-0">
+                    <i class="bi bi-clock-history text-primary me-2"></i>Recently Saved AI Generations
+                </h5>
+                <span class="badge bg-secondary bg-opacity-25 text-muted small">{{ saved_generations|length }} saved</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-dark table-borderless small mb-0 align-middle">
+                    <thead>
+                        <tr class="text-muted border-bottom border-secondary border-opacity-25">
+                            <th>Type</th>
+                            <th>Snippet</th>
+                            <th>Portfolio</th>
+                            <th>Date</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in saved_generations %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-primary bg-opacity-25 text-primary text-uppercase">{{ item.feature_type }}</span>
+                            </td>
+                            <td class="text-muted text-truncate" style="max-width: 320px;">
+                                {{ item.generated_text[:90] }}...
+                            </td>
+                            <td>
+                                {% if item.portfolio %}
+                                    <span class="text-info">#{{ item.portfolio_id }} {{ item.portfolio.title[:20] }}</span>
+                                {% else %}
+                                    <span class="text-muted">Unlinked</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted">{{ item.created_at.strftime('%b %d, %H:%M') }}</td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-sm btn-secondary-glass py-1 px-2" onclick="loadSavedItem({{ item.to_dict()|tojson }})">
+                                    <i class="bi bi-arrow-up-right me-1"></i> Load
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ai_generator.js') }}"></script>
+{% endblock %}

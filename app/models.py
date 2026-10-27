@@ -1,6 +1,6 @@
 """
 PortfolioAI - Relational Database Models
-Defines schema for Users, Portfolios, authentication, and core domain entities.
+Defines schema for Users, Portfolios, AI Generations, and core domain entities.
 """
 
 from datetime import datetime, timezone
@@ -33,6 +33,15 @@ class User(UserMixin, db.Model):
         lazy=True,
         cascade="all, delete-orphan",
         order_by="desc(Portfolio.updated_at)",
+    )
+
+    # 1-to-many relationship: One user can have multiple saved AI generations
+    ai_generations = db.relationship(
+        "AIGeneration",
+        backref="user",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="desc(AIGeneration.created_at)",
     )
 
     def set_password(self, password: str) -> None:
@@ -98,6 +107,13 @@ class Portfolio(db.Model):
         nullable=False
     )
 
+    # Saved AI content linked to this portfolio
+    ai_generations = db.relationship(
+        "AIGeneration",
+        backref="portfolio",
+        lazy=True,
+    )
+
     def to_dict(self) -> dict:
         """Serialize portfolio fields to a dictionary."""
         return {
@@ -119,3 +135,48 @@ class Portfolio(db.Model):
 
     def __repr__(self) -> str:
         return f"<Portfolio id={self.id} title='{self.title}' user_id={self.user_id}>"
+
+
+class AIGeneration(db.Model):
+    """
+    Stores AI-generated content (summary, about me, project descriptions,
+    skills analysis, career advice) saved to a user's portfolio.
+    """
+    __tablename__ = "ai_generations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+    portfolio_id = db.Column(
+        db.Integer,
+        db.ForeignKey("portfolios.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
+    feature_type = db.Column(db.String(50), nullable=False)  # summary, about, project, skills, career
+    prompt_input = db.Column(db.Text, nullable=True)  # Safe summary of inputs
+    generated_text = db.Column(db.Text, nullable=False)
+    created_at = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False
+    )
+
+    def to_dict(self) -> dict:
+        """Serialize AI generation record to a dictionary."""
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "portfolio_id": self.portfolio_id,
+            "feature_type": self.feature_type,
+            "prompt_input": self.prompt_input,
+            "generated_text": self.generated_text,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+    def __repr__(self) -> str:
+        return f"<AIGeneration id={self.id} feature='{self.feature_type}' user_id={self.user_id}>"
