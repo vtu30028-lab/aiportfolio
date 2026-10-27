@@ -1,0 +1,270 @@
+/* ===================================================================
+   PortfolioAI - Theme System & Layout Engine Stylesheet
+   Supports 4 Themes: Modern Dark, Minimal Light, Creative Gradient, Professional Blue
+   Supports 5 Fonts & 3 Layout Variations with Custom Accent Color Overrides
+   =================================================================== */
+
+/* --- Dynamic Accent Variables (Root & Overrides) --- */
+:root {
+    --theme-accent: #6366f1;
+    --theme-accent-hover: #4f46e5;
+    --theme-accent-rgb: 99, 102, 241;
+}
+
+/* --- Font Family Utility Classes --- */
+.font-plus-jakarta-sans {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+}
+.font-outfit {
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif !important;
+}
+.font-inter {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+.font-serif {
+    font-family: 'Merriweather', Georgia, Cambria, serif !important;
+}
+.font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace !important;
+}
+
+/* ===================================================================
+   1. THEME: MODERN DARK (Default)
+   =================================================================== */
+.theme-modern-dark {
+    --bg-page: #0a0e17;
+    --bg-surface: rgba(15, 23, 42, 0.75);
+    --bg-surface-elevated: rgba(30, 41, 59, 0.7);
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+}
+.theme-modern-dark .theme-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.theme-modern-dark .theme-card:hover {
+    border-color: rgba(var(--theme-accent-rgb), 0.4);
+    transform: translateY(-2px);
+}
+.theme-modern-dark .theme-hero-header {
+    background: radial-gradient(circle at top right, rgba(var(--theme-accent-rgb), 0.15) 0%, transparent 60%);
+    border-bottom: 1px solid var(--border-color);
+}
+.theme-modern-dark .theme-badge {
+    background: rgba(var(--theme-accent-rgb), 0.15);
+    color: #e2e8f0;
+    border: 1px solid rgba(var(--theme-accent-rgb), 0.3);
+}
+
+/* ===================================================================
+   2. THEME: MINIMAL LIGHT
+   =================================================================== */
+.theme-minimal-light {
+    --bg-page: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-surface-elevated: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+}
+.theme-minimal-light .theme-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.2s ease;
+}
+.theme-minimal-light .theme-card:hover {
+    border-color: var(--theme-accent);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+}
+.theme-minimal-light .theme-hero-header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+}
+.theme-minimal-light .theme-badge {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+/* ===================================================================
+   3. THEME: CREATIVE GRADIENT
+   =================================================================== */
+.theme-creative-gradient {
+    --bg-page: #0b0f19;
+    --bg-surface: rgba(17, 24, 39, 0.85);
+    --bg-surface-elevated: rgba(31, 41, 55, 0.9);
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --border-color: rgba(255, 255, 255, 0.12);
+    --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.5);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+}
+.theme-creative-gradient .theme-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+.theme-creative-gradient .theme-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--theme-accent);
+    box-shadow: 0 15px 35px rgba(var(--theme-accent-rgb), 0.25);
+}
+.theme-creative-gradient .theme-hero-header {
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(76, 29, 149, 0.7) 40%, rgba(131, 24, 67, 0.6) 100%);
+    border-bottom: 1px solid var(--border-color);
+}
+.theme-creative-gradient .theme-badge {
+    background: linear-gradient(135deg, rgba(var(--theme-accent-rgb), 0.25), rgba(219, 39, 119, 0.2));
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===================================================================
+   4. THEME: PROFESSIONAL BLUE
+   =================================================================== */
+.theme-professional-blue {
+    --bg-page: #f1f5f9;
+    --bg-surface: #ffffff;
+    --bg-surface-elevated: #f8fafc;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border-color: #cbd5e1;
+    --shadow-card: 0 4px 12px rgba(15, 23, 42, 0.05);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+}
+.theme-professional-blue .theme-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.2s ease;
+}
+.theme-professional-blue .theme-card:hover {
+    border-color: #0284c7;
+    box-shadow: 0 8px 16px rgba(2, 132, 199, 0.1);
+}
+.theme-professional-blue .theme-hero-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    color: #ffffff;
+    border-bottom: 2px solid #0284c7;
+}
+.theme-professional-blue .theme-hero-header h1,
+.theme-professional-blue .theme-hero-header p,
+.theme-professional-blue .theme-hero-header span {
+    color: #ffffff !important;
+}
+.theme-professional-blue .theme-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    font-weight: 500;
+}
+
+/* ===================================================================
+   SHARED THEME BUTTONS & ACCENT STYLES
+   =================================================================== */
+.theme-btn-accent {
+    background-color: var(--theme-accent) !important;
+    border-color: var(--theme-accent) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.theme-btn-accent:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 0 12px rgba(var(--theme-accent-rgb), 0.4);
+}
+.theme-btn-outline-accent {
+    background: transparent !important;
+    border: 1px solid var(--theme-accent) !important;
+    color: var(--theme-accent) !important;
+    transition: all 0.2s ease;
+}
+.theme-btn-outline-accent:hover {
+    background-color: var(--theme-accent) !important;
+    color: #ffffff !important;
+}
+.theme-accent-text {
+    color: var(--theme-accent) !important;
+}
+
+/* ===================================================================
+   LAYOUT VARIATIONS
+   =================================================================== */
+/* 1. Standard Layout: full-width centered sequence */
+.layout-standard .portfolio-main-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* 2. Compact Layout: dense multi-column grid */
+.layout-compact .portfolio-main-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+.layout-compact .compact-full-row {
+    grid-column: 1 / -1;
+}
+
+/* 3. Sidebar Layout: Profile fixed/sticky on left, sections on right */
+@media (min-width: 992px) {
+    .layout-sidebar .portfolio-layout-container {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 2.5rem;
+        align-items: start;
+    }
+    .layout-sidebar .portfolio-sidebar-col {
+        position: sticky;
+        top: 2rem;
+    }
+}
+
+/* ===================================================================
+   RESPONSIVE PREVIEW VIEWPORT FRAMES
+   =================================================================== */
+.viewport-frame-wrapper {
+    transition: all 0.3s ease;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.viewport-desktop {
+    width: 100%;
+}
+.viewport-tablet {
+    width: 768px;
+    max-width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border: 8px solid #1e293b;
+    border-radius: 20px;
+}
+.viewport-mobile {
+    width: 380px;
+    max-width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border: 10px solid #1e293b;
+    border-radius: 24px;
+}

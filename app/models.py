@@ -4,9 +4,25 @@ Defines schema for Users, Portfolios, AI Generations, and core domain entities.
 """
 
 from datetime import datetime, timezone
+import json
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
+
+# Phase 7: Theme & Customization Constants
+ALLOWED_THEMES = ["modern-dark", "minimal-light", "creative-gradient", "professional-blue"]
+ALLOWED_ACCENT_COLORS = ["#6366f1", "#10b981", "#f43f5e", "#0ea5e9", "#f59e0b", "#8b5cf6", "#64748b"]
+ALLOWED_FONTS = ["plus-jakarta-sans", "outfit", "inter", "serif", "mono"]
+ALLOWED_LAYOUTS = ["standard", "compact", "sidebar"]
+DEFAULT_SECTION_VISIBILITY = {
+    "about": True,
+    "skills": True,
+    "projects": True,
+    "experience": True,
+    "education": True,
+    "certifications": True,
+    "contact": True,
+}
 
 
 class User(UserMixin, db.Model):
@@ -95,6 +111,23 @@ class Portfolio(db.Model):
     linkedin_url = db.Column(db.String(255), nullable=True)
     profile_image = db.Column(db.String(255), nullable=True)
 
+    # Phase 7: Theme & Live Customization Preferences
+    theme = db.Column(db.String(50), default="modern-dark", nullable=False)
+    accent_color = db.Column(db.String(20), default="#6366f1", nullable=False)
+    font_family = db.Column(db.String(50), default="plus-jakarta-sans", nullable=False)
+    layout_style = db.Column(db.String(50), default="standard", nullable=False)
+    section_visibility = db.Column(
+        db.Text,
+        default='{"about":true,"skills":true,"projects":true,"experience":true,"education":true,"certifications":true,"contact":true}',
+        nullable=False,
+    )
+
+    # Structured Domain Content Sections
+    skills = db.Column(db.Text, nullable=True)          # Comma-separated or JSON list
+    experience = db.Column(db.Text, nullable=True)      # JSON list of experience dicts
+    education = db.Column(db.Text, nullable=True)       # JSON list of education dicts
+    certifications = db.Column(db.Text, nullable=True)  # JSON list of certification dicts
+
     created_at = db.Column(
         db.DateTime,
         default=lambda: datetime.now(timezone.utc),
@@ -123,6 +156,64 @@ class Portfolio(db.Model):
         order_by="desc(Project.created_at)",
     )
 
+    def get_skills_list(self) -> list:
+        """Parse comma-separated or JSON skills into a clean list of strings."""
+        if not self.skills:
+            return []
+        raw = self.skills.strip()
+        if raw.startswith("["):
+            try:
+                parsed = json.loads(raw)
+                if isinstance(parsed, list):
+                    return [str(s).strip() for s in parsed if str(s).strip()]
+            except Exception:
+                pass
+        return [s.strip() for s in raw.split(",") if s.strip()]
+
+    def get_experience_list(self) -> list:
+        """Parse JSON experience records into a list of dictionaries."""
+        if not self.experience:
+            return []
+        try:
+            parsed = json.loads(self.experience)
+            return parsed if isinstance(parsed, list) else []
+        except Exception:
+            return []
+
+    def get_education_list(self) -> list:
+        """Parse JSON education records into a list of dictionaries."""
+        if not self.education:
+            return []
+        try:
+            parsed = json.loads(self.education)
+            return parsed if isinstance(parsed, list) else []
+        except Exception:
+            return []
+
+    def get_certifications_list(self) -> list:
+        """Parse JSON certifications into a list of dictionaries or strings."""
+        if not self.certifications:
+            return []
+        try:
+            parsed = json.loads(self.certifications)
+            return parsed if isinstance(parsed, list) else []
+        except Exception:
+            return [s.strip() for s in self.certifications.split(",") if s.strip()]
+
+    def get_section_visibility(self) -> dict:
+        """Return section visibility mapping merged with safe defaults."""
+        merged = dict(DEFAULT_SECTION_VISIBILITY)
+        if self.section_visibility:
+            try:
+                parsed = json.loads(self.section_visibility)
+                if isinstance(parsed, dict):
+                    for k, v in parsed.items():
+                        if k in merged:
+                            merged[k] = bool(v)
+            except Exception:
+                pass
+        return merged
+
     def to_dict(self) -> dict:
         """Serialize portfolio fields to a dictionary."""
         return {
@@ -138,6 +229,15 @@ class Portfolio(db.Model):
             "github_url": self.github_url,
             "linkedin_url": self.linkedin_url,
             "profile_image": self.profile_image,
+            "theme": self.theme,
+            "accent_color": self.accent_color,
+            "font_family": self.font_family,
+            "layout_style": self.layout_style,
+            "section_visibility": self.get_section_visibility(),
+            "skills": self.get_skills_list(),
+            "experience": self.get_experience_list(),
+            "education": self.get_education_list(),
+            "certifications": self.get_certifications_list(),
             "projects_count": len(self.projects),
             "projects": [p.to_dict() for p in self.projects],
             "created_at": self.created_at.isoformat() if self.created_at else None,

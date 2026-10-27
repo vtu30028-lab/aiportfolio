@@ -86,6 +86,9 @@
                             <a href="{{ url_for('portfolio.preview', portfolio_id=p.id) }}" class="btn btn-sm btn-secondary-glass flex-grow-1" title="Preview Portfolio">
                                 <i class="bi bi-eye me-1"></i> View
                             </a>
+                            <a href="{{ url_for('portfolio.theme_editor', portfolio_id=p.id) }}" class="btn btn-sm btn-outline-warning border-opacity-50" title="Theme Studio & Live Customizer">
+                                <i class="bi bi-palette-fill"></i>
+                            </a>
                             <a href="{{ url_for('github.import_page', portfolio_id=p.id) }}" class="btn btn-sm btn-outline-info border-opacity-50" title="Sync GitHub Projects">
                                 <i class="bi bi-github"></i>
                             </a>

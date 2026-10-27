@@ -54,6 +54,32 @@ def create_app(config_name=None):
     with app.app_context():
         if app.config.get("TESTING") or "sqlite" in app.config.get("SQLALCHEMY_DATABASE_URI", ""):
             db.create_all()
+            # Non-destructive SQLite schema upgrade for Phase 7 columns if table already existed
+            try:
+                from sqlalchemy import text
+                inspector = db.inspect(db.engine)
+                if "portfolios" in inspector.get_table_names():
+                    existing_cols = {col["name"] for col in inspector.get_columns("portfolios")}
+                    new_cols = [
+                        ("theme", "VARCHAR(50) DEFAULT 'modern-dark'"),
+                        ("accent_color", "VARCHAR(20) DEFAULT '#6366f1'"),
+                        ("font_family", "VARCHAR(50) DEFAULT 'plus-jakarta-sans'"),
+                        ("layout_style", "VARCHAR(50) DEFAULT 'standard'"),
+                        ("section_visibility", "TEXT"),
+                        ("skills", "TEXT"),
+                        ("experience", "TEXT"),
+                        ("education", "TEXT"),
+                        ("certifications", "TEXT"),
+                    ]
+                    for col_name, col_def in new_cols:
+                        if col_name not in existing_cols:
+                            try:
+                                db.session.execute(text(f"ALTER TABLE portfolios ADD COLUMN {col_name} {col_def}"))
+                                db.session.commit()
+                            except Exception:
+                                db.session.rollback()
+            except Exception:
+                db.session.rollback()
 
     # Global context processors for templates
     @app.context_processor

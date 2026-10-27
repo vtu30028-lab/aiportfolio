@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}Theme Builder & Live Customization — {{ portfolio.title }} | {{ app_name }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio_themes.css') }}">
+<style>
+    /* Theme Editor Studio Layout */
+    .theme-studio-container {
+        min-height: calc(100vh - 120px);
+    }
+    .customizer-panel {
+        max-height: calc(100vh - 140px);
+        overflow-y: auto;
+    }
+    .theme-choice-card {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.03);
+    }
+    .theme-choice-card:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(99, 102, 241, 0.4);
+    }
+    .theme-choice-card.active {
+        border-color: var(--theme-accent, #6366f1) !important;
+        background: rgba(99, 102, 241, 0.12) !important;
+        box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+    }
+    .color-swatch {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        border: 2px solid transparent;
+        position: relative;
+    }
+    .color-swatch:hover {
+        transform: scale(1.15);
+    }
+    .color-swatch.active {
+        border-color: #ffffff !important;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        transform: scale(1.1);
+    }
+    .color-swatch.active::after {
+        content: '\F26E';
+        font-family: 'bootstrap-icons';
+        color: #fff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.85rem;
+    }
+    .live-preview-iframe {
+        width: 100%;
+        height: 780px;
+        border: none;
+        background: #0a0e17;
+        transition: width 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4 theme-studio-container">
+    <!-- Studio Header & Action Bar -->
+    <div class="glass-card p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ url_for('portfolio.preview', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-secondary-glass">
+                <i class="bi bi-arrow-left me-1"></i> Back to Preview
+            </a>
+            <div>
+                <h5 class="text-white fw-bold mb-0">Theme Builder & Live Customizer</h5>
+                <small class="text-muted">Customizing: <strong class="text-white">{{ portfolio.title }}</strong></small>
+            </div>
+        </div>
+
+        <!-- Viewport Switcher Controls -->
+        <div class="btn-group bg-dark p-1 rounded-pill border border-secondary border-opacity-25" role="group">
+            <button type="button" class="btn btn-sm btn-outline-secondary text-light active border-0 px-3 rounded-pill" id="btnViewDesktop" title="Desktop View (100%)">
+                <i class="bi bi-laptop me-1"></i> Desktop
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary text-light border-0 px-3 rounded-pill" id="btnViewTablet" title="Tablet View (768px)">
+                <i class="bi bi-tablet me-1"></i> Tablet
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary text-light border-0 px-3 rounded-pill" id="btnViewMobile" title="Mobile View (380px)">
+                <i class="bi bi-phone me-1"></i> Mobile
+            </button>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass" title="Open preview in new browser tab">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Fullscreen
+            </a>
+            <button type="button" id="btnResetDefaults" class="btn btn-sm btn-secondary-glass text-muted">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+            </button>
+            <button type="button" id="btnSaveTheme" class="btn btn-sm btn-primary-gradient px-4 fw-semibold shadow">
+                <span id="saveBtnSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                <i id="saveBtnIcon" class="bi bi-check-lg me-1"></i>
+                <span>Save Theme</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Alert Message Banner -->
+    <div id="editorAlert" class="alert d-none mb-3 glass-card" role="alert"></div>
+
+    <div class="row g-4">
+        <!-- Left Column: Customization Controls Panel -->
+        <div class="col-lg-4 col-xl-4">
+            <div class="glass-card p-4 customizer-panel">
+
+                <!-- 1. Theme Presets -->
+                <div class="mb-4">
+                    <label class="form-label text-light fw-bold small text-uppercase tracking-wider d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-palette-fill text-primary me-1"></i> 1. Select Theme Preset</span>
+                        <span id="activeThemeBadge" class="badge bg-primary bg-opacity-25 text-info small text-capitalize">{{ portfolio.theme }}</span>
+                    </label>
+
+                    <div class="row g-2" id="themeCardsContainer">
+                        <!-- Modern Dark -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'modern-dark' %}active{% endif %}" data-theme="modern-dark">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background: #0a0e17; border: 1px solid #334155;">
+                                    <div class="small fw-bold text-white font-monospace">Dark</div>
+                                    <div style="height: 4px; width: 24px; background: #6366f1; margin: 4px auto; border-radius: 2px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Modern Dark</div>
+                                <div class="text-muted text-center" style="font-size: 0.72rem;">Sleek Slate & Neon</div>
+                            </div>
+                        </div>
+
+                        <!-- Minimal Light -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'minimal-light' %}active{% endif %}" data-theme="minimal-light">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background: #f8fafc; border: 1px solid #cbd5e1;">
+                                    <div class="small fw-bold text-dark font-monospace">Light</div>
+                                    <div style="height: 4px; width: 24px; background: #0ea5e9; margin: 4px auto; border-radius: 2px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Minimal Light</div>
+                                <div class="text-muted text-center" style="font-size: 0.72rem;">Clean & High Contrast</div>
+                            </div>
+                        </div>
+
+                        <!-- Creative Gradient -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'creative-gradient' %}active{% endif %}" data-theme="creative-gradient">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background: linear-gradient(135deg, #312e81, #db2777); border: 1px solid rgba(255,255,255,0.2);">
+                                    <div class="small fw-bold text-white font-monospace">Glow</div>
+                                    <div style="height: 4px; width: 24px; background: #f43f5e; margin: 4px auto; border-radius: 2px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Creative Gradient</div>
+                                <div class="text-muted text-center" style="font-size: 0.72rem;">Vibrant Multi-Tone</div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Blue -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'professional-blue' %}active{% endif %}" data-theme="professional-blue">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background: linear-gradient(135deg, #0f172a, #1e3a8a); border: 1px solid #0284c7;">
+                                    <div class="small fw-bold text-white font-monospace">Corp</div>
+                                    <div style="height: 4px; width: 24px; background: #0284c7; margin: 4px auto; border-radius: 2px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Professional Blue</div>
+                                <div class="text-muted text-center" style="font-size: 0.72rem;">Executive Corporate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-secondary border-opacity-25 my-4">
+
+                <!-- 2. Accent Color Palette -->
+                <div class="mb-4">
+                    <label class="form-label text-light fw-bold small text-uppercase tracking-wider d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-droplet-half text-info me-1"></i> 2. Accent Color Palette</span>
+                        <code id="activeColorHex" class="text-light small font-monospace">{{ portfolio.accent_color }}</code>
+                    </label>
+
+                    <div class="d-flex flex-wrap gap-2 pt-1" id="swatchContainer">
+                        {% set swatches = [
+                            ('#6366f1', 'Indigo'),
+                            ('#10b981', 'Emerald'),
+                            ('#f43f5e', 'Rose'),
+                            ('#0ea5e9', 'Cyan'),
+                            ('#f59e0b', 'Amber'),
+                            ('#8b5cf6', 'Violet'),
+                            ('#64748b', 'Slate')
+                        ] %}
+                        {% for color_hex, color_name in swatches %}
+                            <div class="color-swatch {% if portfolio.accent_color == color_hex %}active{% endif %}"
+                                 style="background-color: {{ color_hex }};"
+                                 data-color="{{ color_hex }}"
+                                 title="{{ color_name }} ({{ color_hex }})">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <hr class="border-secondary border-opacity-25 my-4">
+
+                <!-- 3. Font Family Selector -->
+                <div class="mb-4">
+                    <label for="fontSelect" class="form-label text-light fw-bold small text-uppercase tracking-wider">
+                        <i class="bi bi-fonts text-warning me-1"></i> 3. Typography & Font Family
+                    </label>
+                    <select id="fontSelect" class="form-select custom-input">
+                        <option value="plus-jakarta-sans" {% if portfolio.font_family == 'plus-jakarta-sans' %}selected{% endif %}>
+                            Plus Jakarta Sans (Modern Clean)
+                        </option>
+                        <option value="outfit" {% if portfolio.font_family == 'outfit' %}selected{% endif %}>
+                            Outfit (Geometric Tech)
+                        </option>
+                        <option value="inter" {% if portfolio.font_family == 'inter' %}selected{% endif %}>
+                            Inter (Neutral Precision)
+                        </option>
+                        <option value="serif" {% if portfolio.font_family == 'serif' %}selected{% endif %}>
+                            Merriweather Serif (Editorial Classic)
+                        </option>
+                        <option value="mono" {% if portfolio.font_family == 'mono' %}selected{% endif %}>
+                            JetBrains Mono (Developer Code)
+                        </option>
+                    </select>
+                </div>
+
+                <hr class="border-secondary border-opacity-25 my-4">
+
+                <!-- 4. Layout Style -->
+                <div class="mb-4">
+                    <label for="layoutSelect" class="form-label text-light fw-bold small text-uppercase tracking-wider">
+                        <i class="bi bi-grid-1x2 text-success me-1"></i> 4. Layout Variation
+                    </label>
+                    <select id="layoutSelect" class="form-select custom-input">
+                        <option value="standard" {% if portfolio.layout_style == 'standard' %}selected{% endif %}>
+                            Standard (Vertical Story Sequence)
+                        </option>
+                        <option value="compact" {% if portfolio.layout_style == 'compact' %}selected{% endif %}>
+                            Compact (Dense Two-Column Grid)
+                        </option>
+                        <option value="sidebar" {% if portfolio.layout_style == 'sidebar' %}selected{% endif %}>
+                            Sidebar (Sticky Profile Column)
+                        </option>
+                    </select>
+                </div>
+
+                <hr class="border-secondary border-opacity-25 my-4">
+
+                <!-- 5. Section Visibility Controls -->
+                <div class="mb-3">
+                    <label class="form-label text-light fw-bold small text-uppercase tracking-wider mb-2">
+                        <i class="bi bi-toggle-on text-primary me-1"></i> 5. Section Visibility Controls
+                    </label>
+                    <div class="d-flex flex-column gap-2" id="sectionVisibilityContainer">
+                        {% set visibility = portfolio.get_section_visibility() %}
+                        {% set sections = [
+                            ('about', 'About Me Bio', 'bi-person-badge'),
+                            ('skills', 'Skills & Competencies', 'bi-stars'),
+                            ('projects', 'Engineering Projects', 'bi-code-slash'),
+                            ('experience', 'Professional Experience', 'bi-briefcase'),
+                            ('education', 'Education & Degrees', 'bi-mortarboard'),
+                            ('certifications', 'Licenses & Certifications', 'bi-award'),
+                            ('contact', 'Contact Details & Footer', 'bi-envelope')
+                        ] %}
+
+                        {% for sec_key, sec_label, sec_icon in sections %}
+                        <div class="d-flex justify-content-between align-items-center p-2 rounded-2" style="background: rgba(255,255,255,0.02);">
+                            <span class="small text-light">
+                                <i class="bi {{ sec_icon }} me-2 text-muted"></i>{{ sec_label }}
+                            </span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input section-toggle-input" type="checkbox" role="switch"
+                                       id="toggle-{{ sec_key }}" data-section="{{ sec_key }}"
+                                       {% if visibility.get(sec_key, True) %}checked{% endif %}>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Column: Live Responsive Preview Frame -->
+        <div class="col-lg-8 col-xl-8">
+            <div class="glass-card p-0 overflow-hidden d-flex flex-column">
+                <!-- Mockup Browser Bar -->
+                <div class="browser-bar d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-secondary border-opacity-25" style="background: #0f172a;">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="browser-dot dot-red"></span>
+                        <span class="browser-dot dot-yellow"></span>
+                        <span class="browser-dot dot-green"></span>
+                        <div class="browser-address ms-2 font-monospace small px-2 py-1 rounded" style="background: rgba(0,0,0,0.3); color: #94a3b8;">
+                            <i class="bi bi-lock-fill text-success me-1"></i>
+                            portfolio-ai.dev/live/{{ portfolio.id }}
+                        </div>
+                    </div>
+                    <div class="small text-muted font-monospace d-flex align-items-center gap-2">
+                        <span class="spinner-grow spinner-grow-sm text-success" role="status" style="width: 8px; height: 8px;"></span>
+                        <span>Live Sync Active</span>
+                    </div>
+                </div>
+
+                <!-- Viewport Frame Wrapper -->
+                <div class="p-3 d-flex justify-content-center" style="background: #06090e; min-height: 800px;">
+                    <div id="viewportFrame" class="viewport-frame-wrapper viewport-desktop">
+                        <iframe id="previewIframe"
+                                class="live-preview-iframe"
+                                src="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}"
+                                title="Live Portfolio Preview">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Injected current preferences
+    window.INITIAL_THEME_CONFIG = {
+        portfolioId: {{ portfolio.id }},
+        theme: "{{ portfolio.theme }}",
+        accent_color: "{{ portfolio.accent_color }}",
+        font_family: "{{ portfolio.font_family }}",
+        layout_style: "{{ portfolio.layout_style }}",
+        visible_sections: {{ portfolio.get_section_visibility() | tojson }}
+    };
+</script>
+<script src="{{ url_for('static', filename='js/theme_editor.js') }}"></script>
+{% endblock %}

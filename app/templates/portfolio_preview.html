@@ -13,15 +13,18 @@
             <span class="text-muted small">Viewing: <strong class="text-white">{{ portfolio.title }}</strong></span>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
             <a href="{{ url_for('portfolio.index') }}" class="btn btn-sm btn-secondary-glass">
-                <i class="bi bi-arrow-left me-1"></i> Back to Portfolios
+                <i class="bi bi-arrow-left me-1"></i> Portfolios
             </a>
             <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-outline-info">
                 <i class="bi bi-github me-1"></i> Sync GitHub
             </a>
-            <a href="{{ url_for('portfolio.edit', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-primary-gradient">
-                <i class="bi bi-pencil me-1"></i> Edit Portfolio
+            <a href="{{ url_for('portfolio.theme_editor', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-primary-gradient shadow">
+                <i class="bi bi-palette-fill me-1"></i> Theme Studio
+            </a>
+            <a href="{{ url_for('portfolio.edit', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-secondary-glass">
+                <i class="bi bi-pencil me-1"></i> Edit Details
             </a>
         </div>
     </div>
@@ -29,15 +32,24 @@
     <!-- Portfolio Profile Presentation Frame -->
     <div class="hero-preview-frame p-0 mb-4">
         <!-- Mockup Browser Bar -->
-        <div class="browser-bar">
-            <span class="browser-dot dot-red"></span>
-            <span class="browser-dot dot-yellow"></span>
-            <span class="browser-dot dot-green"></span>
-            <div class="browser-address">
-                <i class="bi bi-lock-fill text-success me-1"></i>
-                portfolio-ai.dev/preview/{{ portfolio.id }}
+        <div class="browser-bar d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center">
+                <span class="browser-dot dot-red"></span>
+                <span class="browser-dot dot-yellow"></span>
+                <span class="browser-dot dot-green"></span>
+                <div class="browser-address ms-2">
+                    <i class="bi bi-lock-fill text-success me-1"></i>
+                    portfolio-ai.dev/live/{{ portfolio.id }}
+                </div>
             </div>
-            <span class="badge bg-dark text-muted font-monospace small px-2 py-1">Theme: Modern Tech</span>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-dark text-info font-monospace small px-2 py-1 text-capitalize border border-secondary border-opacity-25">
+                    Theme: {{ portfolio.theme.replace('-', ' ') }}
+                </span>
+                <a href="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass py-0 px-2 small">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Live View
+                </a>
+            </div>
         </div>
 
         <div class="p-4 p-md-5">

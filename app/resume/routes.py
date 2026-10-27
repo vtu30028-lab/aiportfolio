@@ -5,6 +5,7 @@ human-in-the-loop review, and transactional portfolio import.
 """
 
 import io
+import json
 from flask import render_template, request, jsonify, abort
 from flask_login import login_required, current_user
 from app.extensions import db, limiter
@@ -106,6 +107,24 @@ def import_to_portfolio():
     github_url = (approved.get("github_url") or "").strip() or None
     linkedin_url = (approved.get("linkedin_url") or "").strip() or None
 
+    # Format skills, experience, education, certifications
+    skills_raw = approved.get("technical_skills") or approved.get("skills")
+    if isinstance(skills_raw, list):
+        skills_str = ", ".join([str(s).strip() for s in skills_raw if str(s).strip()])
+    elif isinstance(skills_raw, str):
+        skills_str = skills_raw.strip()
+    else:
+        skills_str = None
+
+    exp_raw = approved.get("experience") or approved.get("work_experience")
+    experience_str = json.dumps(exp_raw) if exp_raw and isinstance(exp_raw, list) else None
+
+    edu_raw = approved.get("education")
+    education_str = json.dumps(edu_raw) if edu_raw and isinstance(edu_raw, list) else None
+
+    cert_raw = approved.get("certifications")
+    certifications_str = json.dumps(cert_raw) if cert_raw and isinstance(cert_raw, list) else None
+
     try:
         if create_new or not portfolio_id:
             # Create a brand new portfolio
@@ -121,6 +140,10 @@ def import_to_portfolio():
                 location=location,
                 github_url=github_url,
                 linkedin_url=linkedin_url,
+                skills=skills_str,
+                experience=experience_str,
+                education=education_str,
+                certifications=certifications_str,
             )
             db.session.add(portfolio)
             db.session.commit()
@@ -157,6 +180,14 @@ def import_to_portfolio():
                 portfolio.github_url = github_url
             if linkedin_url:
                 portfolio.linkedin_url = linkedin_url
+            if skills_str:
+                portfolio.skills = skills_str
+            if experience_str:
+                portfolio.experience = experience_str
+            if education_str:
+                portfolio.education = education_str
+            if certifications_str:
+                portfolio.certifications = certifications_str
 
             db.session.commit()
             return jsonify({
