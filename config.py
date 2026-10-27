@@ -76,8 +76,16 @@ class ProductionConfig(Config):
     """Production environment configuration."""
     DEBUG = False
     TESTING = False
+    PREFERRED_URL_SCHEME = "https"
     SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_SAMESITE = "Strict"
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_size": 10,
+        "max_overflow": 20,
+        "pool_recycle": 1800,
+    }
 
 
 # Configuration dictionary lookup

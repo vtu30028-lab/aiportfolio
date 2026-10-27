@@ -50,38 +50,62 @@ def create_app(config_name=None):
     app.register_blueprint(resume_bp)
     app.register_blueprint(github_bp)
 
-    # Create tables automatically in development or testing if using SQLite
+    # Create tables automatically in development, testing, or cloud deployment
     with app.app_context():
-        if app.config.get("TESTING") or "sqlite" in app.config.get("SQLALCHEMY_DATABASE_URI", ""):
-            db.create_all()
-            # Non-destructive SQLite schema upgrade for Phase 7 columns if table already existed
-            try:
-                from sqlalchemy import text
-                inspector = db.inspect(db.engine)
-                if "portfolios" in inspector.get_table_names():
-                    existing_cols = {col["name"] for col in inspector.get_columns("portfolios")}
-                    new_cols = [
-                        ("theme", "VARCHAR(50) DEFAULT 'modern-dark'"),
-                        ("accent_color", "VARCHAR(20) DEFAULT '#6366f1'"),
-                        ("font_family", "VARCHAR(50) DEFAULT 'plus-jakarta-sans'"),
-                        ("layout_style", "VARCHAR(50) DEFAULT 'standard'"),
-                        ("section_visibility", "TEXT"),
-                        ("skills", "TEXT"),
-                        ("experience", "TEXT"),
-                        ("education", "TEXT"),
-                        ("certifications", "TEXT"),
-                        ("is_published", "BOOLEAN DEFAULT 0"),
-                        ("slug", "VARCHAR(120)"),
-                    ]
-                    for col_name, col_def in new_cols:
-                        if col_name not in existing_cols:
-                            try:
-                                db.session.execute(text(f"ALTER TABLE portfolios ADD COLUMN {col_name} {col_def}"))
-                                db.session.commit()
-                            except Exception:
-                                db.session.rollback()
-            except Exception:
-                db.session.rollback()
+        db.create_all()
+        # Non-destructive SQLite schema upgrade for Phase 7/8 columns if table already existed
+        try:
+            from sqlalchemy import text
+            inspector = db.inspect(db.engine)
+            if "portfolios" in inspector.get_table_names():
+                existing_cols = {col["name"] for col in inspector.get_columns("portfolios")}
+                new_cols = [
+                    ("theme", "VARCHAR(50) DEFAULT 'modern-dark'"),
+                    ("accent_color", "VARCHAR(20) DEFAULT '#6366f1'"),
+                    ("font_family", "VARCHAR(50) DEFAULT 'plus-jakarta-sans'"),
+                    ("layout_style", "VARCHAR(50) DEFAULT 'standard'"),
+                    ("section_visibility", "TEXT"),
+                    ("skills", "TEXT"),
+                    ("experience", "TEXT"),
+                    ("education", "TEXT"),
+                    ("certifications", "TEXT"),
+                    ("is_published", "BOOLEAN DEFAULT 0"),
+                    ("slug", "VARCHAR(120)"),
+                ]
+                for col_name, col_def in new_cols:
+                    if col_name not in existing_cols:
+                        try:
+                            db.session.execute(text(f"ALTER TABLE portfolios ADD COLUMN {col_name} {col_def}"))
+                            db.session.commit()
+                        except Exception:
+                            db.session.rollback()
+        except Exception:
+            db.session.rollback()
+
+    # Reverse proxy support in production (Render, AWS, Heroku)
+    if config_name == "production" or os.environ.get("RENDER"):
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
+    # Phase 9: Global HTTP Security Headers
+    @app.after_request
+    def set_security_headers(response):
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        # Content Security Policy (allows CDNs, Google Fonts, and self-hosted frames)
+        csp = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; "
+            "font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com data:; "
+            "img-src 'self' data: https: blob:; "
+            "frame-src 'self'; "
+            "connect-src 'self';"
+        )
+        response.headers["Content-Security-Policy"] = csp
+        return response
 
     # Global context processors for templates
     @app.context_processor
