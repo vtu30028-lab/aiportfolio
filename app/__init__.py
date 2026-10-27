@@ -23,12 +23,13 @@ def create_app(config_name=None):
     csrf.init_app(app)
     limiter.init_app(app)
 
-    # User loader for Flask-Login sessions
+    # Import models and register user loader for Flask-Login
+    from app.models import User
+
     @login_manager.user_loader
     def load_user(user_id):
         try:
-            from app.models import User
-            return User.query.get(int(user_id))
+            return db.session.get(User, int(user_id))
         except Exception:
             return None
 
@@ -40,6 +41,11 @@ def create_app(config_name=None):
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
+
+    # Create tables automatically in development or testing if using SQLite
+    with app.app_context():
+        if app.config.get("TESTING") or "sqlite" in app.config.get("SQLALCHEMY_DATABASE_URI", ""):
+            db.create_all()
 
     # Global context processors for templates
     @app.context_processor

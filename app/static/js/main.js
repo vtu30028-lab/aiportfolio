@@ -1,6 +1,7 @@
 /**
  * PortfolioAI - Main Client Script
- * Handles UI interactions, navbar state, interactive theme previews, and notifications.
+ * Handles UI interactions, navbar state, interactive theme previews, notifications,
+ * and password visibility toggles.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -48,23 +49,43 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 4. Copy to Clipboard utility
-    window.copyTextToClipboard = function(text, feedbackElementId) {
-        if (!navigator.clipboard) return;
-        navigator.clipboard.writeText(text).then(() => {
-            if (feedbackElementId) {
-                const el = document.getElementById(feedbackElementId);
-                if (el) {
-                    const originalText = el.innerText;
-                    el.innerText = "Copied!";
-                    setTimeout(() => {
-                        el.innerText = originalText;
-                    }, 2000);
+    // 4. Form submission loading indicator to prevent double submit
+    const authForms = document.querySelectorAll("#register-form, #login-form");
+    authForms.forEach((form) => {
+        form.addEventListener("submit", (e) => {
+            if (form.checkValidity()) {
+                const btn = form.querySelector('button[type="submit"]');
+                if (btn) {
+                    btn.classList.add("disabled");
+                    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...`;
                 }
             }
         });
-    };
+    });
 });
+
+/**
+ * Toggles input type between 'password' and 'text' with icon toggle.
+ */
+function togglePasswordVisibility(fieldId, iconId) {
+    const input = document.getElementById(fieldId);
+    const icon = document.getElementById(iconId);
+    if (!input) return;
+
+    if (input.type === "password") {
+        input.type = "text";
+        if (icon) {
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        }
+    } else {
+        input.type = "password";
+        if (icon) {
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        }
+    }
+}
 
 /**
  * Updates the hero preview mockup content based on selected theme.

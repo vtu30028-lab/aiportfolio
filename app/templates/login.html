@@ -5,43 +5,80 @@
 {% block content %}
 <div class="container py-5 my-4">
     <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-5">
+        <div class="col-md-8 col-lg-6 col-xl-5">
             <div class="glass-card p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <div class="brand-icon-box mx-auto mb-3" style="width: 48px; height: 48px; font-size: 1.3rem;">
+                    <div class="brand-icon-box mx-auto mb-3" style="width: 52px; height: 52px; font-size: 1.4rem;">
                         <i class="bi bi-person-lock"></i>
                     </div>
                     <h3 class="fw-bold text-white mb-1">Welcome Back</h3>
                     <p class="text-muted small">Sign in to manage and edit your AI portfolios</p>
                 </div>
 
-                <form method="POST" action="{{ url_for('auth.login') }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token is defined else '' }}">
+                <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next', '')) }}" novalidate id="login-form">
+                    {{ form.hidden_tag() }}
 
+                    <!-- Email Address -->
                     <div class="mb-3">
-                        <label for="email" class="form-label text-light small fw-semibold">Email Address</label>
+                        <label for="{{ form.email.id }}" class="form-label text-light small fw-semibold">
+                            {{ form.email.label.text }} <span class="text-danger">*</span>
+                        </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-envelope"></i></span>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="you@university.edu" required>
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="alex@university.edu", autocomplete="email", required=True) }}
+                        </div>
+                        {% for error in form.email.errors %}
+                            <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label for="{{ form.password.id }}" class="form-label text-light small fw-semibold mb-1">
+                                {{ form.password.label.text }} <span class="text-danger">*</span>
+                            </label>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted">
+                                <i class="bi bi-key"></i>
+                            </span>
+                            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="••••••••", autocomplete="current-password", required=True) }}
+                            <button class="btn btn-secondary-glass border-secondary border-opacity-25" type="button" onclick="togglePasswordVisibility('{{ form.password.id }}', 'toggle-login-pwd-icon')">
+                                <i class="bi bi-eye" id="toggle-login-pwd-icon"></i>
+                            </button>
+                        </div>
+                        {% for error in form.password.errors %}
+                            <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Remember Me Checkbox -->
+                    <div class="mb-4 d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            {{ form.remember_me(class="form-check-input", id="remember-me-check") }}
+                            <label class="form-check-label text-muted small" for="remember-me-check">
+                                {{ form.remember_me.label.text }}
+                            </label>
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between">
-                            <label for="password" class="form-label text-light small fw-semibold">Password</label>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-key"></i></span>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary-gradient w-100 py-3 justify-content-center mb-3">
-                        <i class="bi bi-box-arrow-in-right"></i> Sign In to PortfolioAI
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary-gradient w-100 py-3 justify-content-center mb-3 fw-bold" id="login-submit-btn">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> {{ form.submit.label.text }}
                     </button>
 
                     <div class="text-center text-muted small">
-                        Don't have an account yet? <a href="{{ url_for('auth.register') }}" class="text-primary text-decoration-none fw-semibold">Create an account</a>
+                        Don't have an account yet? 
+                        <a href="{{ url_for('auth.register') }}" class="text-primary text-decoration-none fw-semibold">
+                            Create an account free <i class="bi bi-arrow-right"></i>
+                        </a>
                     </div>
                 </form>
             </div>

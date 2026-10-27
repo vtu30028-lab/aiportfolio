@@ -53,12 +53,17 @@
 
                 <div class="d-flex align-items-center gap-3">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary-glass py-2 px-3">
-                            <i class="bi bi-speedometer2 me-1"></i> Dashboard
-                        </a>
-                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger border-0 py-2 px-3">
-                            <i class="bi bi-box-arrow-right me-1"></i> Sign Out
-                        </a>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary-glass py-2 px-3">
+                                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                            </a>
+                            <form method="POST" action="{{ url_for('auth.logout') }}" class="d-inline mb-0">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-outline-danger border-0 py-2 px-3" id="logout-btn">
+                                    <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+                                </button>
+                            </form>
+                        </div>
                     {% else %}
                         <a href="{{ url_for('auth.login') }}" class="nav-link px-2">Sign In</a>
                         <a href="{{ url_for('auth.register') }}" class="btn btn-primary-gradient py-2 px-4">
@@ -75,7 +80,7 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-custom alert-dismissible fade show d-flex align-items-center justify-content-between" role="alert">
+                    <div class="alert alert-{{ 'danger' if category in ['error', 'danger'] else category }} alert-custom alert-dismissible fade show d-flex align-items-center justify-content-between" role="alert">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-info-circle-fill me-2 fs-5"></i>
                             <div>{{ message }}</div>

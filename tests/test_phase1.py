@@ -46,11 +46,11 @@ def test_404_error_page(client):
 
 
 def test_auth_routes_accessible(client):
-    """Test that auth routes are reachable and render correctly."""
-    login_res = client.get("/auth/login")
+    """Test that auth routes (/login, /register) are reachable and render correctly."""
+    login_res = client.get("/login")
     assert login_res.status_code == 200
     assert b"Welcome Back" in login_res.data
 
-    reg_res = client.get("/auth/register")
+    reg_res = client.get("/register")
     assert reg_res.status_code == 200
     assert b"Create Your Account" in reg_res.data
