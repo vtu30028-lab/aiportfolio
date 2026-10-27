@@ -1,5 +1,6 @@
-from flask import render_template, jsonify
+from flask import render_template, jsonify, abort
 from app.main import main_bp
+from app.models import Portfolio
 
 @main_bp.route("/")
 def index():
@@ -54,3 +55,28 @@ def health():
         "version": "1.0.0",
         "environment": "production-ready"
     }), 200
+
+
+@main_bp.route("/p/<slug>")
+def public_portfolio(slug: str):
+    """
+    Publicly accessible portfolio showcase endpoint.
+    No login required. Accessible only if portfolio.is_published is True.
+    """
+    portfolio = Portfolio.query.filter_by(slug=slug).first()
+    if portfolio is None or not portfolio.is_published:
+        abort(404)
+
+    return render_template(
+        "themes/portfolio_render.html",
+        portfolio=portfolio,
+        theme=portfolio.theme,
+        accent_color=portfolio.accent_color,
+        font_family=portfolio.font_family,
+        layout_style=portfolio.layout_style,
+        visible_sections=portfolio.get_section_visibility(),
+        skills_list=portfolio.get_skills_list(),
+        experience_list=portfolio.get_experience_list(),
+        education_list=portfolio.get_education_list(),
+        certifications_list=portfolio.get_certifications_list(),
+    )

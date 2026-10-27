@@ -3,8 +3,9 @@ PortfolioAI - Portfolio Management Blueprint Routes
 Provides CRUD endpoints for user portfolios with strict ownership verification.
 """
 
-from flask import render_template, redirect, url_for, flash, abort, request, jsonify
+from flask import render_template, redirect, url_for, flash, abort, request, jsonify, send_file
 import json
+import re
 from flask_login import login_required, current_user
 from app.extensions import db
 from app.models import (
@@ -18,6 +19,8 @@ from app.models import (
 )
 from app.portfolio import portfolio_bp
 from app.portfolio.forms import PortfolioForm
+from app.portfolio.pdf_generator import PortfolioPDFGenerator, PDFGenerationError
+from app.portfolio.qr_service import PortfolioQRService, PortfolioUnpublishedError, QRCodeError
 
 
 def get_user_portfolio_or_404(portfolio_id: int) -> Portfolio:
@@ -325,3 +328,120 @@ def live_portfolio(portfolio_id: int):
         education_list=portfolio.get_education_list(),
         certifications_list=portfolio.get_certifications_list(),
     )
+
+
+@portfolio_bp.route("/<int:portfolio_id>/export/pdf", methods=["GET"])
+@login_required
+def export_pdf(portfolio_id: int):
+    """
+    Generate and stream downloadable portfolio PDF for owned portfolio.
+    Sets safe attachment filename and caching headers.
+    """
+    portfolio = get_user_portfolio_or_404(portfolio_id)
+
+    try:
+        pdf_buffer = PortfolioPDFGenerator.generate(portfolio)
+    except PDFGenerationError as e:
+        flash(f"Failed to generate portfolio PDF: {str(e)}", "danger")
+        return redirect(url_for("portfolio.preview", portfolio_id=portfolio.id))
+    except Exception as e:
+        flash("An unexpected error occurred while compiling your PDF. Please try again.", "danger")
+        return redirect(url_for("portfolio.preview", portfolio_id=portfolio.id))
+
+    safe_name = re.sub(r'[^a-zA-Z0-9_-]+', '_', portfolio.full_name or 'portfolio').strip('_')
+    if not safe_name:
+        safe_name = f"portfolio_{portfolio.id}"
+    filename = f"{safe_name}_portfolio.pdf"
+
+    response = send_file(
+        pdf_buffer,
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=filename,
+    )
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    return response
+
+
+@portfolio_bp.route("/<int:portfolio_id>/publish", methods=["POST"])
+@login_required
+def toggle_publish(portfolio_id: int):
+    """
+    Toggle or set portfolio publication status.
+    Ensures a public slug is generated when published.
+    """
+    portfolio = get_user_portfolio_or_404(portfolio_id)
+    data = request.get_json(silent=True) or request.form
+
+    if "publish" in data:
+        publish_val = str(data.get("publish")).lower() in ("true", "1", "yes")
+        portfolio.is_published = publish_val
+    else:
+        portfolio.is_published = not portfolio.is_published
+
+    if portfolio.is_published:
+        portfolio.ensure_slug()
+
+    try:
+        db.session.commit()
+        state_str = "published live" if portfolio.is_published else "set to private draft"
+        msg = f"Portfolio '{portfolio.title}' has been {state_str}!"
+
+        if request.is_json:
+            return jsonify({
+                "success": True,
+                "is_published": portfolio.is_published,
+                "slug": portfolio.slug,
+                "public_url": portfolio.get_public_url() if portfolio.is_published else None,
+                "message": msg,
+            }), 200
+
+        flash(msg, "success" if portfolio.is_published else "info")
+        return redirect(url_for("portfolio.preview", portfolio_id=portfolio.id))
+    except Exception as e:
+        db.session.rollback()
+        if request.is_json:
+            return jsonify({"success": False, "error": str(e)}), 500
+        flash("Failed to update publication status. Please try again.", "danger")
+        return redirect(url_for("portfolio.preview", portfolio_id=portfolio.id))
+
+
+@portfolio_bp.route("/<int:portfolio_id>/qr", methods=["GET"])
+@login_required
+def get_qr_code(portfolio_id: int):
+    """
+    Generate and stream high-resolution PNG QR code for a published portfolio.
+    Returns HTTP 400 if the portfolio is not published.
+    Supports ?download=1 to force attachment download.
+    """
+    portfolio = get_user_portfolio_or_404(portfolio_id)
+
+    if not portfolio.is_published:
+        if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
+            return jsonify({
+                "success": False,
+                "error": "Portfolio must be published before generating a public QR code."
+            }), 400
+        flash("Portfolio must be published before generating a public QR code.", "warning")
+        return redirect(url_for("portfolio.preview", portfolio_id=portfolio.id))
+
+    try:
+        qr_buffer = PortfolioQRService.generate_qr_png(portfolio)
+    except PortfolioUnpublishedError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except QRCodeError as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+    download_mode = str(request.args.get("download", "0")).lower() in ("1", "true", "yes")
+    safe_slug = portfolio.slug or f"portfolio_{portfolio.id}"
+    filename = f"{safe_slug}_qr.png"
+
+    response = send_file(
+        qr_buffer,
+        mimetype="image/png",
+        as_attachment=download_mode,
+        download_name=filename,
+    )
+    response.headers["Cache-Control"] = "public, max-age=300"
+    return response

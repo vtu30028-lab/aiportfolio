@@ -44,7 +44,13 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-column align-items-end gap-1">
-                                <span class="badge bg-primary bg-opacity-25 text-info small">Draft</span>
+                                {% if p.is_published %}
+                                    <span class="badge bg-success bg-opacity-25 text-success small border border-success border-opacity-25">
+                                        <i class="bi bi-globe me-1"></i>Live
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary bg-opacity-25 text-muted small">Draft</span>
+                                {% endif %}
                                 <span class="badge bg-dark text-muted small border border-secondary border-opacity-25">
                                     <i class="bi bi-code-slash me-1"></i>{{ p.projects|length }} projects
                                 </span>
@@ -85,6 +91,9 @@
                         <div class="d-flex justify-content-between align-items-center gap-2">
                             <a href="{{ url_for('portfolio.preview', portfolio_id=p.id) }}" class="btn btn-sm btn-secondary-glass flex-grow-1" title="Preview Portfolio">
                                 <i class="bi bi-eye me-1"></i> View
+                            </a>
+                            <a href="{{ url_for('portfolio.export_pdf', portfolio_id=p.id) }}" class="btn btn-sm btn-outline-danger border-opacity-50" title="Download ATS PDF">
+                                <i class="bi bi-file-earmark-pdf"></i>
                             </a>
                             <a href="{{ url_for('portfolio.theme_editor', portfolio_id=p.id) }}" class="btn btn-sm btn-outline-warning border-opacity-50" title="Theme Studio & Live Customizer">
                                 <i class="bi bi-palette-fill"></i>

@@ -70,6 +70,8 @@ def create_app(config_name=None):
                         ("experience", "TEXT"),
                         ("education", "TEXT"),
                         ("certifications", "TEXT"),
+                        ("is_published", "BOOLEAN DEFAULT 0"),
+                        ("slug", "VARCHAR(120)"),
                     ]
                     for col_name, col_def in new_cols:
                         if col_name not in existing_cols:

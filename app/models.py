@@ -128,6 +128,10 @@ class Portfolio(db.Model):
     education = db.Column(db.Text, nullable=True)       # JSON list of education dicts
     certifications = db.Column(db.Text, nullable=True)  # JSON list of certification dicts
 
+    # Phase 8: Public Publishing & URL Slug
+    is_published = db.Column(db.Boolean, default=False, nullable=False)
+    slug = db.Column(db.String(120), unique=True, index=True, nullable=True)
+
     created_at = db.Column(
         db.DateTime,
         default=lambda: datetime.now(timezone.utc),
@@ -214,6 +218,36 @@ class Portfolio(db.Model):
                 pass
         return merged
 
+    def ensure_slug(self) -> str:
+        """Generate and assign a unique URL slug based on full_name and id."""
+        if not self.slug:
+            import re
+            import uuid
+            base = re.sub(r'[^a-zA-Z0-9]+', '-', self.full_name.strip().lower()).strip('-')
+            if not base:
+                base = f"portfolio-{self.id or 'dev'}"
+            unique_suffix = uuid.uuid4().hex[:6]
+            self.slug = f"{base}-{unique_suffix}"
+        return self.slug
+
+    def get_public_url(self) -> str:
+        """Construct the public portfolio URL for QR code and sharing."""
+        from flask import current_app, request
+        base_url = ""
+        try:
+            base_url = current_app.config.get("PUBLIC_BASE_URL", "").rstrip("/")
+        except RuntimeError:
+            pass
+
+        if not base_url:
+            try:
+                base_url = request.host_url.rstrip("/")
+            except RuntimeError:
+                base_url = "http://localhost:5000"
+
+        slug = self.ensure_slug()
+        return f"{base_url}/p/{slug}"
+
     def to_dict(self) -> dict:
         """Serialize portfolio fields to a dictionary."""
         return {
@@ -238,6 +272,9 @@ class Portfolio(db.Model):
             "experience": self.get_experience_list(),
             "education": self.get_education_list(),
             "certifications": self.get_certifications_list(),
+            "is_published": self.is_published,
+            "slug": self.slug,
+            "public_url": self.get_public_url() if self.is_published else None,
             "projects_count": len(self.projects),
             "projects": [p.to_dict() for p in self.projects],
             "created_at": self.created_at.isoformat() if self.created_at else None,
