@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit Portfolio' if is_edit else 'Create Portfolio' }} — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}" class="text-muted text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('portfolio.index') }}" class="text-muted text-decoration-none">Portfolios</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">{{ 'Edit Portfolio' if is_edit else 'Create New Portfolio' }}</li>
+                </ol>
+            </nav>
+
+            <div class="glass-card p-4 p-md-5">
+                <!-- Form Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25 flex-wrap gap-2">
+                    <div>
+                        <div class="d-inline-flex align-items-center gap-2 badge-glow mb-2">
+                            <i class="bi bi-pencil-square text-primary"></i>
+                            <span>{{ 'Update Details' if is_edit else 'New Portfolio Entry' }}</span>
+                        </div>
+                        <h3 class="fw-bold text-white mb-0">
+                            {{ 'Edit: ' + portfolio.title if is_edit else 'Create New Portfolio' }}
+                        </h3>
+                    </div>
+                    <a href="{{ url_for('portfolio.index') }}" class="btn btn-sm btn-secondary-glass">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Portfolios
+                    </a>
+                </div>
+
+                <form method="POST" action="" novalidate id="portfolio-form">
+                    {{ form.hidden_tag() }}
+
+                    <!-- Section 1: Portfolio Identity -->
+                    <div class="mb-4">
+                        <h5 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                            <i class="bi bi-card-heading text-primary"></i> Portfolio Identity
+                        </h5>
+
+                        <div class="row g-3">
+                            <!-- Portfolio Title -->
+                            <div class="col-md-6">
+                                <label for="{{ form.title.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.title.label.text }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else ""), placeholder="e.g. Full-Stack AI Engineer Portfolio", required=True) }}
+                                {% for error in form.title.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <label for="{{ form.full_name.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.full_name.label.text }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.full_name(class="form-control" + (" is-invalid" if form.full_name.errors else ""), placeholder="Alex Rivera", required=True) }}
+                                {% for error in form.full_name.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Professional Headline -->
+                            <div class="col-12">
+                                <label for="{{ form.headline.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.headline.label.text }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.headline(class="form-control" + (" is-invalid" if form.headline.errors else ""), placeholder="e.g. Senior Full-Stack Engineer specializing in Distributed Systems & Generative AI", required=True) }}
+                                {% for error in form.headline.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- About Description -->
+                            <div class="col-12">
+                                <label for="{{ form.about.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.about.label.text }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.about(class="form-control" + (" is-invalid" if form.about.errors else ""), rows=5, placeholder="Share your background, technical passions, accomplishments, and career focus...", required=True) }}
+                                {% for error in form.about.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Contact Information -->
+                    <div class="mb-4 pt-3 border-top border-secondary border-opacity-25">
+                        <h5 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                            <i class="bi bi-envelope-at text-info"></i> Contact Details
+                        </h5>
+
+                        <div class="row g-3">
+                            <!-- Contact Email -->
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.email.label.text }} <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-envelope"></i></span>
+                                    {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="you@example.com", required=True) }}
+                                </div>
+                                {% for error in form.email.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-md-6">
+                                <label for="{{ form.phone.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.phone.label.text }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-telephone"></i></span>
+                                    {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else ""), placeholder="+1 (555) 019-2834") }}
+                                </div>
+                                {% for error in form.phone.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Location -->
+                            <div class="col-md-12">
+                                <label for="{{ form.location.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.location.label.text }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-geo-alt"></i></span>
+                                    {{ form.location(class="form-control" + (" is-invalid" if form.location.errors else ""), placeholder="San Francisco, CA, USA") }}
+                                </div>
+                                {% for error in form.location.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Social & Online Links -->
+                    <div class="mb-4 pt-3 border-top border-secondary border-opacity-25">
+                        <h5 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                            <i class="bi bi-link-45deg text-success"></i> Social & Online Presence
+                        </h5>
+
+                        <div class="row g-3">
+                            <!-- GitHub URL -->
+                            <div class="col-md-6">
+                                <label for="{{ form.github_url.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.github_url.label.text }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-github"></i></span>
+                                    {{ form.github_url(class="form-control" + (" is-invalid" if form.github_url.errors else ""), placeholder="https://github.com/yourusername") }}
+                                </div>
+                                {% for error in form.github_url.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- LinkedIn URL -->
+                            <div class="col-md-6">
+                                <label for="{{ form.linkedin_url.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.linkedin_url.label.text }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-linkedin"></i></span>
+                                    {{ form.linkedin_url(class="form-control" + (" is-invalid" if form.linkedin_url.errors else ""), placeholder="https://linkedin.com/in/yourusername") }}
+                                </div>
+                                {% for error in form.linkedin_url.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Profile Image URL -->
+                            <div class="col-12">
+                                <label for="{{ form.profile_image.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.profile_image.label.text }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-image"></i></span>
+                                    {{ form.profile_image(class="form-control" + (" is-invalid" if form.profile_image.errors else ""), placeholder="https://example.com/avatar.jpg") }}
+                                </div>
+                                {% for error in form.profile_image.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-end gap-3 pt-3 border-top border-secondary border-opacity-25">
+                        <a href="{{ url_for('portfolio.index') }}" class="btn btn-secondary-glass py-2 px-4">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary-gradient py-2 px-5 fw-bold" id="save-portfolio-btn">
+                            <i class="bi bi-check2-circle me-1"></i> {{ 'Update Portfolio' if is_edit else 'Create Portfolio' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

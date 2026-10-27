@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}{{ portfolio.title }} — Preview | {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Preview Controls Header -->
+    <div class="glass-card p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary bg-opacity-25 text-info px-3 py-2 small">
+                <i class="bi bi-eye-fill me-1"></i> Owner Preview Mode
+            </span>
+            <span class="text-muted small">Viewing: <strong class="text-white">{{ portfolio.title }}</strong></span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('portfolio.index') }}" class="btn btn-sm btn-secondary-glass">
+                <i class="bi bi-arrow-left me-1"></i> Back to Portfolios
+            </a>
+            <a href="{{ url_for('portfolio.edit', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-primary-gradient">
+                <i class="bi bi-pencil me-1"></i> Edit Portfolio
+            </a>
+        </div>
+    </div>
+
+    <!-- Portfolio Profile Presentation Frame -->
+    <div class="hero-preview-frame p-0 mb-4">
+        <!-- Mockup Browser Bar -->
+        <div class="browser-bar">
+            <span class="browser-dot dot-red"></span>
+            <span class="browser-dot dot-yellow"></span>
+            <span class="browser-dot dot-green"></span>
+            <div class="browser-address">
+                <i class="bi bi-lock-fill text-success me-1"></i>
+                portfolio-ai.dev/preview/{{ portfolio.id }}
+            </div>
+            <span class="badge bg-dark text-muted font-monospace small px-2 py-1">Theme: Modern Tech</span>
+        </div>
+
+        <div class="p-4 p-md-5">
+            <!-- Profile Hero Area -->
+            <div class="row align-items-center g-4 mb-5 pb-4 border-bottom border-secondary border-opacity-25">
+                <div class="col-auto">
+                    {% if portfolio.profile_image %}
+                        <img src="{{ portfolio.profile_image }}" alt="{{ portfolio.full_name }}" class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover; border: 2px solid var(--border-accent);">
+                    {% else %}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow font-monospace" style="width: 100px; height: 100px; font-size: 2.2rem; background: var(--gradient-primary); border: 2px solid var(--border-accent);">
+                            {{ portfolio.full_name[:2].upper() }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col">
+                    <h1 class="display-6 fw-bold text-white mb-1">{{ portfolio.full_name }}</h1>
+                    <p class="lead text-primary-emphasis mb-2 fw-semibold fs-5">{{ portfolio.headline }}</p>
+
+                    <!-- Contact details -->
+                    <div class="d-flex flex-wrap align-items-center gap-3 text-muted small">
+                        {% if portfolio.location %}
+                            <div class="d-flex align-items-center gap-1">
+                                <i class="bi bi-geo-alt text-danger"></i>
+                                <span>{{ portfolio.location }}</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="bi bi-envelope text-info"></i>
+                            <a href="mailto:{{ portfolio.email }}" class="text-muted text-decoration-none hover-white">{{ portfolio.email }}</a>
+                        </div>
+
+                        {% if portfolio.phone %}
+                            <div class="d-flex align-items-center gap-1">
+                                <i class="bi bi-telephone text-success"></i>
+                                <span>{{ portfolio.phone }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Social Connect Buttons -->
+                <div class="col-12 col-md-auto d-flex gap-2">
+                    {% if portfolio.github_url %}
+                        <a href="{{ portfolio.github_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-glass">
+                            <i class="bi bi-github me-1"></i> GitHub
+                        </a>
+                    {% endif %}
+                    {% if portfolio.linkedin_url %}
+                        <a href="{{ portfolio.linkedin_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-glass">
+                            <i class="bi bi-linkedin me-1 text-info"></i> LinkedIn
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="mb-5">
+                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-person-lines-fill text-primary"></i> About Me
+                </h4>
+                <div class="glass-card-static p-4">
+                    <p class="text-light mb-0 line-height-lg" style="white-space: pre-line;">{{ portfolio.about }}</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Projects & Skills Placeholder Notice for Future Phases -->
+            <div class="p-4 rounded-3 text-center" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.12);">
+                <i class="bi bi-diagram-3 fs-3 text-primary mb-2 d-block"></i>
+                <h6 class="text-white fw-bold mb-1">Projects & Verified Skills Integration</h6>
+                <p class="text-muted small mb-0">
+                    GitHub repository synchronizer, Gemini AI project bullet polish, and target skills gap analysis will automatically populate this section in upcoming phases.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metadata Footer Card -->
+    <div class="glass-card p-3 d-flex justify-content-between align-items-center text-muted small flex-wrap gap-2">
+        <span>Portfolio ID: <code class="text-light">#{{ portfolio.id }}</code></span>
+        <span>Created: {{ portfolio.created_at.strftime('%B %d, %Y at %H:%M UTC') }}</span>
+        <span>Last Updated: {{ portfolio.updated_at.strftime('%B %d, %Y at %H:%M UTC') }}</span>
+    </div>
+</div>
+{% endblock %}
