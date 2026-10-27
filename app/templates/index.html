@@ -1,0 +1,520 @@
+{% extends "base.html" %}
+
+{% block title %}PortfolioAI — Intelligent Developer Portfolio Generator{% endblock %}
+
+{% block content %}
+<!-- ==========================================
+     Hero Section with Interactive Preview
+     ========================================== -->
+<section class="py-5 position-relative overflow-hidden">
+    <div class="container py-lg-4">
+        <div class="row align-items-center g-5">
+            <!-- Hero Left: Pitch & CTAs -->
+            <div class="col-lg-6">
+                <div class="d-inline-flex align-items-center gap-2 badge-glow mb-3">
+                    <i class="bi bi-stars text-warning"></i>
+                    <span>Next-Gen AI Portfolio Builder & Career Engine</span>
+                </div>
+
+                <h1 class="display-4 fw-extrabold mb-3 line-height-tight">
+                    Showcase Your Tech Brilliance with
+                    <span class="gradient-accent">Generative AI</span>
+                </h1>
+
+                <p class="lead text-muted mb-4 fs-6">
+                    Effortlessly convert your PDF resume and GitHub repositories into a sleek, responsive, recruiter-ready portfolio. Analyze skill gaps against target job descriptions and export to PDF and dynamic QR codes in minutes.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary-gradient px-4 py-3 fs-6">
+                        <i class="bi bi-lightning-charge-fill"></i> Build Your Portfolio Free
+                    </a>
+                    <a href="#themes" class="btn btn-secondary-glass px-4 py-3 fs-6">
+                        <i class="bi bi-palette2"></i> Explore Themes
+                    </a>
+                </div>
+
+                <div class="d-flex align-items-center gap-4 text-muted small pt-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-check text-success fs-5"></i>
+                        <span>Zero Data Invented</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-file-earmark-pdf text-danger fs-5"></i>
+                        <span>PDF & QR Ready</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-github text-light fs-5"></i>
+                        <span>GitHub Synced</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Right: Interactive Browser Mockup with Floating Badges -->
+            <div class="col-lg-6 position-relative">
+                <!-- Floating Badge Top Left -->
+                <div class="floating-badge floating-badge-top">
+                    <div class="brand-icon-box" style="width: 32px; height: 32px; background: #10b981;">
+                        <i class="bi bi-check2-circle text-white"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-white small">ATS & Job Match</div>
+                        <div class="text-success small fw-semibold">94.8% Compatibility</div>
+                    </div>
+                </div>
+
+                <!-- Floating Badge Bottom Right -->
+                <div class="floating-badge floating-badge-bottom">
+                    <div class="brand-icon-box" style="width: 32px; height: 32px; background: #ec4899;">
+                        <i class="bi bi-qr-code text-white"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-white small">Live Public URL</div>
+                        <div class="text-muted small">QR Code & PDF Synced</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Browser Window Frame -->
+                <div class="hero-preview-frame">
+                    <div class="browser-bar">
+                        <span class="browser-dot dot-red"></span>
+                        <span class="browser-dot dot-yellow"></span>
+                        <span class="browser-dot dot-green"></span>
+                        <div class="browser-address">
+                            <i class="bi bi-lock-fill text-success me-1"></i>
+                            portfolio-ai.dev/<span id="preview-slug">alex-rivera</span>
+                        </div>
+                        <span class="badge bg-dark text-muted font-monospace small px-2 py-1" id="preview-theme-label">theme: modern-tech</span>
+                    </div>
+
+                    <div class="p-4 p-md-5" id="hero-theme-display">
+                        <!-- Theme Toggle Bar -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                            <span class="small text-muted fw-semibold text-uppercase tracking-wider">Preview Mode</span>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-primary-gradient active px-3" data-preview-theme="modern">Modern</button>
+                                <button type="button" class="btn btn-secondary-glass px-3" data-preview-theme="minimal">Minimal</button>
+                                <button type="button" class="btn btn-secondary-glass px-3" data-preview-theme="creative">Creative</button>
+                            </div>
+                        </div>
+
+                        <!-- Profile Header Mockup -->
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div id="preview-avatar-box" class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-4 shadow" style="width: 64px; height: 64px; background: linear-gradient(135deg, #6366f1, #a855f7); flex-shrink: 0;">
+                                AR
+                            </div>
+                            <div>
+                                <h4 class="mb-1 text-white fw-bold" id="preview-user-name">Alex Rivera</h4>
+                                <p class="text-primary-emphasis mb-0 small fw-semibold" id="preview-user-title">Senior Full-Stack & Generative AI Engineer</p>
+                                <div class="text-muted small mt-1">
+                                    <i class="bi bi-geo-alt me-1"></i> San Francisco, CA &bull;
+                                    <i class="bi bi-envelope me-1"></i> alex.dev@example.com
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Generated Bio Mockup -->
+                        <div class="glass-card-static p-3 mb-4">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge bg-primary bg-opacity-25 text-info small"><i class="bi bi-magic me-1"></i> Gemini Enhanced Bio</span>
+                                <span class="text-muted small font-monospace">Verified Clean</span>
+                            </div>
+                            <p class="text-light small mb-0 line-height-base" id="preview-user-bio">
+                                Architecting cloud-native distributed microservices and LLM-powered applications. Passionate about scalable AI workflows, resilient APIs, and intuitive user experiences.
+                            </p>
+                        </div>
+
+                        <!-- Tech Stack Badges Mockup -->
+                        <div class="mb-4">
+                            <div class="small text-muted fw-semibold mb-2">Verified Skill Stack</div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge-tag text-light"><i class="bi bi-check-circle-fill text-success me-1"></i> Python / Flask</span>
+                                <span class="badge-tag text-light"><i class="bi bi-check-circle-fill text-success me-1"></i> Google Gemini SDK</span>
+                                <span class="badge-tag text-light"><i class="bi bi-check-circle-fill text-success me-1"></i> PostgreSQL</span>
+                                <span class="badge-tag text-light"><i class="bi bi-check-circle-fill text-success me-1"></i> Docker & CI/CD</span>
+                                <span class="badge-tag text-light"><i class="bi bi-check-circle-fill text-success me-1"></i> React & JavaScript</span>
+                            </div>
+                        </div>
+
+                        <!-- Featured Project Snippet Mockup -->
+                        <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.12);">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <h6 class="text-white mb-0 small fw-bold"><i class="bi bi-github me-1 text-light"></i> CloudOps-Autonomous-Agent</h6>
+                                <span class="badge bg-success bg-opacity-25 text-success small">Public Repo</span>
+                            </div>
+                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">
+                                Automated multi-cloud cost optimization agent utilizing LLMs to audit Kubernetes workload allocations.
+                            </p>
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-dark text-muted font-monospace" style="font-size: 0.7rem;">Python</span>
+                                <span class="badge bg-dark text-muted font-monospace" style="font-size: 0.7rem;">FastAPI</span>
+                                <span class="badge bg-dark text-muted font-monospace" style="font-size: 0.7rem;">Stars: 142</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     Key Statistics Section
+     ========================================== -->
+<section class="py-4 border-top border-bottom border-secondary border-opacity-10" style="background: rgba(10, 14, 23, 0.5);">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3">
+                <div class="h2 fw-bold text-white mb-1 font-monospace">{{ stats.portfolios_generated }}</div>
+                <div class="text-muted small text-uppercase fw-semibold tracking-wider">Portfolios Generated</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="h2 fw-bold text-primary mb-1 font-monospace">{{ stats.match_rate }}</div>
+                <div class="text-muted small text-uppercase fw-semibold tracking-wider">Skill Gap Precision</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="h2 fw-bold text-white mb-1 font-monospace">{{ stats.avg_creation_time }}</div>
+                <div class="text-muted small text-uppercase fw-semibold tracking-wider">Avg Build Duration</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="h2 fw-bold text-info mb-1 font-monospace">{{ stats.active_themes }} Curated</div>
+                <div class="text-muted small text-uppercase fw-semibold tracking-wider">Responsive Themes</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     Core Features Section
+     ========================================== -->
+<section id="features" class="py-5 my-4">
+    <div class="container py-lg-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge-glow mb-2">Engineered for CSE College Capstone & Job Seekers</span>
+            <h2 class="display-6 fw-bold mb-3 gradient-title">Everything You Need to Stand Out</h2>
+            <p class="text-muted">
+                PortfolioAI eliminates the guesswork. Our generative AI and parsing algorithms turn raw resumes and GitHub code into verified, recruiter-facing digital portfolios.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Feature 1: AI Resume Parser -->
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-file-earmark-person-fill"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">AI Resume PDF Parser</h5>
+                    <p class="text-muted small flex-grow-1">
+                        Upload any standard PDF resume. Powered by <code>pypdf</code> text extraction and Gemini structured reasoning to extract education, experience, skills, and certifications into validated fields.
+                    </p>
+                    <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                        <span class="badge-tag"><i class="bi bi-check-lg text-success me-1"></i> Human-in-the-loop review</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 2: Generative AI Writer -->
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); color: #c084fc;">
+                        <i class="bi bi-cpu-fill"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Generative AI Content Writer</h5>
+                    <p class="text-muted small flex-grow-1">
+                        Generate professional headlines, career biographies, and high-impact project STAR-method descriptions strictly grounded in your provided facts—guaranteed hallucination-free.
+                    </p>
+                    <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                        <span class="badge-tag"><i class="bi bi-check-lg text-success me-1"></i> Role-tailored styling</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 3: Skills Gap Analyzer -->
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.3); color: #67e8f9;">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Target Job Skill Gap Analyzer</h5>
+                    <p class="text-muted small flex-grow-1">
+                        Paste any target job description. The engine computes an objective skill match percentage, identifies missing competencies, and prioritizes learning and portfolio project recommendations.
+                    </p>
+                    <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                        <span class="badge-tag"><i class="bi bi-check-lg text-success me-1"></i> Transparent match score</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 4: GitHub Importer -->
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #fcd34d;">
+                        <i class="bi bi-github"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">GitHub Project Importer</h5>
+                    <p class="text-muted small flex-grow-1">
+                        Connect with your GitHub username to automatically fetch public repositories, star counts, primary languages, and descriptions with one click. Select exactly which projects to feature.
+                    </p>
+                    <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                        <span class="badge-tag"><i class="bi bi-check-lg text-success me-1"></i> Token-safe integration</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 5: Theme Studio -->
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box" style="background: rgba(236, 72, 153, 0.15); border-color: rgba(236, 72, 153, 0.3); color: #f472b6;">
+                        <i class="bi bi-palette-fill"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Modern Theme Studio</h5>
+                    <p class="text-muted small flex-grow-1">
+                        Choose between Modern Tech (dark navy), Clean Minimalist (monochrome elegance), and Creative Studio (glassmorphism & vibrant gradients). Live preview updates immediately as you edit.
+                    </p>
+                    <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                        <span class="badge-tag"><i class="bi bi-check-lg text-success me-1"></i> Fully responsive CSS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 6: PDF & QR Export -->
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #6ee7b7;">
+                        <i class="bi bi-qr-code-scan"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Publishing, PDF & QR Codes</h5>
+                    <p class="text-muted small flex-grow-1">
+                        Publish with your own unique vanity URL slug (e.g., <code>/p/your-name</code>). Download an ATS-formatted 1-page PDF summary powered by ReportLab and a dynamic QR code for print resumes.
+                    </p>
+                    <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                        <span class="badge-tag"><i class="bi bi-check-lg text-success me-1"></i> Instant publish/unpublish</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     How It Works Workflow Section
+     ========================================== -->
+<section id="workflow" class="py-5 position-relative">
+    <div class="container py-lg-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge-glow mb-2">Simple 4-Step Pipeline</span>
+            <h2 class="display-6 fw-bold mb-3 gradient-title">How PortfolioAI Transforms Your Profile</h2>
+            <p class="text-muted">From raw PDF resume or GitHub handle to published portfolio in under three minutes.</p>
+        </div>
+
+        <div class="row g-4 position-relative">
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 text-center text-lg-start">
+                    <div class="step-number mx-auto mx-lg-0">1</div>
+                    <h5 class="text-white fw-bold mb-2">Upload or Input</h5>
+                    <p class="text-muted small mb-0">
+                        Upload your PDF resume or enter your details manually. Sync public repositories via your GitHub username.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 text-center text-lg-start">
+                    <div class="step-number mx-auto mx-lg-0">2</div>
+                    <h5 class="text-white fw-bold mb-2">AI Extraction & Edit</h5>
+                    <p class="text-muted small mb-0">
+                        Our Gemini AI pipeline parses skills, projects, and credentials into structured fields. Review and edit before saving.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 text-center text-lg-start">
+                    <div class="step-number mx-auto mx-lg-0">3</div>
+                    <h5 class="text-white fw-bold mb-2">Select Theme & Polish</h5>
+                    <p class="text-muted small mb-0">
+                        Pick a theme (Modern, Minimal, or Creative) and customize your layout with live interactive real-time preview.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 text-center text-lg-start">
+                    <div class="step-number mx-auto mx-lg-0">4</div>
+                    <h5 class="text-white fw-bold mb-2">Publish & Export</h5>
+                    <p class="text-muted small mb-0">
+                        Get your live public URL, download an ATS-compliant PDF summary, and generate high-res QR codes for business cards.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     Themes Showcase Section
+     ========================================== -->
+<section id="themes" class="py-5 my-4">
+    <div class="container py-lg-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge-glow mb-2">Recruiter-Optimized Design Systems</span>
+            <h2 class="display-6 fw-bold mb-3 gradient-title">Three Tailored Design Themes</h2>
+            <p class="text-muted">
+                Each theme is responsive across mobile, tablet, and widescreen desktop monitors, strictly adhering to high contrast and modern UI principles.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            {% for theme in themes %}
+            <div class="col-lg-4">
+                <div class="glass-card p-4 h-100 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-white fw-bold mb-0">{{ theme.name }}</h4>
+                        <span class="badge bg-primary bg-opacity-25 text-primary small px-2 py-1">{{ theme.badge }}</span>
+                    </div>
+
+                    <p class="text-muted small mb-4 flex-grow-1">{{ theme.description }}</p>
+
+                    <!-- Mini Theme Visual Placeholder -->
+                    <div class="rounded-3 p-3 mb-4" style="background: rgba(0, 0, 0, 0.4); border: 1px solid {{ theme.accent }}33;">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div style="width: 12px; height: 12px; border-radius: 50%; background: {{ theme.accent }};"></div>
+                            <span class="text-light small font-monospace">Accent: {{ theme.accent }}</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for tag in theme.tags %}
+                                <span class="badge bg-secondary bg-opacity-25 text-light small" style="font-size: 0.7rem;">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary-glass w-100 justify-content-center">
+                        Select This Theme <i class="bi bi-chevron-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     Technical Architecture / Capstone Highlights
+     ========================================== -->
+<section id="tech-stack" class="py-5 border-top border-secondary border-opacity-10" style="background: rgba(10, 14, 23, 0.6);">
+    <div class="container py-lg-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5">
+                <span class="badge-glow mb-2">Advanced Software Engineering</span>
+                <h3 class="display-6 fw-bold text-white mb-3">Engineered for Reliability, Security & Speed</h3>
+                <p class="text-muted small mb-4">
+                    Designed as a production-grade CSE college project following modular architecture, secure session handling, CSRF protections, rate limiting, and standard relational database normalization.
+                </p>
+
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1rem; flex-shrink: 0;">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-white mb-1">Defense-in-Depth Security</h6>
+                            <p class="text-muted small mb-0">CSRF validation, Werkzeug scrypt password hashing, session cookies with HttpOnly & SameSite flags, and input validation.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1rem; flex-shrink: 0; background: linear-gradient(135deg, #0ea5e9, #38bdf8);">
+                            <i class="bi bi-database-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-white mb-1">Dual-Database Architecture</h6>
+                            <p class="text-muted small mb-0">SQLite for lightning-fast zero-configuration local development; seamless PostgreSQL switchover for cloud production deployments.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1rem; flex-shrink: 0; background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="bi bi-speedometer"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-white mb-1">Rate Limiting & Safety Limits</h6>
+                            <p class="text-muted small mb-0">Flask-Limiter protects AI endpoints against abuse while 10MB payload size limits guarantee server stability.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="glass-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                        <h6 class="text-white fw-bold mb-0"><i class="bi bi-diagram-3-fill text-primary me-2"></i>System Architecture Overview</h6>
+                        <span class="badge bg-success bg-opacity-25 text-success small">v1.0 Modular Blueprints</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-dark table-borderless small mb-0">
+                            <thead>
+                                <tr class="text-muted border-bottom border-secondary border-opacity-25">
+                                    <th>Subsystem</th>
+                                    <th>Technology</th>
+                                    <th>Role & Responsibilities</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fw-semibold text-white">Backend Engine</td>
+                                    <td><span class="badge bg-secondary bg-opacity-50">Python 3.13 / Flask 3.1</span></td>
+                                    <td class="text-muted">Application factory, REST routing, Blueprints</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold text-white">Generative AI</td>
+                                    <td><span class="badge bg-primary bg-opacity-50">Google Gen AI SDK</span></td>
+                                    <td class="text-muted">Bio generation, STAR project bullets, skills gap</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold text-white">Resume Parsing</td>
+                                    <td><span class="badge bg-info bg-opacity-50">pypdf + AI extraction</span></td>
+                                    <td class="text-muted">Document text extraction & structured normalization</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold text-white">Data Layer</td>
+                                    <td><span class="badge bg-success bg-opacity-50">SQLAlchemy ORM</span></td>
+                                    <td class="text-muted">Relational schema: Users, Portfolios, Projects, Skills</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold text-white">Export Engine</td>
+                                    <td><span class="badge bg-warning bg-opacity-50 text-dark">ReportLab & QRcode</span></td>
+                                    <td class="text-muted">Dynamic vector PDF generation & vanity QR codes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     Call to Action Banner
+     ========================================== -->
+<section class="py-5 my-5">
+    <div class="container">
+        <div class="glass-card p-5 text-center position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);">
+            <h2 class="display-5 fw-bold text-white mb-3">Ready to Elevate Your Developer Career?</h2>
+            <p class="lead text-muted max-w-700 mx-auto mb-4 fs-6">
+                Generate an ATS-friendly, AI-polished portfolio in minutes. Complete with live previews, skill gap analysis, and one-click publishing.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary-gradient px-4 py-3 fs-6">
+                    <i class="bi bi-rocket-takeoff-fill"></i> Get Started Free
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-secondary-glass px-4 py-3 fs-6">
+                    <i class="bi bi-box-arrow-in-right"></i> Sign In to Account
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

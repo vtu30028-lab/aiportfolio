@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}429 — Rate Limit Exceeded | {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-5 text-center">
+    <div class="glass-card max-w-600 mx-auto p-5">
+        <div class="display-1 fw-bold text-warning font-monospace mb-2">429</div>
+        <h2 class="text-white fw-bold mb-3">Rate Limit Reached</h2>
+        <p class="text-muted mb-4">
+            {{ error or "You have sent too many requests in a short period. Please wait a moment before trying again." }}
+        </p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary-gradient px-4 py-2">
+            <i class="bi bi-house-door-fill me-1"></i> Return to Homepage
+        </a>
+    </div>
+</div>
+{% endblock %}

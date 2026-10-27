@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="glass-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <div class="brand-icon-box mx-auto mb-3" style="width: 48px; height: 48px; font-size: 1.3rem;">
+                        <i class="bi bi-person-lock"></i>
+                    </div>
+                    <h3 class="fw-bold text-white mb-1">Welcome Back</h3>
+                    <p class="text-muted small">Sign in to manage and edit your AI portfolios</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token is defined else '' }}">
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label text-light small fw-semibold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="you@university.edu" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between">
+                            <label for="password" class="form-label text-light small fw-semibold">Password</label>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-key"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-gradient w-100 py-3 justify-content-center mb-3">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In to PortfolioAI
+                    </button>
+
+                    <div class="text-center text-muted small">
+                        Don't have an account yet? <a href="{{ url_for('auth.register') }}" class="text-primary text-decoration-none fw-semibold">Create an account</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

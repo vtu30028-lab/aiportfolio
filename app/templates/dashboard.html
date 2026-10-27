@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <span class="badge-glow mb-2">Workspace Overview</span>
+            <h2 class="text-white fw-bold mb-0">Welcome, {{ current_user.name if current_user.is_authenticated else 'Developer' }}</h2>
+            <p class="text-muted small">Manage your AI portfolios, resume parsing pipelines, and skills gap analysis.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="#" class="btn btn-secondary-glass">
+                <i class="bi bi-file-earmark-arrow-up"></i> Upload Resume
+            </a>
+            <a href="#" class="btn btn-primary-gradient">
+                <i class="bi bi-plus-lg"></i> Create New Portfolio
+            </a>
+        </div>
+    </div>
+
+    <!-- Overview Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Saved Portfolios</span>
+                    <i class="bi bi-collection text-primary fs-5"></i>
+                </div>
+                <h3 class="text-white fw-bold mb-0">1</h3>
+                <small class="text-success"><i class="bi bi-check-circle me-1"></i>1 Published live</small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Portfolio Completeness</span>
+                    <i class="bi bi-pie-chart text-info fs-5"></i>
+                </div>
+                <h3 class="text-white fw-bold mb-0">85%</h3>
+                <small class="text-muted">Add GitHub projects to reach 100%</small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Skill Gap Score</span>
+                    <i class="bi bi-bullseye text-warning fs-5"></i>
+                </div>
+                <h3 class="text-white fw-bold mb-0">94.8%</h3>
+                <small class="text-primary-emphasis">Target: Senior Full-Stack Engineer</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
