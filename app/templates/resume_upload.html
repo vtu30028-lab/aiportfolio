@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}AI Resume Parser — {{ app_name }}{% endblock %}
+
+{% block extra_head %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 pb-3 border-bottom border-secondary border-opacity-25">
+        <div>
+            <div class="d-inline-flex align-items-center gap-2 badge-glow mb-2">
+                <i class="bi bi-file-earmark-pdf-fill text-danger"></i>
+                <span>PDF Text Extraction & Gemini Structuring</span>
+            </div>
+            <h2 class="text-white fw-bold mb-1">AI Resume Parser</h2>
+            <p class="text-muted small mb-0">
+                Upload your PDF resume to automatically extract contact info, skills, education, and projects into structured portfolio fields.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('portfolio.index') }}" class="btn btn-secondary-glass py-2 px-3">
+                <i class="bi bi-collection me-1"></i> My Portfolios
+            </a>
+            <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary-glass py-2 px-3">
+                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Banner Container for Client-Side JS Notifications -->
+    <div id="resume-alert-box" class="d-none alert alert-custom alert-dismissible fade show mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-info-circle-fill me-2 fs-5" id="resume-alert-icon"></i>
+            <div id="resume-alert-message"></div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" onclick="document.getElementById('resume-alert-box').classList.add('d-none')"></button>
+    </div>
+
+    <!-- Step 1: Upload Card -->
+    <div class="glass-card p-4 p-md-5 mb-5" id="upload-card">
+        <div class="text-center max-w-600 mx-auto mb-4">
+            <div class="brand-icon-box mx-auto mb-3" style="width: 56px; height: 56px; font-size: 1.6rem; background: linear-gradient(135deg, #ef4444, #f97316);">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+            </div>
+            <h4 class="text-white fw-bold mb-1">Select or Drop Your PDF Resume</h4>
+            <p class="text-muted small">
+                Supports standard text-based PDF documents up to 5MB. Scanned images require a text layer for parsing.
+            </p>
+        </div>
+
+        <!-- Drag & Drop Zone -->
+        <div id="drop-zone" class="p-5 text-center rounded-3 mb-4" style="border: 2px dashed var(--border-accent); background: rgba(255, 255, 255, 0.02); cursor: pointer; transition: all 0.25s ease;">
+            <i class="bi bi-cloud-arrow-up text-primary fs-1 mb-2 d-block"></i>
+            <p class="text-light fw-semibold mb-1" id="file-chosen-text">Drag and drop your PDF here, or <span class="text-primary text-decoration-underline">browse file</span></p>
+            <p class="text-muted small mb-0">PDF only (Max 5MB)</p>
+            <input type="file" id="resume-file-input" accept="application/pdf,.pdf" class="d-none">
+        </div>
+
+        <!-- File Details & Parse Button -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div id="selected-file-badge" class="d-none align-items-center gap-2">
+                <span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2 small">
+                    <i class="bi bi-filetype-pdf me-1"></i> <span id="selected-filename">resume.pdf</span> (<span id="selected-filesize">0 KB</span>)
+                </span>
+            </div>
+
+            <button type="button" class="btn btn-primary-gradient px-4 py-3 fw-bold ms-auto" id="btn-parse-resume" onclick="handleParseResume()" disabled>
+                <i class="bi bi-cpu-fill me-1"></i> Parse Resume with AI
+            </button>
+        </div>
+
+        <!-- Animated Progress / Status Indicator -->
+        <div id="parsing-progress-box" class="d-none mt-4 pt-3 border-top border-secondary border-opacity-25 text-center">
+            <div class="spinner-border text-primary mb-2" role="status">
+                <span class="visually-hidden">Parsing...</span>
+            </div>
+            <h6 class="text-white fw-semibold mb-1" id="parsing-status-heading">Extracting PDF text layer via pypdf...</h6>
+            <p class="text-muted small mb-0" id="parsing-status-subtext">Structuring skills, experience, and education with Gemini AI...</p>
+        </div>
+    </div>
+
+    <!-- Step 2: Human-in-the-Loop Review & Import Card (Hidden initially) -->
+    <div class="glass-card p-4 p-md-5 d-none" id="review-card">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25 flex-wrap gap-2">
+            <div>
+                <span class="badge bg-success bg-opacity-25 text-success small mb-1">
+                    <i class="bi bi-check-circle-fill me-1"></i> Parsing Complete
+                </span>
+                <h4 class="text-white fw-bold mb-0">Review & Edit Extracted Data</h4>
+                <p class="text-muted small mb-0">Carefully inspect and adjust the details before importing into your portfolio.</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-secondary-glass" onclick="resetParser()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Upload Another File
+            </button>
+        </div>
+
+        <form id="approved-data-form" onsubmit="handleImportPortfolio(event)">
+            <!-- Personal Contact Info -->
+            <div class="mb-4">
+                <h5 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-person-bounding-box text-primary"></i> Personal & Contact Information
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-light small fw-semibold">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="review-full-name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-light small fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="review-email" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-light small fw-semibold">Phone Number</label>
+                        <input type="text" class="form-control" id="review-phone" placeholder="Optional">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-light small fw-semibold">Location / City</label>
+                        <input type="text" class="form-control" id="review-location" placeholder="e.g. San Francisco, CA">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-light small fw-semibold">Professional Headline <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="review-headline" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-light small fw-semibold">Professional Summary / About Me <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="review-about" rows="4" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="mb-4 pt-3 border-top border-secondary border-opacity-25">
+                <h5 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-link-45deg text-success"></i> Online Profiles
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-light small fw-semibold">GitHub URL</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-github"></i></span>
+                            <input type="url" class="form-control" id="review-github" placeholder="https://github.com/username">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-light small fw-semibold">LinkedIn URL</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted"><i class="bi bi-linkedin"></i></span>
+                            <input type="url" class="form-control" id="review-linkedin" placeholder="https://linkedin.com/in/username">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Extracted Skills -->
+            <div class="mb-4 pt-3 border-top border-secondary border-opacity-25">
+                <h5 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-check2-circle text-info"></i> Extracted Skills
+                </h5>
+                <div id="skills-badges-container" class="d-flex flex-wrap gap-2 mb-3"></div>
+                <label class="form-label text-muted small">Edit Technical Skills (comma-separated):</label>
+                <textarea class="form-control" id="review-skills-raw" rows="2"></textarea>
+            </div>
+
+            <!-- Extracted Education, Projects, Experience Overview -->
+            <div class="row g-3 mb-4 pt-3 border-top border-secondary border-opacity-25">
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-glass);">
+                        <h6 class="text-white fw-bold mb-1"><i class="bi bi-mortarboard me-1 text-primary"></i> Education</h6>
+                        <ul class="list-unstyled text-muted small mb-0" id="education-list-preview">
+                            <li class="small">No education entries found.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-glass);">
+                        <h6 class="text-white fw-bold mb-1"><i class="bi bi-code-slash me-1 text-warning"></i> Projects</h6>
+                        <ul class="list-unstyled text-muted small mb-0" id="projects-list-preview">
+                            <li class="small">No project entries found.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-glass);">
+                        <h6 class="text-white fw-bold mb-1"><i class="bi bi-briefcase me-1 text-success"></i> Experience</h6>
+                        <ul class="list-unstyled text-muted small mb-0" id="experience-list-preview">
+                            <li class="small">No experience entries found.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Destination Portfolio Selection -->
+            <div class="p-4 rounded-3 mb-4" style="background: rgba(99, 102, 241, 0.08); border: 1px solid var(--border-accent);">
+                <h5 class="text-white fw-bold mb-3"><i class="bi bi-box-arrow-in-down me-2 text-primary"></i>Choose Portfolio Destination</h5>
+
+                <div class="mb-3">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="destination-choice" id="dest-create-new" value="new" checked onchange="toggleDestinationChoice()">
+                        <label class="form-check-label text-white fw-semibold" for="dest-create-new">
+                            Create a Brand New Portfolio with these details
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="destination-choice" id="dest-update-existing" value="existing" onchange="toggleDestinationChoice()" {{ 'disabled' if not portfolios else '' }}>
+                        <label class="form-check-label text-white fw-semibold" for="dest-update-existing">
+                            Import into an Existing Portfolio
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Input for new portfolio title -->
+                <div id="new-portfolio-title-group" class="mb-3">
+                    <label class="form-label text-light small fw-semibold">New Portfolio Title</label>
+                    <input type="text" class="form-control" id="new-portfolio-title" placeholder="e.g. AI & Cloud Engineer Portfolio">
+                </div>
+
+                <!-- Selector for existing portfolio -->
+                <div id="existing-portfolio-group" class="d-none mb-3">
+                    <label class="form-label text-light small fw-semibold">Select Target Portfolio</label>
+                    <select class="form-select" id="existing-portfolio-select">
+                        {% for p in portfolios %}
+                            <option value="{{ p.id }}">{{ p.title }} (#{{ p.id }}) - Last updated: {{ p.updated_at.strftime('%b %d') }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="confirm-overwrite-check">
+                        <label class="form-check-label text-warning small" for="confirm-overwrite-check">
+                            I understand and confirm that this will update the contact details, headline, and bio of the selected portfolio.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Action Button -->
+            <div class="d-flex justify-content-end gap-3">
+                <button type="button" class="btn btn-secondary-glass py-2 px-4" onclick="resetParser()">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary-gradient py-2 px-5 fw-bold" id="btn-submit-import">
+                    <i class="bi bi-check-circle-fill me-1"></i> Save to Portfolio
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/resume_parser.js') }}"></script>
+{% endblock %}

@@ -39,12 +39,14 @@ def create_app(config_name=None):
     from app.dashboard import dashboard_bp
     from app.portfolio import portfolio_bp
     from app.ai import ai_bp
+    from app.resume import resume_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(portfolio_bp)
     app.register_blueprint(ai_bp)
+    app.register_blueprint(resume_bp)
 
     # Create tables automatically in development or testing if using SQLite
     with app.app_context():
@@ -70,7 +72,7 @@ def create_app(config_name=None):
     def handle_payload_too_large(error):
         return render_template(
             "errors/413.html",
-            error="File size exceeds the 10MB limit. Please upload a smaller file.",
+            error="File size exceeds the allowable limit. Please upload a PDF under 5MB.",
         ), 413
 
     @app.errorhandler(429)
