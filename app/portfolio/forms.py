@@ -101,4 +101,32 @@ class PortfolioForm(FlaskForm):
             validate_web_url,
         ],
     )
+    skills = TextAreaField(
+        "Technical & Professional Skills",
+        validators=[
+            Optional(),
+            Length(max=5000, message="Skills cannot exceed 5000 characters."),
+        ],
+    )
+    experience = TextAreaField(
+        "Work Experience & Internships",
+        validators=[
+            Optional(),
+            Length(max=10000, message="Experience cannot exceed 10,000 characters."),
+        ],
+    )
+    education = TextAreaField(
+        "Education & Academic Background",
+        validators=[
+            Optional(),
+            Length(max=10000, message="Education cannot exceed 10,000 characters."),
+        ],
+    )
+    certifications = TextAreaField(
+        "Licenses & Certifications",
+        validators=[
+            Optional(),
+            Length(max=5000, message="Certifications cannot exceed 5000 characters."),
+        ],
+    )
     submit = SubmitField("Save Portfolio")

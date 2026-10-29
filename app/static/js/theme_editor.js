@@ -79,6 +79,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Update browser bar label
         if (themeLabel) themeLabel.textContent = config.theme;
+
+        // Apply section visibility
+        if (config.visible_sections) {
+            Object.keys(config.visible_sections).forEach(sec => {
+                const el = preview.querySelector(`[data-section="${sec}"]`);
+                if (el) el.style.display = config.visible_sections[sec] ? "" : "none";
+            });
+        }
     }
 
     /* ── CSRF ── */

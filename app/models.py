@@ -173,45 +173,88 @@ class Portfolio(db.Model):
         """Parse comma-separated or JSON skills into a clean list of strings."""
         if not self.skills:
             return []
-        raw = self.skills.strip()
-        if raw.startswith("["):
+        raw = self.skills
+        if isinstance(raw, list):
+            return [str(s).strip() for s in raw if str(s).strip()]
+        raw_str = str(raw).strip()
+        if raw_str.startswith("["):
             try:
-                parsed = json.loads(raw)
+                parsed = json.loads(raw_str)
                 if isinstance(parsed, list):
                     return [str(s).strip() for s in parsed if str(s).strip()]
             except Exception:
                 pass
-        return [s.strip() for s in raw.split(",") if s.strip()]
+        raw_clean = raw_str.replace("\r", "").replace("\n", ",").replace(";", ",")
+        return [s.strip() for s in raw_clean.split(",") if s.strip()]
 
     def get_experience_list(self) -> list:
-        """Parse JSON experience records into a list of dictionaries."""
+        """Parse JSON experience records or plain text into a list of dictionaries."""
         if not self.experience:
             return []
+        if isinstance(self.experience, list):
+            return self.experience
         try:
             parsed = json.loads(self.experience)
-            return parsed if isinstance(parsed, list) else []
+            if isinstance(parsed, list):
+                return parsed
         except Exception:
-            return []
+            pass
+        items = []
+        raw = str(self.experience).replace("\r", "").strip()
+        blocks = [b.strip() for b in raw.split("\n\n") if b.strip()]
+        if not blocks:
+            blocks = [b.strip() for b in raw.split("\n") if b.strip()]
+        for block in blocks:
+            lines_b = [l.strip() for l in block.split("\n") if l.strip()]
+            if lines_b:
+                items.append({
+                    "role": lines_b[0],
+                    "company": lines_b[1] if len(lines_b) > 1 else "",
+                    "description": "\n".join(lines_b[2:]) if len(lines_b) > 2 else ""
+                })
+        return items
 
     def get_education_list(self) -> list:
-        """Parse JSON education records into a list of dictionaries."""
+        """Parse JSON education records or plain text into a list of dictionaries."""
         if not self.education:
             return []
+        if isinstance(self.education, list):
+            return self.education
         try:
             parsed = json.loads(self.education)
-            return parsed if isinstance(parsed, list) else []
+            if isinstance(parsed, list):
+                return parsed
         except Exception:
-            return []
+            pass
+        items = []
+        raw = str(self.education).replace("\r", "").strip()
+        blocks = [b.strip() for b in raw.split("\n\n") if b.strip()]
+        if not blocks:
+            blocks = [b.strip() for b in raw.split("\n") if b.strip()]
+        for block in blocks:
+            lines_b = [l.strip() for l in block.split("\n") if l.strip()]
+            if lines_b:
+                items.append({
+                    "degree": lines_b[0],
+                    "institution": lines_b[1] if len(lines_b) > 1 else "",
+                    "details": "\n".join(lines_b[2:]) if len(lines_b) > 2 else ""
+                })
+        return items
 
     def get_certifications_list(self) -> list:
-        """Parse JSON certifications into a list of dictionaries or strings."""
+        """Parse JSON certifications or comma/newline-separated strings into a list."""
         if not self.certifications:
             return []
+        if isinstance(self.certifications, list):
+            return self.certifications
         try:
             parsed = json.loads(self.certifications)
-            return parsed if isinstance(parsed, list) else []
+            if isinstance(parsed, list):
+                return parsed
         except Exception:
-            return [s.strip() for s in self.certifications.split(",") if s.strip()]
+            pass
+        raw = str(self.certifications).replace("\r", "").replace("\n", ",")
+        return [s.strip() for s in raw.split(",") if s.strip()]
 
     def get_section_visibility(self) -> dict:
         """Return section visibility mapping merged with safe defaults."""

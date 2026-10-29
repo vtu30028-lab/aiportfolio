@@ -150,8 +150,26 @@
                 </div>
             </div>
 
+            <!-- Technical Skills Section -->
+            {% set skills = portfolio.get_skills_list() %}
+            {% if skills %}
+            <div class="mb-5">
+                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-stars text-warning"></i> Technical &amp; Professional Skills
+                    <span class="badge bg-secondary bg-opacity-25 text-warning small ms-1">{{ skills|length }}</span>
+                </h4>
+                <div class="glass-card-static p-4">
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in skills %}
+                            <span class="badge-tag py-2 px-3 fs-6">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <!-- Featured Projects Section -->
-            <div class="mb-4">
+            <div class="mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                     <h4 class="text-white fw-bold mb-0 d-flex align-items-center gap-2">
                         <i class="bi bi-code-slash text-primary"></i> Featured Projects
@@ -240,6 +258,93 @@
                     </div>
                 {% endif %}
             </div>
+
+            <!-- Professional Experience Section -->
+            {% set exps = portfolio.get_experience_list() %}
+            {% if exps %}
+            <div class="mb-5">
+                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-briefcase text-info"></i> Work Experience
+                </h4>
+                <div class="glass-card-static p-4">
+                    <div class="d-flex flex-column gap-4">
+                        {% for exp in exps %}
+                        <div class="pb-3 border-bottom border-secondary border-opacity-25 last-border-none">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-1 mb-1">
+                                <h5 class="text-white fw-bold mb-0">{{ exp.role if exp is mapping else exp }}</h5>
+                                {% if exp is mapping and (exp.duration or exp.dates) %}
+                                    <span class="badge bg-secondary bg-opacity-25 text-info small">{{ exp.duration or exp.dates }}</span>
+                                {% endif %}
+                            </div>
+                            {% if exp is mapping and (exp.company or exp.organization) %}
+                                <div class="text-primary-emphasis small fw-semibold mb-2">{{ exp.company or exp.organization }}</div>
+                            {% endif %}
+                            {% if exp is mapping and (exp.description or exp.details) %}
+                                <p class="text-light text-opacity-75 small mb-0 line-height-md" style="white-space: pre-line;">{{ exp.description or exp.details }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Education Section -->
+            {% set edus = portfolio.get_education_list() %}
+            {% if edus %}
+            <div class="mb-5">
+                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-mortarboard text-success"></i> Education &amp; Academic Background
+                </h4>
+                <div class="glass-card-static p-4">
+                    <div class="d-flex flex-column gap-3">
+                        {% for edu in edus %}
+                        <div class="pb-3 border-bottom border-secondary border-opacity-25 last-border-none">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
+                                <h5 class="text-white fw-bold mb-0">{{ edu.degree if edu is mapping else edu }}</h5>
+                                {% if edu is mapping and (edu.year or edu.duration) %}
+                                    <span class="badge bg-secondary bg-opacity-25 text-success small">{{ edu.year or edu.duration }}</span>
+                                {% endif %}
+                            </div>
+                            {% if edu is mapping and (edu.institution or edu.school) %}
+                                <div class="text-light small fw-semibold">{{ edu.institution or edu.school }}</div>
+                            {% endif %}
+                            {% if edu is mapping and (edu.details or edu.gpa) %}
+                                <p class="text-muted small mb-0 mt-1">{{ edu.details or edu.gpa }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Certifications Section -->
+            {% set certs = portfolio.get_certifications_list() %}
+            {% if certs %}
+            <div class="mb-4">
+                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-award text-warning"></i> Licenses &amp; Certifications
+                </h4>
+                <div class="glass-card-static p-4">
+                    <div class="row g-3">
+                        {% for cert in certs %}
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-2" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                <div class="fw-bold text-white small">{{ cert.name if cert is mapping else cert }}</div>
+                                {% if cert is mapping and cert.issuer %}
+                                    <div class="text-info small">{{ cert.issuer }}</div>
+                                {% endif %}
+                                {% if cert is mapping and cert.year %}
+                                    <small class="text-muted">{{ cert.year }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 

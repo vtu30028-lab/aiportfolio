@@ -210,6 +210,71 @@
                         </div>
                     </div>
 
+                    <!-- Section 4: Skills, Experience, Education & Certifications -->
+                    <div class="mb-4 pt-3 border-top border-secondary border-opacity-25">
+                        <h5 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                            <i class="bi bi-stars text-warning"></i> Skills, Experience &amp; Academic Background
+                        </h5>
+
+                        <div class="row g-3">
+                            <!-- Technical Skills -->
+                            <div class="col-12">
+                                <label for="{{ form.skills.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.skills.label.text }}
+                                </label>
+                                {{ form.skills(class="form-control" + (" is-invalid" if form.skills.errors else ""), rows=3, placeholder="e.g. Python, Java, JavaScript, React, SQL, Git, Docker, Machine Learning, Data Structures") }}
+                                <div class="form-text text-muted small">Enter skills separated by commas or new lines. They will appear as stylish interactive skill badges on your portfolio.</div>
+                                {% for error in form.skills.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Work Experience -->
+                            <div class="col-12">
+                                <label for="{{ form.experience.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.experience.label.text }}
+                                </label>
+                                {{ form.experience(class="form-control" + (" is-invalid" if form.experience.errors else ""), rows=4, placeholder="e.g. Software Engineer Intern&#10;Tech Solutions Corp | Summer 2024&#10;Developed backend REST APIs and improved query execution performance by 35%.") }}
+                                <div class="form-text text-muted small">Enter your roles, companies, dates, and responsibilities. Supports structured JSON or clean multiline text.</div>
+                                {% for error in form.experience.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Education -->
+                            <div class="col-12">
+                                <label for="{{ form.education.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.education.label.text }}
+                                </label>
+                                {{ form.education(class="form-control" + (" is-invalid" if form.education.errors else ""), rows=3, placeholder="e.g. Bachelor of Technology (B.Tech) in Computer Science and Engineering&#10;XYZ Institute of Technology | 2021 - 2025&#10;Relevant coursework: Data Structures, Operating Systems, Machine Learning") }}
+                                <div class="form-text text-muted small">Enter degrees, universities, graduation years, and GPA or relevant coursework.</div>
+                                {% for error in form.education.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Certifications -->
+                            <div class="col-12">
+                                <label for="{{ form.certifications.id }}" class="form-label text-light small fw-semibold">
+                                    {{ form.certifications.label.text }}
+                                </label>
+                                {{ form.certifications(class="form-control" + (" is-invalid" if form.certifications.errors else ""), rows=2, placeholder="e.g. AWS Certified Cloud Practitioner, Google Cloud Generative AI, Meta Full-Stack Certificate") }}
+                                <div class="form-text text-muted small">List certifications separated by commas or lines.</div>
+                                {% for error in form.certifications.errors %}
+                                    <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="d-flex justify-content-end gap-3 pt-3 border-top border-secondary border-opacity-25">
                         <a href="{{ url_for('portfolio.index') }}" class="btn btn-secondary-glass py-2 px-4">

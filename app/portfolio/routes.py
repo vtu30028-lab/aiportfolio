@@ -71,6 +71,10 @@ def create():
             github_url=form.github_url.data.strip() if form.github_url.data else None,
             linkedin_url=form.linkedin_url.data.strip() if form.linkedin_url.data else None,
             profile_image=form.profile_image.data.strip() if form.profile_image.data else None,
+            skills=form.skills.data.strip() if form.skills.data else None,
+            experience=form.experience.data.strip() if form.experience.data else None,
+            education=form.education.data.strip() if form.education.data else None,
+            certifications=form.certifications.data.strip() if form.certifications.data else None,
         )
 
         try:
@@ -92,6 +96,18 @@ def edit(portfolio_id: int):
     portfolio = get_user_portfolio_or_404(portfolio_id)
     form = PortfolioForm(obj=portfolio)
 
+    if request.method == "GET":
+        if portfolio.skills:
+            s_list = portfolio.get_skills_list()
+            form.skills.data = ", ".join(s_list) if s_list else portfolio.skills
+        if portfolio.experience:
+            form.experience.data = portfolio.experience
+        if portfolio.education:
+            form.education.data = portfolio.education
+        if portfolio.certifications:
+            c_list = portfolio.get_certifications_list()
+            form.certifications.data = ", ".join(c_list) if (c_list and all(isinstance(x, str) for x in c_list)) else portfolio.certifications
+
     if form.validate_on_submit():
         portfolio.title = form.title.data.strip()
         portfolio.full_name = form.full_name.data.strip()
@@ -103,6 +119,10 @@ def edit(portfolio_id: int):
         portfolio.github_url = form.github_url.data.strip() if form.github_url.data else None
         portfolio.linkedin_url = form.linkedin_url.data.strip() if form.linkedin_url.data else None
         portfolio.profile_image = form.profile_image.data.strip() if form.profile_image.data else None
+        portfolio.skills = form.skills.data.strip() if form.skills.data else None
+        portfolio.experience = form.experience.data.strip() if form.experience.data else None
+        portfolio.education = form.education.data.strip() if form.education.data else None
+        portfolio.certifications = form.certifications.data.strip() if form.certifications.data else None
 
         try:
             db.session.commit()

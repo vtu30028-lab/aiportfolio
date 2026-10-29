@@ -349,20 +349,20 @@
                         </header>
 
                         <!-- ABOUT -->
-                        {% if portfolio.about %}
                         <section class="preview-section" data-section="about">
                             <p class="preview-section-label theme-accent-text">About Me</p>
                             <div class="theme-card preview-card">
-                                <p class="preview-body-text">{{ portfolio.about[:300] }}{% if portfolio.about|length > 300 %}…{% endif %}</p>
+                                <p class="preview-body-text">{{ (portfolio.about[:300] + ('…' if portfolio.about|length > 300 else '')) if portfolio.about else 'Experienced software engineering professional specializing in full-stack web applications, modern architectures, and AI-driven solutions.' }}</p>
                             </div>
                         </section>
-                        {% endif %}
 
                         <!-- SKILLS -->
                         {% set skills = portfolio.get_skills_list() %}
-                        {% if skills %}
+                        {% if not skills %}
+                            {% set skills = ['Python', 'Java', 'Web Technologies', 'React', 'SQL', 'Git', 'Machine Learning', 'Data Structures', 'REST APIs', 'Cloud Computing'] %}
+                        {% endif %}
                         <section class="preview-section" data-section="skills">
-                            <p class="preview-section-label theme-accent-text">Skills</p>
+                            <p class="preview-section-label theme-accent-text">Technical &amp; Professional Skills</p>
                             <div class="theme-card preview-card">
                                 <div class="preview-badge-row">
                                     {% for skill in skills[:14] %}<span class="theme-badge preview-skill-tag">{{ skill }}</span>{% endfor %}
@@ -370,29 +370,105 @@
                                 </div>
                             </div>
                         </section>
-                        {% endif %}
 
                         <!-- PROJECTS -->
-                        {% if portfolio.projects %}
                         <section class="preview-section" data-section="projects">
-                            <p class="preview-section-label theme-accent-text">Projects</p>
+                            <p class="preview-section-label theme-accent-text">Featured Projects</p>
                             <div class="preview-grid">
-                                {% for project in portfolio.projects[:4] %}
-                                <div class="theme-card preview-project-card">
-                                    <p class="preview-project-label theme-accent-text">Project</p>
-                                    <p class="preview-project-name">{{ project.name }}</p>
-                                    {% if project.description %}<p class="preview-project-desc">{{ project.description[:90] }}{% if project.description|length > 90 %}…{% endif %}</p>{% endif %}
-                                </div>
-                                {% endfor %}
+                                {% if portfolio.projects %}
+                                    {% for project in portfolio.projects[:4] %}
+                                    <div class="theme-card preview-project-card">
+                                        <p class="preview-project-label theme-accent-text">Project</p>
+                                        <p class="preview-project-name">{{ project.title or project.name }}</p>
+                                        {% if project.description %}<p class="preview-project-desc">{{ project.description[:90] }}{% if project.description|length > 90 %}…{% endif %}</p>{% endif %}
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="theme-card preview-project-card">
+                                        <p class="preview-project-label theme-accent-text">AI / ML</p>
+                                        <p class="preview-project-name">Healthcare Chatbot</p>
+                                        <p class="preview-project-desc">Intelligent conversational assistant for patient guidance and medical triage.</p>
+                                    </div>
+                                    <div class="theme-card preview-project-card">
+                                        <p class="preview-project-label theme-accent-text">Data Science</p>
+                                        <p class="preview-project-name">Customer Segmentation</p>
+                                        <p class="preview-project-desc">Unsupervised clustering model to analyze customer behaviors and traits.</p>
+                                    </div>
+                                {% endif %}
                             </div>
                         </section>
-                        {% endif %}
 
-                        <!-- CTA -->
-                        <div class="preview-cta">
+                        <!-- EXPERIENCE -->
+                        {% set exps = portfolio.get_experience_list() %}
+                        <section class="preview-section" data-section="experience">
+                            <p class="preview-section-label theme-accent-text">Work Experience</p>
+                            <div class="theme-card preview-card">
+                                {% if exps %}
+                                    {% for exp in exps[:2] %}
+                                    <div class="mb-2 pb-2 {% if not loop.last %}border-bottom border-secondary border-opacity-25{% endif %}">
+                                        <p class="preview-project-name mb-0">{{ exp.role if exp is mapping else exp }}</p>
+                                        {% if exp is mapping and (exp.company or exp.duration) %}
+                                            <p class="preview-project-desc text-info mb-1">{{ exp.company }} {% if exp.duration %}• {{ exp.duration }}{% endif %}</p>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="mb-1">
+                                        <p class="preview-project-name mb-0">Software Engineering Lead / Intern</p>
+                                        <p class="preview-project-desc text-info mb-1">Tech Solutions &amp; Academic Projects • 2023 - Present</p>
+                                        <p class="preview-body-text" style="font-size:0.8rem;">Designed and developed full-stack web applications and led engineering sprints.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </section>
+
+                        <!-- EDUCATION -->
+                        {% set edus = portfolio.get_education_list() %}
+                        <section class="preview-section" data-section="education">
+                            <p class="preview-section-label theme-accent-text">Education &amp; Academic Background</p>
+                            <div class="theme-card preview-card">
+                                {% if edus %}
+                                    {% for edu in edus[:2] %}
+                                    <div class="mb-1">
+                                        <p class="preview-project-name mb-0">{{ edu.degree if edu is mapping else edu }}</p>
+                                        {% if edu is mapping and edu.institution %}
+                                            <p class="preview-project-desc text-info mb-0">{{ edu.institution }} {% if edu.year %}• {{ edu.year }}{% endif %}</p>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="mb-1">
+                                        <p class="preview-project-name mb-0">Bachelor of Technology (B.Tech) in CSE</p>
+                                        <p class="preview-project-desc text-info mb-0">Computer Science &amp; Engineering • 2021 - 2025</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </section>
+
+                        <!-- CERTIFICATIONS -->
+                        {% set certs = portfolio.get_certifications_list() %}
+                        <section class="preview-section" data-section="certifications">
+                            <p class="preview-section-label theme-accent-text">Licenses &amp; Certifications</p>
+                            <div class="theme-card preview-card">
+                                <div class="preview-badge-row">
+                                    {% if certs %}
+                                        {% for cert in certs[:6] %}
+                                            <span class="theme-badge preview-skill-tag">{{ cert.name if cert is mapping else cert }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="theme-badge preview-skill-tag">AWS Cloud Practitioner</span>
+                                        <span class="theme-badge preview-skill-tag">Google Generative AI</span>
+                                        <span class="theme-badge preview-skill-tag">Python Specialization</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- CONTACT -->
+                        <section class="preview-section preview-cta" data-section="contact">
                             <button class="theme-btn-accent preview-btn">Get In Touch</button>
                             <button class="theme-btn-outline-accent preview-btn-outline">View Portfolio</button>
-                        </div>
+                        </section>
 
                     </div><!-- /livePreviewPanel -->
                 </div>

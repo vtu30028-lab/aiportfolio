@@ -247,9 +247,12 @@ def save_content():
         )
         db.session.add(record)
 
-        # Optionally apply directly to portfolio About section
-        if apply_to_portfolio and target_portfolio and feature_type in ("about", "summary"):
-            target_portfolio.about = generated_text
+        # Optionally apply directly to portfolio About or Skills section
+        if apply_to_portfolio and target_portfolio:
+            if feature_type in ("about", "summary"):
+                target_portfolio.about = generated_text
+            elif feature_type == "skills":
+                target_portfolio.skills = generated_text
 
         db.session.commit()
 
