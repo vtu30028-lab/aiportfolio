@@ -134,10 +134,14 @@ def test_theme_editor_page_loads_authenticated(client, app):
     assert response.status_code == 200
     html = response.data.decode("utf-8")
     assert "Theme Builder & Live Customizer" in html
-    assert "Modern Dark" in html
-    assert "Minimal Light" in html
-    assert "Creative Gradient" in html
-    assert "Professional Blue" in html
+    assert "Dark Developer" in html
+    assert "Minimal Pro" in html
+    assert "Glassmorphism" in html
+    assert "AI Futuristic" in html
+    assert "Creative Colorful" in html
+    assert "Premium Elegant" in html
+    assert "Terminal Hacker" in html
+    assert "Student Starter" in html
     assert "Senior Engineer Showcase" in html
 
 
@@ -198,20 +202,29 @@ def test_cross_user_theme_isolation(client, app):
     assert post_res.status_code == 404
 
 
-def test_all_four_themes_render_successfully(client, app):
-    """Test all 4 themes render valid HTML with the user's authentic portfolio data."""
+def test_all_eight_themes_render_successfully(client, app):
+    """Test all 8 themes render valid HTML with the user's authentic portfolio data."""
     user_id = create_and_login_user(client, app)
     port_id = create_populated_portfolio(app, user_id)
 
-    themes = ["modern-dark", "minimal-light", "creative-gradient", "professional-blue"]
+    themes = [
+        "modern-dark",
+        "minimal-light",
+        "creative-gradient",
+        "professional-blue",
+        "creative-colorful",
+        "premium-elegant",
+        "terminal-hacker",
+        "student-starter",
+    ]
 
     for theme_name in themes:
         res = client.get(f"/portfolios/{port_id}/live?theme={theme_name}")
-        assert res.status_code == 200
+        assert res.status_code == 200, f"Theme '{theme_name}' returned {res.status_code}"
         html = res.data.decode("utf-8")
 
         # Must include theme CSS class
-        assert f"theme-{theme_name}" in html
+        assert f"theme-{theme_name}" in html, f"CSS class 'theme-{theme_name}' not found"
 
         # Must render real user content
         assert "Alex Mercer" in html

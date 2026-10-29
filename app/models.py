@@ -10,7 +10,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
 
 # Phase 7: Theme & Customization Constants
-ALLOWED_THEMES = ["modern-dark", "minimal-light", "creative-gradient", "professional-blue"]
+ALLOWED_THEMES = [
+    "modern-dark",          # Dark Developer
+    "minimal-light",        # Minimal Professional
+    "creative-gradient",    # Glassmorphism
+    "professional-blue",    # AI / Tech Futuristic
+    "creative-colorful",    # Creative Colorful
+    "premium-elegant",      # Premium Elegant
+    "terminal-hacker",      # Terminal / Hacker
+    "student-starter",      # Student Starter
+]
 ALLOWED_ACCENT_COLORS = ["#6366f1", "#10b981", "#f43f5e", "#0ea5e9", "#f59e0b", "#8b5cf6", "#64748b"]
 ALLOWED_FONTS = ["plus-jakarta-sans", "outfit", "inter", "serif", "mono"]
 ALLOWED_LAYOUTS = ["standard", "compact", "sidebar"]

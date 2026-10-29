@@ -24,6 +24,19 @@
             --theme-accent-hover: {{ accent_color }};
         }
     </style>
+    <script>
+        /* Compute --theme-accent-rgb from server-rendered hex on initial load */
+        (function () {
+            var hex = "{{ accent_color }}".replace('#', '');
+            if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+            var r = parseInt(hex.substring(0, 2), 16);
+            var g = parseInt(hex.substring(2, 4), 16);
+            var b = parseInt(hex.substring(4, 6), 16);
+            if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+                document.documentElement.style.setProperty('--theme-accent-rgb', r + ', ' + g + ', ' + b);
+            }
+        })();
+    </script>
 </head>
 <body id="portfolioBody" class="theme-{{ theme }} font-{{ font_family }} layout-{{ layout_style }}">
 
@@ -364,46 +377,77 @@
         </div>
     </footer>
 
-    <!-- Live Preview postMessage Script Listener (allows parent theme editor to update theme/accent/font in real-time) -->
+    <!-- Live Preview postMessage Script Listener -->
     <script>
-        window.addEventListener("message", (event) => {
-            const data = event.data;
-            if (!data || typeof data !== "object") return;
+        (function () {
+            // All known theme/font/layout class prefixes to strip before adding new one
+            var THEME_CLASSES = [
+                "modern-dark", "minimal-light", "creative-gradient", "professional-blue",
+                "creative-colorful", "premium-elegant", "terminal-hacker", "student-starter"
+            ];
+            var FONT_CLASSES = ["plus-jakarta-sans", "outfit", "inter", "serif", "mono"];
+            var LAYOUT_CLASSES = ["standard", "compact", "sidebar"];
 
-            const body = document.getElementById("portfolioBody");
-            if (!body) return;
-
-            // Live theme update
-            if (data.theme) {
-                body.className = body.className.replace(/theme-[a-z-]+/g, `theme-${data.theme}`);
+            function swapClass(el, prefix, knownSuffixes, newSuffix) {
+                // Remove all known prefixed classes
+                knownSuffixes.forEach(function (s) {
+                    el.classList.remove(prefix + s);
+                });
+                // Also do a sweep for any stray prefixed class not in known list
+                var toRemove = [];
+                el.classList.forEach(function (c) {
+                    if (c.startsWith(prefix)) toRemove.push(c);
+                });
+                toRemove.forEach(function (c) { el.classList.remove(c); });
+                // Add the new one
+                el.classList.add(prefix + newSuffix);
             }
 
-            // Live font update
-            if (data.font_family) {
-                body.className = body.className.replace(/font-[a-z-]+/g, `font-${data.font_family}`);
-            }
+            window.addEventListener("message", function (event) {
+                var data = event.data;
+                if (!data || typeof data !== "object") return;
 
-            // Live layout update
-            if (data.layout_style) {
-                body.className = body.className.replace(/layout-[a-z-]+/g, `layout-${data.layout_style}`);
-            }
+                var body = document.getElementById("portfolioBody");
+                if (!body) return;
 
-            // Live accent color update
-            if (data.accent_color) {
-                document.documentElement.style.setProperty("--theme-accent", data.accent_color);
-                document.documentElement.style.setProperty("--theme-accent-hover", data.accent_color);
-            }
+                // Live theme swap
+                if (data.theme) {
+                    swapClass(body, "theme-", THEME_CLASSES, data.theme);
+                }
 
-            // Live section visibility toggle
-            if (data.visible_sections && typeof data.visible_sections === "object") {
-                for (const [sectionKey, isVisible] of Object.entries(data.visible_sections)) {
-                    const el = document.getElementById(`section-${sectionKey}`);
-                    if (el) {
-                        el.style.display = isVisible ? "" : "none";
+                // Live font swap
+                if (data.font_family) {
+                    swapClass(body, "font-", FONT_CLASSES, data.font_family);
+                }
+
+                // Live layout swap
+                if (data.layout_style) {
+                    swapClass(body, "layout-", LAYOUT_CLASSES, data.layout_style);
+                }
+
+                // Live accent color update (also recomputes --theme-accent-rgb)
+                if (data.accent_color) {
+                    document.documentElement.style.setProperty("--theme-accent", data.accent_color);
+                    document.documentElement.style.setProperty("--theme-accent-hover", data.accent_color);
+                    var hex = data.accent_color.replace("#", "");
+                    if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+                    var r = parseInt(hex.substring(0, 2), 16);
+                    var g = parseInt(hex.substring(2, 4), 16);
+                    var b = parseInt(hex.substring(4, 6), 16);
+                    if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+                        document.documentElement.style.setProperty("--theme-accent-rgb", r + ", " + g + ", " + b);
                     }
                 }
-            }
-        });
+
+                // Live section visibility toggle
+                if (data.visible_sections && typeof data.visible_sections === "object") {
+                    for (var key in data.visible_sections) {
+                        var el = document.getElementById("section-" + key);
+                        if (el) el.style.display = data.visible_sections[key] ? "" : "none";
+                    }
+                }
+            });
+        })();
     </script>
 </body>
 </html>

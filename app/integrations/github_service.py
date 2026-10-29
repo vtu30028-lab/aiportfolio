@@ -75,10 +75,15 @@ class GitHubService:
         try:
             token = (
                 current_app.config.get("GITHUB_TOKEN")
-                or os.environ.get("GITHUB_TOKEN", "")
+                or current_app.config.get("GITHUB_ACCESS_TOKEN")
+                or os.environ.get("GITHUB_TOKEN")
+                or os.environ.get("GITHUB_ACCESS_TOKEN", "")
             ).strip()
         except RuntimeError:
-            token = os.environ.get("GITHUB_TOKEN", "").strip()
+            token = (
+                os.environ.get("GITHUB_TOKEN")
+                or os.environ.get("GITHUB_ACCESS_TOKEN", "")
+            ).strip()
 
         if token:
             headers["Authorization"] = f"Bearer {token}"

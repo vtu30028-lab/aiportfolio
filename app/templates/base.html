@@ -55,17 +55,17 @@
                 <div class="d-flex align-items-center gap-3">
                     {% if current_user.is_authenticated %}
                         <div class="d-flex align-items-center gap-2">
-                            <a href="{{ url_for('github.import_page') }}" class="nav-link px-2 d-none d-xxl-inline-block">
-                                <i class="bi bi-github text-info me-1"></i> GitHub
+                            <a href="{{ url_for('github.import_page') }}" class="nav-link px-2 d-none d-xxl-flex align-items-center">
+                                <i class="bi bi-github text-info"></i> <span>GitHub</span>
                             </a>
-                            <a href="{{ url_for('resume.upload_page') }}" class="nav-link px-2 d-none d-xl-inline-block">
-                                <i class="bi bi-file-earmark-pdf text-danger me-1"></i> Parse Resume
+                            <a href="{{ url_for('resume.upload_page') }}" class="nav-link px-2 d-none d-xl-flex align-items-center">
+                                <i class="bi bi-file-earmark-pdf text-danger"></i> <span>Parse Resume</span>
                             </a>
-                            <a href="{{ url_for('ai.studio') }}" class="nav-link px-2 d-none d-lg-inline-block">
-                                <i class="bi bi-stars text-warning me-1"></i> AI Studio
+                            <a href="{{ url_for('ai.studio') }}" class="nav-link px-2 d-none d-lg-flex align-items-center">
+                                <i class="bi bi-stars text-warning"></i> <span>AI Studio</span>
                             </a>
-                            <a href="{{ url_for('portfolio.index') }}" class="nav-link px-2 d-none d-md-inline-block">
-                                <i class="bi bi-collection me-1"></i> Portfolios
+                            <a href="{{ url_for('portfolio.index') }}" class="nav-link px-2 d-none d-md-flex align-items-center">
+                                <i class="bi bi-collection"></i> <span>Portfolios</span>
                             </a>
                             <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary-glass py-2 px-3">
                                 <i class="bi bi-speedometer2 me-1"></i> Dashboard

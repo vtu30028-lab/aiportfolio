@@ -38,10 +38,12 @@ class Config:
 
     # Gemini AI
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-    GEMINI_MODEL = "gemini-2.5-flash"
+    GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
     # GitHub Integration
-    GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+    GITHUB_TOKEN = (
+        os.environ.get("GITHUB_TOKEN") or os.environ.get("GITHUB_ACCESS_TOKEN", "")
+    )
     GITHUB_API_BASE_URL = "https://api.github.com"
 
     # Public & QR Code Base URL

@@ -125,54 +125,103 @@
                     </label>
 
                     <div class="row g-2" id="themeCardsContainer">
-                        <!-- Modern Dark -->
+                        <!-- 1. Dark Developer (modern-dark) -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'modern-dark' %}active{% endif %}" data-theme="modern-dark">
-                                <div class="rounded-2 p-2 mb-2 text-center" style="background: #0a0e17; border: 1px solid #334155;">
-                                    <div class="small fw-bold text-white font-monospace">Dark</div>
-                                    <div style="height: 4px; width: 24px; background: #6366f1; margin: 4px auto; border-radius: 2px;"></div>
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background: #050811; border: 1px solid rgba(139,92,246,0.4);">
+                                    <div class="small fw-bold font-monospace" style="color:#c4b5fd;">Dev</div>
+                                    <div style="height:3px;width:24px;background:linear-gradient(90deg,#a855f7,#22d3ee);margin:4px auto;border-radius:2px;box-shadow:0 0 6px #a855f7;"></div>
                                 </div>
-                                <div class="fw-semibold small text-white text-center">Modern Dark</div>
-                                <div class="text-muted text-center" style="font-size: 0.72rem;">Sleek Slate & Neon</div>
+                                <div class="fw-semibold small text-white text-center">Dark Developer</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Neon Purple &amp; Cyan</div>
                             </div>
                         </div>
 
-                        <!-- Minimal Light -->
+                        <!-- 2. Minimal Professional (minimal-light) -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'minimal-light' %}active{% endif %}" data-theme="minimal-light">
-                                <div class="rounded-2 p-2 mb-2 text-center" style="background: #f8fafc; border: 1px solid #cbd5e1;">
-                                    <div class="small fw-bold text-dark font-monospace">Light</div>
-                                    <div style="height: 4px; width: 24px; background: #0ea5e9; margin: 4px auto; border-radius: 2px;"></div>
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background: #ffffff; border: 2px solid #0a0a0a;">
+                                    <div class="small fw-black" style="color:#0a0a0a;letter-spacing:-0.04em;">Pro</div>
+                                    <div style="height:3px;width:24px;background:#0a0a0a;margin:4px auto;border-radius:0px;"></div>
                                 </div>
-                                <div class="fw-semibold small text-white text-center">Minimal Light</div>
-                                <div class="text-muted text-center" style="font-size: 0.72rem;">Clean & High Contrast</div>
+                                <div class="fw-semibold small text-white text-center">Minimal Pro</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">White &amp; Bold Black</div>
                             </div>
                         </div>
 
-                        <!-- Creative Gradient -->
+                        <!-- 3. Glassmorphism (creative-gradient) -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'creative-gradient' %}active{% endif %}" data-theme="creative-gradient">
-                                <div class="rounded-2 p-2 mb-2 text-center" style="background: linear-gradient(135deg, #312e81, #db2777); border: 1px solid rgba(255,255,255,0.2);">
-                                    <div class="small fw-bold text-white font-monospace">Glow</div>
-                                    <div style="height: 4px; width: 24px; background: #f43f5e; margin: 4px auto; border-radius: 2px;"></div>
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:linear-gradient(135deg,#4a1580,#e8195b);border:1px solid rgba(255,255,255,0.3);">
+                                    <div class="small fw-bold text-white" style="backdrop-filter:blur(4px);">Glass</div>
+                                    <div style="height:3px;width:24px;background:rgba(255,255,255,0.8);margin:4px auto;border-radius:50px;"></div>
                                 </div>
-                                <div class="fw-semibold small text-white text-center">Creative Gradient</div>
-                                <div class="text-muted text-center" style="font-size: 0.72rem;">Vibrant Multi-Tone</div>
+                                <div class="fw-semibold small text-white text-center">Glassmorphism</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Frosted Glass Cards</div>
                             </div>
                         </div>
 
-                        <!-- Professional Blue -->
+                        <!-- 4. AI Futuristic (professional-blue) -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'professional-blue' %}active{% endif %}" data-theme="professional-blue">
-                                <div class="rounded-2 p-2 mb-2 text-center" style="background: linear-gradient(135deg, #0f172a, #1e3a8a); border: 1px solid #0284c7;">
-                                    <div class="small fw-bold text-white font-monospace">Corp</div>
-                                    <div style="height: 4px; width: 24px; background: #0284c7; margin: 4px auto; border-radius: 2px;"></div>
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#020c1b;border:1px solid rgba(0,212,255,0.4);">
+                                    <div class="small fw-bold font-monospace" style="color:#00d4ff;">AI</div>
+                                    <div style="height:3px;width:24px;background:#00d4ff;margin:4px auto;border-radius:2px;box-shadow:0 0 8px #00d4ff;"></div>
                                 </div>
-                                <div class="fw-semibold small text-white text-center">Professional Blue</div>
-                                <div class="text-muted text-center" style="font-size: 0.72rem;">Executive Corporate</div>
+                                <div class="fw-semibold small text-white text-center">AI Futuristic</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Navy &amp; Cyan Glow</div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Creative Colorful (creative-colorful) -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'creative-colorful' %}active{% endif %}" data-theme="creative-colorful">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:linear-gradient(130deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff);border:2px solid #1a1a1a;box-shadow:3px 3px 0 #1a1a1a;">
+                                    <div class="small fw-black" style="color:#fff;text-shadow:1px 1px 0 rgba(0,0,0,0.3);">Bold</div>
+                                    <div style="height:3px;width:24px;background:#fff;margin:4px auto;border-radius:50px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Creative Colorful</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Neo-Brutalist Rainbow</div>
+                            </div>
+                        </div>
+
+                        <!-- 6. Premium Elegant (premium-elegant) -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'premium-elegant' %}active{% endif %}" data-theme="premium-elegant">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#1a1a1a;border:1px solid rgba(212,160,23,0.5);">
+                                    <div class="small fw-light" style="color:#d4a017;letter-spacing:0.1em;">ELITE</div>
+                                    <div style="height:1px;width:24px;background:linear-gradient(90deg,transparent,#d4a017,transparent);margin:6px auto;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Premium Elegant</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Charcoal &amp; Gold</div>
+                            </div>
+                        </div>
+
+                        <!-- 7. Terminal Hacker (terminal-hacker) -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'terminal-hacker' %}active{% endif %}" data-theme="terminal-hacker">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#000;border:1px solid rgba(0,255,65,0.3);">
+                                    <div class="small fw-bold font-monospace" style="color:#00ff41;text-shadow:0 0 6px #00ff41;">$ _</div>
+                                    <div style="height:3px;width:24px;background:#00ff41;margin:4px auto;border-radius:0px;box-shadow:0 0 8px #00ff41;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Terminal Hacker</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Green Phosphor CLI</div>
+                            </div>
+                        </div>
+
+                        <!-- 8. Student Starter (student-starter) -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'student-starter' %}active{% endif %}" data-theme="student-starter">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:linear-gradient(135deg,#ede9fe,#fce7f3,#d1fae5);border:2px solid #e9d5ff;">
+                                    <div class="small fw-bold" style="color:#5b21b6;">✨Hi</div>
+                                    <div style="height:3px;width:24px;background:linear-gradient(90deg,#a78bfa,#f9a8d4);margin:4px auto;border-radius:50px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Student Starter</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Pastel &amp; Friendly</div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <hr class="border-secondary border-opacity-25 my-4">

@@ -176,8 +176,16 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.1rem;          /* Ensures Bootstrap icon scales correctly */
+    line-height: 1;             /* Prevents extra line-height from mis-centering */
     box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
     color: #fff;
+    flex-shrink: 0;
+}
+
+.brand-icon-box i {
+    line-height: 1;
+    display: block;
 }
 
 .nav-link {
@@ -186,6 +194,9 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
     padding: 0.5rem 1rem !important;
     transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 
 .nav-link:hover, .nav-link.active {
@@ -257,6 +268,9 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.75rem;
     padding: 0.3rem 0.7rem;
     border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 
 /* Hero Section Preview Frame */
@@ -342,9 +356,16 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
+    line-height: 1;
     color: #a5b4fc;
     margin-bottom: 1.25rem;
     transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.feature-icon-box i {
+    display: block;
+    line-height: 1;
 }
 
 .glass-card:hover .feature-icon-box {
@@ -442,4 +463,47 @@ footer {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* =====================================================
+   Global Bootstrap Icon Alignment Fix
+   Bootstrap Icons (bi-*) are font-based glyphs.
+   When used inline next to text they need
+   vertical-align: middle to sit flush with the text
+   baseline. This ruleset fixes all occurrences
+   across buttons, nav-links, badges, and labels.
+   ===================================================== */
+
+/* Inside buttons */
+.btn i[class*="bi-"] {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+/* Inside badges and tag pills */
+.badge i[class*="bi-"],
+.badge-glow i[class*="bi-"],
+.badge-tag i[class*="bi-"] {
+    vertical-align: middle;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Inside flex containers that mix icons with text */
+.d-flex > i[class*="bi-"],
+.d-inline-flex > i[class*="bi-"] {
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* Step number circle */
+.step-number {
+    flex-shrink: 0;
+}
+
+/* Navbar brand icon-box — explicit size override for the box */
+.navbar-brand .brand-icon-box {
+    font-size: 1.1rem;
+    width: 38px;
+    height: 38px;
 }

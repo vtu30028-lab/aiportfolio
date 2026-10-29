@@ -21,10 +21,15 @@ class AIService:
     @staticmethod
     def get_client():
         """Retrieve configured Gemini API client or raise AIServiceError."""
-        api_key = (
-            current_app.config.get("GEMINI_API_KEY")
-            or os.environ.get("GEMINI_API_KEY", "")
-        ).strip()
+        try:
+            if "GEMINI_API_KEY" in current_app.config:
+                api_key = current_app.config.get("GEMINI_API_KEY")
+            else:
+                api_key = os.environ.get("GEMINI_API_KEY", "")
+        except RuntimeError:
+            api_key = os.environ.get("GEMINI_API_KEY", "")
+
+        api_key = (api_key or "").strip()
 
         if not api_key or api_key == "your_gemini_api_key_here":
             raise AIServiceError(
