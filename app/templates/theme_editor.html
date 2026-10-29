@@ -122,6 +122,12 @@
                 {% endif %}
             </form>
 
+            {% if portfolio.is_published %}
+                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#themeQrModal" title="View Public Link & QR Code">
+                    <i class="bi bi-qr-code me-1"></i> QR Code
+                </button>
+            {% endif %}
+
             <a href="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass" title="Open full portfolio in new tab">
                 <i class="bi bi-box-arrow-up-right me-1"></i> Fullscreen
             </a>
@@ -502,6 +508,60 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- QR Code & Public Share Modal -->
+<div class="modal fade" id="themeQrModal" tabindex="-1" aria-labelledby="themeQrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border border-secondary border-opacity-50" style="background: #0f172a;">
+            <div class="modal-header border-bottom border-secondary border-opacity-25">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="brand-icon-box" style="width: 32px; height: 32px; font-size: 0.9rem; background: linear-gradient(135deg, #10b981, #06b6d4);">
+                        <i class="bi bi-qr-code"></i>
+                    </div>
+                    <h5 class="modal-title text-white fw-bold mb-0" id="themeQrModalLabel">Portfolio QR Code &amp; Share</h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body text-light text-center py-4">
+                {% if portfolio.is_published %}
+                    <p class="small text-muted mb-3">Scan with any smartphone camera to view your portfolio live.</p>
+
+                    <div class="d-inline-block p-3 rounded-3 bg-white shadow-lg mb-3">
+                        <img src="{{ url_for('portfolio.get_qr_code', portfolio_id=portfolio.id) }}"
+                             alt="QR Code for {{ portfolio.full_name }}"
+                             style="width: 175px; height: 175px; display: block;">
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label small fw-semibold text-muted">Public Shareable URL:</label>
+                        <div class="input-group">
+                            <input type="text" id="themePublicUrlInput" class="form-control custom-input small font-monospace" value="{{ portfolio.get_public_url() }}" readonly>
+                            <button class="btn btn-primary-gradient px-3" type="button" onclick="navigator.clipboard.writeText(document.getElementById('themePublicUrlInput').value); this.innerHTML='<i class=\'bi bi-check-lg\'></i> Copied!'; setTimeout(() => this.innerHTML='<i class=\'bi bi-clipboard\'></i> Copy', 2000);">
+                                <i class="bi bi-clipboard"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <a href="{{ url_for('portfolio.get_qr_code', portfolio_id=portfolio.id, download=1) }}" class="btn btn-sm btn-outline-info px-3">
+                            <i class="bi bi-download me-1"></i> Download QR (PNG)
+                        </a>
+                        <a href="{{ portfolio.get_public_url() }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass px-3">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Visit Public Site
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="p-3 text-center">
+                        <i class="bi bi-lock-fill text-warning fs-1 mb-2 d-block"></i>
+                        <h6 class="text-white fw-bold">Portfolio Is Private</h6>
+                        <p class="text-muted small">Publish your portfolio first to generate its public QR code.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

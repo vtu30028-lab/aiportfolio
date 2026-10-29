@@ -62,6 +62,45 @@
         </div>
     </div>
 
+    <!-- Published Live Banner with Instant QR Code & Link -->
+    {% if portfolio.is_published %}
+    <div class="glass-card p-4 mb-4 border border-success border-opacity-50 shadow-lg" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.08));">
+        <div class="row align-items-center g-4">
+            <div class="col-auto text-center">
+                <div class="p-2 rounded-3 bg-white shadow-lg d-inline-block">
+                    <img src="{{ url_for('portfolio.get_qr_code', portfolio_id=portfolio.id) }}"
+                         alt="QR Code for {{ portfolio.full_name }}"
+                         style="width: 140px; height: 140px; display: block;">
+                </div>
+                <div class="mt-2">
+                    <a href="{{ url_for('portfolio.get_qr_code', portfolio_id=portfolio.id, download=1) }}" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold" style="font-size:0.8rem;">
+                        <i class="bi bi-download me-1"></i> Download QR (PNG)
+                    </a>
+                </div>
+            </div>
+            <div class="col">
+                <div class="d-inline-flex align-items-center gap-2 badge bg-success bg-opacity-25 text-success mb-2 px-3 py-1 border border-success border-opacity-25">
+                    <i class="bi bi-check-circle-fill"></i> Published Live &amp; Scan-Ready
+                </div>
+                <h4 class="text-white fw-bold mb-1">Your Portfolio QR Code is Live!</h4>
+                <p class="text-light text-opacity-75 small mb-3">
+                    Anyone can scan this QR code with a smartphone camera to view your portfolio instantly. You can also share your public vanity URL with recruiters and on your resume.
+                </p>
+                <div class="input-group mb-2" style="max-width: 650px;">
+                    <span class="input-group-text bg-dark border-secondary border-opacity-25 text-success"><i class="bi bi-link-45deg fs-5"></i></span>
+                    <input type="text" id="livePublicUrlInput" class="form-control custom-input font-monospace text-light small" value="{{ portfolio.get_public_url() }}" readonly>
+                    <button class="btn btn-success fw-bold px-3" type="button" onclick="navigator.clipboard.writeText(document.getElementById('livePublicUrlInput').value); this.innerHTML='<i class=\'bi bi-check-lg\'></i> Copied!'; setTimeout(() => this.innerHTML='<i class=\'bi bi-clipboard\'></i> Copy Link', 2000);">
+                        <i class="bi bi-clipboard"></i> Copy Link
+                    </button>
+                    <a href="{{ portfolio.get_public_url() }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-glass px-3">
+                        <i class="bi bi-box-arrow-up-right me-1"></i> Visit Public Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Portfolio Profile Presentation Frame -->
     <div class="hero-preview-frame p-0 mb-4">
         <!-- Mockup Browser Bar -->

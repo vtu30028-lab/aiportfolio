@@ -98,6 +98,11 @@
                             <a href="{{ url_for('portfolio.preview', portfolio_id=p.id) }}" class="btn btn-sm btn-secondary-glass flex-grow-1" title="Preview Portfolio">
                                 <i class="bi bi-eye me-1"></i> View
                             </a>
+                            {% if p.is_published %}
+                                <a href="{{ url_for('portfolio.get_qr_code', portfolio_id=p.id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success border-opacity-50" title="View &amp; Scan Live QR Code">
+                                    <i class="bi bi-qr-code"></i>
+                                </a>
+                            {% endif %}
                             <a href="{{ url_for('portfolio.export_pdf', portfolio_id=p.id) }}" class="btn btn-sm btn-outline-danger border-opacity-50" title="Download ATS PDF">
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </a>
