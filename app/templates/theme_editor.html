@@ -3,99 +3,100 @@
 {% block title %}Theme Builder & Live Customization — {{ portfolio.title }} | {{ app_name }}{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio_themes.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio_themes.css') }}?v=10">
 <style>
-    /* Theme Editor Studio Layout */
-    .theme-studio-container {
-        min-height: calc(100vh - 120px);
-    }
-    .customizer-panel {
-        max-height: calc(100vh - 140px);
-        overflow-y: auto;
-    }
+    .theme-studio-container { min-height: calc(100vh - 120px); }
+    .customizer-panel { max-height: calc(100vh - 140px); overflow-y: auto; }
+
+    /* Theme card styles */
     .theme-choice-card {
         cursor: pointer;
         transition: all 0.2s ease;
         border: 2px solid transparent;
         border-radius: 10px;
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(255,255,255,0.03);
     }
-    .theme-choice-card:hover {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(99, 102, 241, 0.4);
-    }
+    .theme-choice-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(99,102,241,0.4); }
     .theme-choice-card.active {
         border-color: var(--theme-accent, #6366f1) !important;
-        background: rgba(99, 102, 241, 0.12) !important;
-        box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+        background: rgba(99,102,241,0.12) !important;
+        box-shadow: 0 0 12px rgba(99,102,241,0.25);
     }
-    .color-swatch {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: transform 0.2s ease, border-color 0.2s ease;
-        border: 2px solid transparent;
-        position: relative;
+
+    /* Color swatches */
+    .color-swatch { width:34px;height:34px;border-radius:50%;cursor:pointer;transition:transform 0.2s,border-color 0.2s;border:2px solid transparent;position:relative; }
+    .color-swatch:hover { transform: scale(1.15); }
+    .color-swatch.active { border-color:#ffffff !important; box-shadow:0 0 10px rgba(255,255,255,0.5); transform:scale(1.1); }
+    .color-swatch.active::after { content:'\F26E';font-family:'bootstrap-icons';color:#fff;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.85rem; }
+
+    /* Preview chrome */
+    .preview-scroll-wrap { background:#06090e; overflow-y:auto; max-height:800px; }
+
+    /* Preview layout helpers — these are scoped to .preview-root so they don't
+       conflict with the rest of the editor page */
+    .preview-root { min-height: 780px; }
+
+    .preview-hero { padding: 2.5rem 2rem 1.8rem !important; }
+    .preview-hero-inner { display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap; }
+    .preview-avatar {
+        width:72px; height:72px; border-radius:50%; flex-shrink:0;
+        display:flex; align-items:center; justify-content:center;
+        font-size:1.6rem; font-weight:800; color:#fff;
+        background: var(--theme-accent, #6366f1);
     }
-    .color-swatch:hover {
-        transform: scale(1.15);
+    .preview-hero-text { flex:1; min-width:0; }
+    .preview-name { font-size:1.5rem; font-weight:800; margin:0 0 0.3rem; }
+    .preview-headline { font-size:0.95rem; font-weight:600; margin:0 0 0.6rem; }
+    .preview-tags { display:flex; flex-wrap:wrap; gap:0.4rem; }
+    .preview-tag { font-size:0.73rem !important; padding:0.2rem 0.65rem !important; border-radius:50px !important; }
+
+    .preview-section { padding: 1.2rem 2rem; }
+    .preview-section-label { font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.6rem; }
+    .preview-card { padding: 1rem 1.2rem; border-radius:12px; }
+    .preview-body-text { margin:0; font-size:0.88rem; line-height:1.7; opacity:0.85; }
+
+    .preview-badge-row { display:flex; flex-wrap:wrap; gap:0.4rem; }
+    .preview-skill-tag { font-size:0.78rem !important; padding:0.25rem 0.8rem !important; border-radius:50px !important; }
+
+    .preview-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:0.8rem; }
+    .preview-project-card { padding:1rem; border-radius:12px; }
+    .preview-project-label { font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; margin:0 0 0.3rem; }
+    .preview-project-name { font-size:0.9rem; font-weight:700; margin:0 0 0.4rem; }
+    .preview-project-desc { font-size:0.76rem; margin:0; opacity:0.72; line-height:1.5; }
+
+    .preview-cta { padding:1.2rem 2rem 2rem; display:flex; gap:0.7rem; flex-wrap:wrap; }
+    .preview-btn { padding:0.55rem 1.3rem; border-radius:8px; border:none; font-weight:600; font-size:0.88rem; cursor:pointer; }
+    .preview-btn-outline { padding:0.55rem 1.3rem; border-radius:8px; font-weight:600; font-size:0.88rem; cursor:pointer; background:transparent; }
+
+    /* Custom select / input */
+    .custom-input {
+        background: rgba(255,255,255,0.06) !important;
+        border: 1px solid rgba(255,255,255,0.12) !important;
+        color: #e2e8f0 !important;
+        border-radius: 8px;
     }
-    .color-swatch.active {
-        border-color: #ffffff !important;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        transform: scale(1.1);
-    }
-    .color-swatch.active::after {
-        content: '\F26E';
-        font-family: 'bootstrap-icons';
-        color: #fff;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 0.85rem;
-    }
-    .live-preview-iframe {
-        width: 100%;
-        height: 780px;
-        border: none;
-        background: #0a0e17;
-        transition: width 0.3s ease;
-    }
+    .custom-input:focus { border-color: rgba(99,102,241,0.5) !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important; outline:none; }
+    .custom-input option { background: #1e293b; color: #e2e8f0; }
+    .tracking-wider { letter-spacing:0.06em; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid px-lg-4 py-4 theme-studio-container">
-    <!-- Studio Header & Action Bar -->
+
+    <!-- Header -->
     <div class="glass-card p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div class="d-flex align-items-center gap-3">
             <a href="{{ url_for('portfolio.preview', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-secondary-glass">
                 <i class="bi bi-arrow-left me-1"></i> Back to Preview
             </a>
             <div>
-                <h5 class="text-white fw-bold mb-0">Theme Builder & Live Customizer</h5>
+                <h5 class="text-white fw-bold mb-0">Theme Builder &amp; Live Customizer</h5>
                 <small class="text-muted">Customizing: <strong class="text-white">{{ portfolio.title }}</strong></small>
             </div>
         </div>
-
-        <!-- Viewport Switcher Controls -->
-        <div class="btn-group bg-dark p-1 rounded-pill border border-secondary border-opacity-25" role="group">
-            <button type="button" class="btn btn-sm btn-outline-secondary text-light active border-0 px-3 rounded-pill" id="btnViewDesktop" title="Desktop View (100%)">
-                <i class="bi bi-laptop me-1"></i> Desktop
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary text-light border-0 px-3 rounded-pill" id="btnViewTablet" title="Tablet View (768px)">
-                <i class="bi bi-tablet me-1"></i> Tablet
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary text-light border-0 px-3 rounded-pill" id="btnViewMobile" title="Mobile View (380px)">
-                <i class="bi bi-phone me-1"></i> Mobile
-            </button>
-        </div>
-
-        <!-- Action Controls -->
         <div class="d-flex align-items-center gap-2">
-            <a href="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass" title="Open preview in new browser tab">
+            <a href="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass" title="Open full portfolio in new tab">
                 <i class="bi bi-box-arrow-up-right me-1"></i> Fullscreen
             </a>
             <button type="button" id="btnResetDefaults" class="btn btn-sm btn-secondary-glass text-muted">
@@ -109,15 +110,16 @@
         </div>
     </div>
 
-    <!-- Alert Message Banner -->
+    <!-- Alert -->
     <div id="editorAlert" class="alert d-none mb-3 glass-card" role="alert"></div>
 
     <div class="row g-4">
-        <!-- Left Column: Customization Controls Panel -->
-        <div class="col-lg-4 col-xl-4">
+
+        <!-- ── LEFT: Controls ── -->
+        <div class="col-lg-4">
             <div class="glass-card p-4 customizer-panel">
 
-                <!-- 1. Theme Presets -->
+                <!-- 1. Theme Preset -->
                 <div class="mb-4">
                     <label class="form-label text-light fw-bold small text-uppercase tracking-wider d-flex justify-content-between align-items-center">
                         <span><i class="bi bi-palette-fill text-primary me-1"></i> 1. Select Theme Preset</span>
@@ -125,10 +127,10 @@
                     </label>
 
                     <div class="row g-2" id="themeCardsContainer">
-                        <!-- 1. Dark Developer (modern-dark) -->
+                        <!-- 1. Dark Developer -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'modern-dark' %}active{% endif %}" data-theme="modern-dark">
-                                <div class="rounded-2 p-2 mb-2 text-center" style="background: #050811; border: 1px solid rgba(139,92,246,0.4);">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#050811;border:1px solid rgba(139,92,246,0.4);">
                                     <div class="small fw-bold font-monospace" style="color:#c4b5fd;">Dev</div>
                                     <div style="height:3px;width:24px;background:linear-gradient(90deg,#a855f7,#22d3ee);margin:4px auto;border-radius:2px;box-shadow:0 0 6px #a855f7;"></div>
                                 </div>
@@ -136,32 +138,29 @@
                                 <div class="text-muted text-center" style="font-size:0.7rem;">Neon Purple &amp; Cyan</div>
                             </div>
                         </div>
-
-                        <!-- 2. Minimal Professional (minimal-light) -->
+                        <!-- 2. Minimal Professional -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'minimal-light' %}active{% endif %}" data-theme="minimal-light">
-                                <div class="rounded-2 p-2 mb-2 text-center" style="background: #ffffff; border: 2px solid #0a0a0a;">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#fff;border:2px solid #0a0a0a;">
                                     <div class="small fw-black" style="color:#0a0a0a;letter-spacing:-0.04em;">Pro</div>
-                                    <div style="height:3px;width:24px;background:#0a0a0a;margin:4px auto;border-radius:0px;"></div>
+                                    <div style="height:3px;width:24px;background:#0a0a0a;margin:4px auto;"></div>
                                 </div>
                                 <div class="fw-semibold small text-white text-center">Minimal Pro</div>
                                 <div class="text-muted text-center" style="font-size:0.7rem;">White &amp; Bold Black</div>
                             </div>
                         </div>
-
-                        <!-- 3. Glassmorphism (creative-gradient) -->
+                        <!-- 3. Glassmorphism -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'creative-gradient' %}active{% endif %}" data-theme="creative-gradient">
                                 <div class="rounded-2 p-2 mb-2 text-center" style="background:linear-gradient(135deg,#4a1580,#e8195b);border:1px solid rgba(255,255,255,0.3);">
-                                    <div class="small fw-bold text-white" style="backdrop-filter:blur(4px);">Glass</div>
+                                    <div class="small fw-bold text-white">Glass</div>
                                     <div style="height:3px;width:24px;background:rgba(255,255,255,0.8);margin:4px auto;border-radius:50px;"></div>
                                 </div>
                                 <div class="fw-semibold small text-white text-center">Glassmorphism</div>
                                 <div class="text-muted text-center" style="font-size:0.7rem;">Frosted Glass Cards</div>
                             </div>
                         </div>
-
-                        <!-- 4. AI Futuristic (professional-blue) -->
+                        <!-- 4. AI Futuristic -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'professional-blue' %}active{% endif %}" data-theme="professional-blue">
                                 <div class="rounded-2 p-2 mb-2 text-center" style="background:#020c1b;border:1px solid rgba(0,212,255,0.4);">
@@ -172,8 +171,7 @@
                                 <div class="text-muted text-center" style="font-size:0.7rem;">Navy &amp; Cyan Glow</div>
                             </div>
                         </div>
-
-                        <!-- 5. Creative Colorful (creative-colorful) -->
+                        <!-- 5. Creative Colorful -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'creative-colorful' %}active{% endif %}" data-theme="creative-colorful">
                                 <div class="rounded-2 p-2 mb-2 text-center" style="background:linear-gradient(130deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff);border:2px solid #1a1a1a;box-shadow:3px 3px 0 #1a1a1a;">
@@ -184,8 +182,7 @@
                                 <div class="text-muted text-center" style="font-size:0.7rem;">Neo-Brutalist Rainbow</div>
                             </div>
                         </div>
-
-                        <!-- 6. Premium Elegant (premium-elegant) -->
+                        <!-- 6. Premium Elegant -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'premium-elegant' %}active{% endif %}" data-theme="premium-elegant">
                                 <div class="rounded-2 p-2 mb-2 text-center" style="background:#1a1a1a;border:1px solid rgba(212,160,23,0.5);">
@@ -196,20 +193,18 @@
                                 <div class="text-muted text-center" style="font-size:0.7rem;">Charcoal &amp; Gold</div>
                             </div>
                         </div>
-
-                        <!-- 7. Terminal Hacker (terminal-hacker) -->
+                        <!-- 7. Terminal Hacker -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'terminal-hacker' %}active{% endif %}" data-theme="terminal-hacker">
                                 <div class="rounded-2 p-2 mb-2 text-center" style="background:#000;border:1px solid rgba(0,255,65,0.3);">
                                     <div class="small fw-bold font-monospace" style="color:#00ff41;text-shadow:0 0 6px #00ff41;">$ _</div>
-                                    <div style="height:3px;width:24px;background:#00ff41;margin:4px auto;border-radius:0px;box-shadow:0 0 8px #00ff41;"></div>
+                                    <div style="height:3px;width:24px;background:#00ff41;margin:4px auto;box-shadow:0 0 8px #00ff41;"></div>
                                 </div>
                                 <div class="fw-semibold small text-white text-center">Terminal Hacker</div>
                                 <div class="text-muted text-center" style="font-size:0.7rem;">Green Phosphor CLI</div>
                             </div>
                         </div>
-
-                        <!-- 8. Student Starter (student-starter) -->
+                        <!-- 8. Student Starter -->
                         <div class="col-6">
                             <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'student-starter' %}active{% endif %}" data-theme="student-starter">
                                 <div class="rounded-2 p-2 mb-2 text-center" style="background:linear-gradient(135deg,#ede9fe,#fce7f3,#d1fae5);border:2px solid #e9d5ff;">
@@ -221,105 +216,81 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <hr class="border-secondary border-opacity-25 my-4">
 
-                <!-- 2. Accent Color Palette -->
+                <!-- 2. Accent Color -->
                 <div class="mb-4">
                     <label class="form-label text-light fw-bold small text-uppercase tracking-wider d-flex justify-content-between align-items-center">
-                        <span><i class="bi bi-droplet-half text-info me-1"></i> 2. Accent Color Palette</span>
+                        <span><i class="bi bi-droplet-half text-info me-1"></i> 2. Accent Color</span>
                         <code id="activeColorHex" class="text-light small font-monospace">{{ portfolio.accent_color }}</code>
                     </label>
-
                     <div class="d-flex flex-wrap gap-2 pt-1" id="swatchContainer">
                         {% set swatches = [
-                            ('#6366f1', 'Indigo'),
-                            ('#10b981', 'Emerald'),
-                            ('#f43f5e', 'Rose'),
-                            ('#0ea5e9', 'Cyan'),
-                            ('#f59e0b', 'Amber'),
-                            ('#8b5cf6', 'Violet'),
-                            ('#64748b', 'Slate')
+                            ('#6366f1','Indigo'),('#10b981','Emerald'),('#f43f5e','Rose'),
+                            ('#0ea5e9','Cyan'),('#f59e0b','Amber'),('#8b5cf6','Violet'),('#64748b','Slate')
                         ] %}
                         {% for color_hex, color_name in swatches %}
-                            <div class="color-swatch {% if portfolio.accent_color == color_hex %}active{% endif %}"
-                                 style="background-color: {{ color_hex }};"
-                                 data-color="{{ color_hex }}"
-                                 title="{{ color_name }} ({{ color_hex }})">
-                            </div>
+                        <div class="color-swatch {% if portfolio.accent_color == color_hex %}active{% endif %}"
+                             style="background-color:{{ color_hex }};"
+                             data-color="{{ color_hex }}"
+                             title="{{ color_name }} ({{ color_hex }})">
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
 
                 <hr class="border-secondary border-opacity-25 my-4">
 
-                <!-- 3. Font Family Selector -->
+                <!-- 3. Font Family -->
                 <div class="mb-4">
                     <label for="fontSelect" class="form-label text-light fw-bold small text-uppercase tracking-wider">
-                        <i class="bi bi-fonts text-warning me-1"></i> 3. Typography & Font Family
+                        <i class="bi bi-type text-warning me-1"></i> 3. Typography &amp; Font
                     </label>
                     <select id="fontSelect" class="form-select custom-input">
-                        <option value="plus-jakarta-sans" {% if portfolio.font_family == 'plus-jakarta-sans' %}selected{% endif %}>
-                            Plus Jakarta Sans (Modern Clean)
-                        </option>
-                        <option value="outfit" {% if portfolio.font_family == 'outfit' %}selected{% endif %}>
-                            Outfit (Geometric Tech)
-                        </option>
-                        <option value="inter" {% if portfolio.font_family == 'inter' %}selected{% endif %}>
-                            Inter (Neutral Precision)
-                        </option>
-                        <option value="serif" {% if portfolio.font_family == 'serif' %}selected{% endif %}>
-                            Merriweather Serif (Editorial Classic)
-                        </option>
-                        <option value="mono" {% if portfolio.font_family == 'mono' %}selected{% endif %}>
-                            JetBrains Mono (Developer Code)
-                        </option>
+                        <option value="plus-jakarta-sans" {% if portfolio.font_family == 'plus-jakarta-sans' %}selected{% endif %}>Plus Jakarta Sans</option>
+                        <option value="outfit"            {% if portfolio.font_family == 'outfit' %}selected{% endif %}>Outfit</option>
+                        <option value="inter"             {% if portfolio.font_family == 'inter' %}selected{% endif %}>Inter</option>
+                        <option value="serif"             {% if portfolio.font_family == 'serif' %}selected{% endif %}>Merriweather (Serif)</option>
+                        <option value="mono"              {% if portfolio.font_family == 'mono' %}selected{% endif %}>JetBrains Mono</option>
                     </select>
                 </div>
 
                 <hr class="border-secondary border-opacity-25 my-4">
 
-                <!-- 4. Layout Style -->
+                <!-- 4. Layout -->
                 <div class="mb-4">
                     <label for="layoutSelect" class="form-label text-light fw-bold small text-uppercase tracking-wider">
                         <i class="bi bi-grid-1x2 text-success me-1"></i> 4. Layout Variation
                     </label>
                     <select id="layoutSelect" class="form-select custom-input">
-                        <option value="standard" {% if portfolio.layout_style == 'standard' %}selected{% endif %}>
-                            Standard (Vertical Story Sequence)
-                        </option>
-                        <option value="compact" {% if portfolio.layout_style == 'compact' %}selected{% endif %}>
-                            Compact (Dense Two-Column Grid)
-                        </option>
-                        <option value="sidebar" {% if portfolio.layout_style == 'sidebar' %}selected{% endif %}>
-                            Sidebar (Sticky Profile Column)
-                        </option>
+                        <option value="standard" {% if portfolio.layout_style == 'standard' %}selected{% endif %}>Standard (Vertical)</option>
+                        <option value="compact"  {% if portfolio.layout_style == 'compact'  %}selected{% endif %}>Compact (Dense Grid)</option>
+                        <option value="sidebar"  {% if portfolio.layout_style == 'sidebar'  %}selected{% endif %}>Sidebar (Sticky Profile)</option>
                     </select>
                 </div>
 
                 <hr class="border-secondary border-opacity-25 my-4">
 
-                <!-- 5. Section Visibility Controls -->
+                <!-- 5. Section Visibility -->
                 <div class="mb-3">
                     <label class="form-label text-light fw-bold small text-uppercase tracking-wider mb-2">
-                        <i class="bi bi-toggle-on text-primary me-1"></i> 5. Section Visibility Controls
+                        <i class="bi bi-toggle-on text-primary me-1"></i> 5. Section Visibility
                     </label>
                     <div class="d-flex flex-column gap-2" id="sectionVisibilityContainer">
                         {% set visibility = portfolio.get_section_visibility() %}
                         {% set sections = [
-                            ('about', 'About Me Bio', 'bi-person-badge'),
-                            ('skills', 'Skills & Competencies', 'bi-stars'),
-                            ('projects', 'Engineering Projects', 'bi-code-slash'),
-                            ('experience', 'Professional Experience', 'bi-briefcase'),
-                            ('education', 'Education & Degrees', 'bi-mortarboard'),
-                            ('certifications', 'Licenses & Certifications', 'bi-award'),
-                            ('contact', 'Contact Details & Footer', 'bi-envelope')
+                            ('about','About Me','bi-person-badge'),
+                            ('skills','Skills','bi-stars'),
+                            ('projects','Projects','bi-code-slash'),
+                            ('experience','Experience','bi-briefcase'),
+                            ('education','Education','bi-mortarboard'),
+                            ('certifications','Certifications','bi-award'),
+                            ('contact','Contact','bi-envelope')
                         ] %}
-
                         {% for sec_key, sec_label, sec_icon in sections %}
-                        <div class="d-flex justify-content-between align-items-center p-2 rounded-2" style="background: rgba(255,255,255,0.02);">
+                        <div class="d-flex justify-content-between align-items-center p-2 rounded-2" style="background:rgba(255,255,255,0.02);">
                             <span class="small text-light">
                                 <i class="bi {{ sec_icon }} me-2 text-muted"></i>{{ sec_label }}
                             </span>
@@ -336,11 +307,11 @@
             </div>
         </div>
 
-        <!-- Right Column: Inline Live Preview Panel -->
-        <div class="col-lg-8 col-xl-8">
-            <div class="glass-card p-0 overflow-hidden d-flex flex-column">
+        <!-- ── RIGHT: Live Preview ── -->
+        <div class="col-lg-8">
+            <div class="glass-card p-0 overflow-hidden">
 
-                <!-- Mockup Browser Bar -->
+                <!-- Browser Bar -->
                 <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-secondary border-opacity-25" style="background:#0f172a;">
                     <div class="d-flex align-items-center gap-2">
                         <span style="width:12px;height:12px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
@@ -357,25 +328,21 @@
                     </div>
                 </div>
 
-                <!-- Live Preview Container (scrollable) -->
-                <div style="background:#06090e;overflow-y:auto;max-height:800px;">
-                    <!-- THE LIVE PREVIEW DIV — theme class swapped by JS instantly -->
+                <!-- Scrollable Preview -->
+                <div class="preview-scroll-wrap">
                     <div id="livePreviewPanel"
-                         class="theme-{{ portfolio.theme }} font-{{ portfolio.font_family }} layout-{{ portfolio.layout_style }}"
-                         style="--theme-accent:{{ portfolio.accent_color }};min-height:780px;">
+                         class="theme-{{ portfolio.theme }} font-{{ portfolio.font_family }} layout-{{ portfolio.layout_style }} preview-root">
 
                         <!-- HERO -->
-                        <header class="theme-hero-header" style="padding:3rem 2.5rem 2rem;">
-                            <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
-                                <div class="theme-avatar-ring" style="width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;background:var(--theme-accent);color:#fff;flex-shrink:0;">
-                                    {{ portfolio.full_name[:2] | upper }}
-                                </div>
-                                <div>
-                                    <h2 style="margin:0 0 0.3rem;font-weight:800;font-size:1.6rem;">{{ portfolio.full_name }}</h2>
-                                    <p class="theme-accent-text" style="margin:0 0 0.5rem;font-size:1rem;font-weight:600;">{{ portfolio.headline or 'Software Engineer' }}</p>
-                                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-                                        {% if portfolio.location %}<span class="theme-badge" style="padding:0.2rem 0.7rem;border-radius:50px;font-size:0.75rem;"><i class="bi bi-geo-alt-fill me-1"></i>{{ portfolio.location }}</span>{% endif %}
-                                        {% if portfolio.email %}<span class="theme-badge" style="padding:0.2rem 0.7rem;border-radius:50px;font-size:0.75rem;"><i class="bi bi-envelope-fill me-1"></i>{{ portfolio.email }}</span>{% endif %}
+                        <header class="theme-hero-header preview-hero">
+                            <div class="preview-hero-inner">
+                                <div class="preview-avatar">{{ portfolio.full_name[:2] | upper }}</div>
+                                <div class="preview-hero-text">
+                                    <h2 class="preview-name">{{ portfolio.full_name }}</h2>
+                                    <p class="theme-accent-text preview-headline">{{ portfolio.headline or 'Software Engineer' }}</p>
+                                    <div class="preview-tags">
+                                        {% if portfolio.location %}<span class="theme-badge preview-tag"><i class="bi bi-geo-alt-fill"></i> {{ portfolio.location }}</span>{% endif %}
+                                        {% if portfolio.email %}<span class="theme-badge preview-tag"><i class="bi bi-envelope-fill"></i> {{ portfolio.email }}</span>{% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -383,10 +350,10 @@
 
                         <!-- ABOUT -->
                         {% if portfolio.about %}
-                        <section style="padding:1.5rem 2.5rem;">
-                            <h5 class="theme-section-title" style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;">About Me</h5>
-                            <div class="theme-card" style="padding:1.2rem;border-radius:12px;">
-                                <p style="margin:0;font-size:0.9rem;line-height:1.7;opacity:0.85;">{{ portfolio.about[:280] }}{% if portfolio.about|length > 280 %}…{% endif %}</p>
+                        <section class="preview-section" data-section="about">
+                            <p class="preview-section-label theme-accent-text">About Me</p>
+                            <div class="theme-card preview-card">
+                                <p class="preview-body-text">{{ portfolio.about[:300] }}{% if portfolio.about|length > 300 %}…{% endif %}</p>
                             </div>
                         </section>
                         {% endif %}
@@ -394,14 +361,12 @@
                         <!-- SKILLS -->
                         {% set skills = portfolio.get_skills_list() %}
                         {% if skills %}
-                        <section style="padding:0 2.5rem 1.5rem;">
-                            <h5 class="theme-section-title" style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;">Skills</h5>
-                            <div class="theme-card" style="padding:1.2rem;border-radius:12px;">
-                                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
-                                    {% for skill in skills[:12] %}
-                                    <span class="theme-badge" style="padding:0.3rem 0.9rem;border-radius:50px;font-size:0.8rem;">{{ skill }}</span>
-                                    {% endfor %}
-                                    {% if skills|length > 12 %}<span class="theme-badge" style="padding:0.3rem 0.9rem;border-radius:50px;font-size:0.8rem;opacity:0.6;">+{{ skills|length - 12 }} more</span>{% endif %}
+                        <section class="preview-section" data-section="skills">
+                            <p class="preview-section-label theme-accent-text">Skills</p>
+                            <div class="theme-card preview-card">
+                                <div class="preview-badge-row">
+                                    {% for skill in skills[:14] %}<span class="theme-badge preview-skill-tag">{{ skill }}</span>{% endfor %}
+                                    {% if skills|length > 14 %}<span class="theme-badge preview-skill-tag" style="opacity:0.5;">+{{ skills|length - 14 }} more</span>{% endif %}
                                 </div>
                             </div>
                         </section>
@@ -409,30 +374,32 @@
 
                         <!-- PROJECTS -->
                         {% if portfolio.projects %}
-                        <section style="padding:0 2.5rem 1.5rem;">
-                            <h5 class="theme-section-title" style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;">Projects</h5>
-                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">
+                        <section class="preview-section" data-section="projects">
+                            <p class="preview-section-label theme-accent-text">Projects</p>
+                            <div class="preview-grid">
                                 {% for project in portfolio.projects[:4] %}
-                                <div class="theme-card" style="padding:1.1rem;border-radius:12px;">
-                                    <div class="theme-accent-text" style="font-size:0.7rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.4rem;">Project</div>
-                                    <div style="font-weight:700;font-size:0.95rem;margin-bottom:0.4rem;">{{ project.name }}</div>
-                                    {% if project.description %}<p style="font-size:0.78rem;margin:0;opacity:0.75;line-height:1.5;">{{ project.description[:80] }}{% if project.description|length > 80 %}…{% endif %}</p>{% endif %}
+                                <div class="theme-card preview-project-card">
+                                    <p class="preview-project-label theme-accent-text">Project</p>
+                                    <p class="preview-project-name">{{ project.name }}</p>
+                                    {% if project.description %}<p class="preview-project-desc">{{ project.description[:90] }}{% if project.description|length > 90 %}…{% endif %}</p>{% endif %}
                                 </div>
                                 {% endfor %}
                             </div>
                         </section>
                         {% endif %}
 
-                        <!-- CTA Footer -->
-                        <div style="padding:1.5rem 2.5rem 2.5rem;display:flex;gap:0.8rem;flex-wrap:wrap;">
-                            <button class="theme-btn-accent" style="padding:0.6rem 1.4rem;border-radius:8px;border:none;font-weight:600;font-size:0.9rem;cursor:pointer;">Get In Touch</button>
-                            <button class="theme-btn-outline-accent" style="padding:0.6rem 1.4rem;border-radius:8px;font-weight:600;font-size:0.9rem;cursor:pointer;background:transparent;">View Full Portfolio</button>
+                        <!-- CTA -->
+                        <div class="preview-cta">
+                            <button class="theme-btn-accent preview-btn">Get In Touch</button>
+                            <button class="theme-btn-outline-accent preview-btn-outline">View Portfolio</button>
                         </div>
 
                     </div><!-- /livePreviewPanel -->
                 </div>
+
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}
@@ -440,13 +407,13 @@
 {% block extra_scripts %}
 <script>
     window.INITIAL_THEME_CONFIG = {
-        portfolioId: {{ portfolio.id }},
-        theme: "{{ portfolio.theme }}",
-        accent_color: "{{ portfolio.accent_color }}",
-        font_family: "{{ portfolio.font_family }}",
-        layout_style: "{{ portfolio.layout_style }}",
+        portfolioId:      {{ portfolio.id }},
+        theme:            "{{ portfolio.theme }}",
+        accent_color:     "{{ portfolio.accent_color }}",
+        font_family:      "{{ portfolio.font_family }}",
+        layout_style:     "{{ portfolio.layout_style }}",
         visible_sections: {{ portfolio.get_section_visibility() | tojson }}
     };
 </script>
-<script src="{{ url_for('static', filename='js/theme_editor.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme_editor.js') }}?v=10"></script>
 {% endblock %}

@@ -576,6 +576,48 @@ body {
 }
 
 /* ===================================================================
+   UNIVERSAL THEME HELPER CLASSES
+   Used by the inline preview panel. Use CSS variables for all 8 themes.
+   =================================================================== */
+
+.theme-accent-text  { color: var(--theme-accent) !important; }
+.theme-accent-bg    { background: var(--theme-accent) !important; color: #fff !important; }
+
+.theme-btn-accent {
+    background: var(--theme-accent); color: #fff; border: none;
+    font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+}
+.theme-btn-accent:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.theme-btn-outline-accent {
+    background: transparent; color: var(--theme-accent);
+    border: 2px solid var(--theme-accent); font-weight: 600;
+    cursor: pointer; transition: background 0.2s, color 0.2s;
+}
+.theme-btn-outline-accent:hover { background: var(--theme-accent); color: #fff; }
+
+.theme-section-title {
+    color: var(--theme-accent); font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem;
+}
+
+/* Light theme text overrides so preview text is readable */
+.theme-minimal-light .preview-name,
+.theme-minimal-light .preview-project-name { color: #0a0a0a !important; }
+.theme-minimal-light .preview-body-text,
+.theme-minimal-light .preview-project-desc { color: #333 !important; opacity: 1 !important; }
+
+.theme-student-starter .preview-name,
+.theme-student-starter .preview-project-name { color: #1e1b4b !important; }
+.theme-student-starter .preview-body-text,
+.theme-student-starter .preview-project-desc { color: #374151 !important; opacity: 1 !important; }
+
+.theme-creative-colorful .preview-name,
+.theme-creative-colorful .preview-project-name { color: #111 !important; }
+.theme-creative-colorful .preview-body-text,
+.theme-creative-colorful .preview-project-desc { color: #222 !important; opacity: 1 !important; }
+
+/* ===================================================================
    THEME EDITOR — VIEWPORT PREVIEW FRAMES
    =================================================================== */
 .viewport-frame-wrapper {
@@ -583,13 +625,5 @@ body {
     border-radius: 12px; overflow: hidden;
 }
 .viewport-desktop { width: 100%; }
-.viewport-tablet {
-    width: 768px; max-width: 100%;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    border: 8px solid #1e293b; border-radius: 20px;
-}
-.viewport-mobile {
-    width: 380px; max-width: 100%;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    border: 10px solid #1e293b; border-radius: 24px;
-}
+.viewport-tablet  { width: 768px; max-width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 8px solid #1e293b; border-radius: 20px; }
+.viewport-mobile  { width: 380px; max-width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 10px solid #1e293b; border-radius: 24px; }

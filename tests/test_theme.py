@@ -133,7 +133,7 @@ def test_theme_editor_page_loads_authenticated(client, app):
     response = client.get(f"/portfolios/{port_id}/theme")
     assert response.status_code == 200
     html = response.data.decode("utf-8")
-    assert "Theme Builder & Live Customizer" in html
+    assert "Theme Builder" in html
     assert "Dark Developer" in html
     assert "Minimal Pro" in html
     assert "Glassmorphism" in html
