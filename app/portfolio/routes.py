@@ -77,6 +77,11 @@ def create():
             certifications=form.certifications.data.strip() if form.certifications.data else None,
         )
 
+        is_pub = request.form.get("is_published") in ("y", "true", "1", "on")
+        portfolio.is_published = is_pub
+        if is_pub:
+            portfolio.ensure_slug()
+
         try:
             db.session.add(portfolio)
             db.session.commit()
@@ -123,6 +128,11 @@ def edit(portfolio_id: int):
         portfolio.experience = form.experience.data.strip() if form.experience.data else None
         portfolio.education = form.education.data.strip() if form.education.data else None
         portfolio.certifications = form.certifications.data.strip() if form.certifications.data else None
+
+        is_pub = request.form.get("is_published") in ("y", "true", "1", "on")
+        portfolio.is_published = is_pub
+        if is_pub:
+            portfolio.ensure_slug()
 
         try:
             db.session.commit()
@@ -418,13 +428,15 @@ def toggle_publish(portfolio_id: int):
             }), 200
 
         flash(msg, "success" if portfolio.is_published else "info")
-        return redirect(url_for("portfolio.preview", portfolio_id=portfolio.id))
+        next_url = request.args.get("next") or request.form.get("next") or url_for("portfolio.preview", portfolio_id=portfolio.id)
+        return redirect(next_url)
     except Exception as e:
         db.session.rollback()
         if request.is_json:
             return jsonify({"success": False, "error": str(e)}), 500
         flash("Failed to update publication status. Please try again.", "danger")
-        return redirect(url_for("portfolio.preview", portfolio_id=portfolio.id))
+        next_url = request.args.get("next") or request.form.get("next") or url_for("portfolio.preview", portfolio_id=portfolio.id)
+        return redirect(next_url)
 
 
 @portfolio_bp.route("/<int:portfolio_id>/qr", methods=["GET"])

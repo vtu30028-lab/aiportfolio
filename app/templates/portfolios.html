@@ -44,13 +44,19 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-column align-items-end gap-1">
-                                {% if p.is_published %}
-                                    <span class="badge bg-success bg-opacity-25 text-success small border border-success border-opacity-25">
-                                        <i class="bi bi-globe me-1"></i>Live
-                                    </span>
-                                {% else %}
-                                    <span class="badge bg-secondary bg-opacity-25 text-muted small">Draft</span>
-                                {% endif %}
+                                <form method="POST" action="{{ url_for('portfolio.toggle_publish', portfolio_id=p.id) }}" class="d-inline mb-0">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="next" value="{{ url_for('portfolio.index') }}">
+                                    {% if p.is_published %}
+                                        <button type="submit" class="badge bg-success bg-opacity-25 text-success small border border-success border-opacity-25 btn p-1 px-2" title="Published Live — Click to unpublish">
+                                            <i class="bi bi-globe me-1"></i>Live
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="badge bg-secondary bg-opacity-25 text-warning small border border-warning border-opacity-25 btn p-1 px-2 fw-semibold" title="Private Draft — Click to Publish Live">
+                                            <i class="bi bi-globe2 me-1"></i>Publish Live
+                                        </button>
+                                    {% endif %}
+                                </form>
                                 <span class="badge bg-dark text-muted small border border-secondary border-opacity-25">
                                     <i class="bi bi-code-slash me-1"></i>{{ p.projects|length }} projects
                                 </span>
