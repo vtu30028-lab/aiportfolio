@@ -336,35 +336,100 @@
             </div>
         </div>
 
-        <!-- Right Column: Live Responsive Preview Frame -->
+        <!-- Right Column: Inline Live Preview Panel -->
         <div class="col-lg-8 col-xl-8">
             <div class="glass-card p-0 overflow-hidden d-flex flex-column">
+
                 <!-- Mockup Browser Bar -->
-                <div class="browser-bar d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-secondary border-opacity-25" style="background: #0f172a;">
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-secondary border-opacity-25" style="background:#0f172a;">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="browser-dot dot-red"></span>
-                        <span class="browser-dot dot-yellow"></span>
-                        <span class="browser-dot dot-green"></span>
-                        <div class="browser-address ms-2 font-monospace small px-2 py-1 rounded" style="background: rgba(0,0,0,0.3); color: #94a3b8;">
-                            <i class="bi bi-lock-fill text-success me-1"></i>
-                            portfolio-ai.dev/live/{{ portfolio.id }}
+                        <span style="width:12px;height:12px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+                        <span style="width:12px;height:12px;border-radius:50%;background:#ffbd2e;display:inline-block;"></span>
+                        <span style="width:12px;height:12px;border-radius:50%;background:#28ca41;display:inline-block;"></span>
+                        <div class="ms-2 font-monospace small px-2 py-1 rounded" style="background:rgba(0,0,0,0.3);color:#94a3b8;">
+                            <i class="bi bi-lock-fill text-success me-1"></i>portfolio-ai.dev/{{ portfolio.full_name | lower | replace(' ','-') }}
                         </div>
                     </div>
-                    <div class="small text-muted font-monospace d-flex align-items-center gap-2">
-                        <span class="spinner-grow spinner-grow-sm text-success" role="status" style="width: 8px; height: 8px;"></span>
-                        <span>Live Sync Active</span>
+                    <div class="small text-muted d-flex align-items-center gap-2">
+                        <span id="previewThemeLabel" class="badge bg-primary bg-opacity-25 text-info font-monospace">{{ portfolio.theme }}</span>
+                        <span class="spinner-grow spinner-grow-sm text-success" style="width:8px;height:8px;"></span>
+                        <span>Live Preview</span>
                     </div>
                 </div>
 
-                <!-- Viewport Frame Wrapper -->
-                <div class="p-3 d-flex justify-content-center" style="background: #06090e; min-height: 800px;">
-                    <div id="viewportFrame" class="viewport-frame-wrapper viewport-desktop">
-                        <iframe id="previewIframe"
-                                class="live-preview-iframe"
-                                src="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}"
-                                title="Live Portfolio Preview">
-                        </iframe>
-                    </div>
+                <!-- Live Preview Container (scrollable) -->
+                <div style="background:#06090e;overflow-y:auto;max-height:800px;">
+                    <!-- THE LIVE PREVIEW DIV — theme class swapped by JS instantly -->
+                    <div id="livePreviewPanel"
+                         class="theme-{{ portfolio.theme }} font-{{ portfolio.font_family }} layout-{{ portfolio.layout_style }}"
+                         style="--theme-accent:{{ portfolio.accent_color }};min-height:780px;">
+
+                        <!-- HERO -->
+                        <header class="theme-hero-header" style="padding:3rem 2.5rem 2rem;">
+                            <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+                                <div class="theme-avatar-ring" style="width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;background:var(--theme-accent);color:#fff;flex-shrink:0;">
+                                    {{ portfolio.full_name[:2] | upper }}
+                                </div>
+                                <div>
+                                    <h2 style="margin:0 0 0.3rem;font-weight:800;font-size:1.6rem;">{{ portfolio.full_name }}</h2>
+                                    <p class="theme-accent-text" style="margin:0 0 0.5rem;font-size:1rem;font-weight:600;">{{ portfolio.headline or 'Software Engineer' }}</p>
+                                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                                        {% if portfolio.location %}<span class="theme-badge" style="padding:0.2rem 0.7rem;border-radius:50px;font-size:0.75rem;"><i class="bi bi-geo-alt-fill me-1"></i>{{ portfolio.location }}</span>{% endif %}
+                                        {% if portfolio.email %}<span class="theme-badge" style="padding:0.2rem 0.7rem;border-radius:50px;font-size:0.75rem;"><i class="bi bi-envelope-fill me-1"></i>{{ portfolio.email }}</span>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+
+                        <!-- ABOUT -->
+                        {% if portfolio.about %}
+                        <section style="padding:1.5rem 2.5rem;">
+                            <h5 class="theme-section-title" style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;">About Me</h5>
+                            <div class="theme-card" style="padding:1.2rem;border-radius:12px;">
+                                <p style="margin:0;font-size:0.9rem;line-height:1.7;opacity:0.85;">{{ portfolio.about[:280] }}{% if portfolio.about|length > 280 %}…{% endif %}</p>
+                            </div>
+                        </section>
+                        {% endif %}
+
+                        <!-- SKILLS -->
+                        {% set skills = portfolio.get_skills_list() %}
+                        {% if skills %}
+                        <section style="padding:0 2.5rem 1.5rem;">
+                            <h5 class="theme-section-title" style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;">Skills</h5>
+                            <div class="theme-card" style="padding:1.2rem;border-radius:12px;">
+                                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                                    {% for skill in skills[:12] %}
+                                    <span class="theme-badge" style="padding:0.3rem 0.9rem;border-radius:50px;font-size:0.8rem;">{{ skill }}</span>
+                                    {% endfor %}
+                                    {% if skills|length > 12 %}<span class="theme-badge" style="padding:0.3rem 0.9rem;border-radius:50px;font-size:0.8rem;opacity:0.6;">+{{ skills|length - 12 }} more</span>{% endif %}
+                                </div>
+                            </div>
+                        </section>
+                        {% endif %}
+
+                        <!-- PROJECTS -->
+                        {% if portfolio.projects %}
+                        <section style="padding:0 2.5rem 1.5rem;">
+                            <h5 class="theme-section-title" style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;">Projects</h5>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">
+                                {% for project in portfolio.projects[:4] %}
+                                <div class="theme-card" style="padding:1.1rem;border-radius:12px;">
+                                    <div class="theme-accent-text" style="font-size:0.7rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.4rem;">Project</div>
+                                    <div style="font-weight:700;font-size:0.95rem;margin-bottom:0.4rem;">{{ project.name }}</div>
+                                    {% if project.description %}<p style="font-size:0.78rem;margin:0;opacity:0.75;line-height:1.5;">{{ project.description[:80] }}{% if project.description|length > 80 %}…{% endif %}</p>{% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                        {% endif %}
+
+                        <!-- CTA Footer -->
+                        <div style="padding:1.5rem 2.5rem 2.5rem;display:flex;gap:0.8rem;flex-wrap:wrap;">
+                            <button class="theme-btn-accent" style="padding:0.6rem 1.4rem;border-radius:8px;border:none;font-weight:600;font-size:0.9rem;cursor:pointer;">Get In Touch</button>
+                            <button class="theme-btn-outline-accent" style="padding:0.6rem 1.4rem;border-radius:8px;font-weight:600;font-size:0.9rem;cursor:pointer;background:transparent;">View Full Portfolio</button>
+                        </div>
+
+                    </div><!-- /livePreviewPanel -->
                 </div>
             </div>
         </div>
@@ -374,7 +439,6 @@
 
 {% block extra_scripts %}
 <script>
-    // Injected current preferences
     window.INITIAL_THEME_CONFIG = {
         portfolioId: {{ portfolio.id }},
         theme: "{{ portfolio.theme }}",
