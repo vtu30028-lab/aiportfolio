@@ -82,7 +82,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /** Fetch Repositories from Backend */
     async function handleFetchRepositories() {
-        const username = githubUsername.value.trim();
+        let username = githubUsername.value.trim();
+        if (username.startsWith("@")) {
+            username = username.slice(1);
+        }
+        if (username.includes("github.com")) {
+            try {
+                const cleanedUrl = username.replace(/\/+$/, "");
+                const parts = cleanedUrl.split("/");
+                username = parts[parts.length - 1];
+                githubUsername.value = username;
+            } catch (e) {}
+        }
+
         const portfolioId = portfolioSelect ? portfolioSelect.value : null;
 
         if (!username) {
@@ -118,7 +130,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 }),
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                showAlert(`Server communication error (HTTP ${response.status}). Please try again.`, "danger");
+                return;
+            }
 
             if (!response.ok || !data.success) {
                 showAlert(data.error || "Failed to fetch repositories.", "danger");
@@ -538,8 +556,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // If default username already pre-filled, allow quick auto-fetch if user clicks
-        if (githubUsername.value.trim() && !reposContainer.classList.contains("d-none")) {
+        // If default username already pre-filled, automatically fetch repos on initial load
+        if (githubUsername.value.trim()) {
             handleFetchRepositories();
         }
     }

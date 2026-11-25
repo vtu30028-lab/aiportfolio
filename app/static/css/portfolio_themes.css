@@ -8,9 +8,9 @@
 
 /* ---- Global Accent CSS Variables ---- */
 :root {
-    --theme-accent: #6366f1;
-    --theme-accent-hover: #4f46e5;
-    --theme-accent-rgb: 99, 102, 241;
+    --theme-accent: #152618;
+    --theme-accent-hover: #223c26;
+    --theme-accent-rgb: 21, 38, 24;
 }
 
 /* ---- Base body font fallback ---- */
@@ -24,6 +24,11 @@ body {
 .font-inter             { font-family: 'Inter', system-ui, sans-serif !important; }
 .font-serif             { font-family: 'Merriweather', Georgia, Cambria, serif !important; }
 .font-mono              { font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace !important; }
+.font-poppins           { font-family: 'Poppins', system-ui, sans-serif !important; }
+.font-space-grotesk     { font-family: 'Space Grotesk', system-ui, sans-serif !important; }
+.font-playfair          { font-family: 'Playfair Display', Georgia, serif !important; }
+.font-dm-sans           { font-family: 'DM Sans', system-ui, sans-serif !important; }
+.font-fira-code         { font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important; }
 
 /* ===================================================================
    1. MODERN-DARK  →  Dark Developer
@@ -503,6 +508,311 @@ body {
 .theme-student-starter h4 { color: #5b21b6; font-weight: 800; }
 
 /* ===================================================================
+   9. MINDFUL-ORGANIC  →  Scandinavian Zen / Mindful Coaching
+   Pale organic sage · Deep forest green hero · Pill cards & buttons
+   (Matches clean wellness / mindful coaching editorial aesthetic)
+   =================================================================== */
+.theme-mindful-organic {
+    --bg-page: #edf3ec;
+    --bg-surface: #ffffff;
+    --text-primary: #152717;
+    --text-secondary: #3b533e;
+    --border-color: rgba(24, 47, 29, 0.1);
+    --shadow-card: 0 10px 30px rgba(24, 47, 29, 0.06), 0 1px 3px rgba(24, 47, 29, 0.04);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    background-image:
+        radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 10% 85%, rgba(34, 197, 94, 0.06) 0%, transparent 45%);
+}
+.theme-mindful-organic .theme-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+}
+.theme-mindful-organic .theme-card:hover {
+    border-color: rgba(24, 47, 29, 0.22);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 38px rgba(24, 47, 29, 0.1);
+}
+.theme-mindful-organic .theme-hero-header {
+    background: linear-gradient(145deg, #182f1d 0%, #0f2213 100%);
+    color: #f1f8f2 !important;
+    border-radius: 0 0 32px 32px;
+    position: relative;
+    overflow: hidden;
+}
+.theme-mindful-organic .theme-hero-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 75% 35%, rgba(245, 158, 11, 0.18) 0%, transparent 60%);
+    pointer-events: none;
+}
+.theme-mindful-organic .theme-hero-header h1,
+.theme-mindful-organic .theme-hero-header p,
+.theme-mindful-organic .theme-hero-header span,
+.theme-mindful-organic .theme-hero-header div,
+.theme-mindful-organic .theme-hero-header a { color: #f1f8f2 !important; }
+.theme-mindful-organic .theme-badge {
+    background: rgba(24, 47, 29, 0.08);
+    color: #182f1d;
+    border: 1px solid rgba(24, 47, 29, 0.14);
+    border-radius: 50px;
+    padding: 0.35rem 0.9rem;
+    font-weight: 600;
+}
+.theme-mindful-organic .theme-btn-accent {
+    border-radius: 50px !important;
+    padding: 0.55rem 1.4rem;
+}
+.theme-mindful-organic .theme-btn-outline-accent {
+    border-radius: 50px !important;
+    padding: 0.55rem 1.4rem;
+}
+
+/* ===================================================================
+   10. CYBERPUNK-NEON  →  High-Voltage Cyberpunk
+   Pure obsidian · High-voltage lime neon · Electric magenta edge
+   =================================================================== */
+.theme-cyberpunk-neon {
+    --bg-page: #05050a;
+    --bg-surface: #0c0c16;
+    --text-primary: #f0fdf4;
+    --text-secondary: #86efac;
+    --border-color: rgba(57, 255, 20, 0.35);
+    --shadow-card: 0 0 20px rgba(57, 255, 20, 0.12), 0 8px 32px rgba(0,0,0,0.8);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(57, 255, 20, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.08) 0%, transparent 50%);
+}
+.theme-cyberpunk-neon .theme-card {
+    background: #0c0c16;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.22s ease;
+}
+.theme-cyberpunk-neon .theme-card:hover {
+    border-color: #39ff14;
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.28), 0 12px 40px rgba(0,0,0,0.9);
+    transform: translateY(-2px);
+}
+.theme-cyberpunk-neon .theme-hero-header {
+    background: linear-gradient(135deg, #05050a 0%, #120a1f 60%, #05050a 100%);
+    border-bottom: 2px solid #39ff14;
+    position: relative;
+}
+.theme-cyberpunk-neon .theme-hero-header h1 {
+    color: #ffffff !important;
+    text-shadow: 0 0 14px rgba(57, 255, 20, 0.6);
+}
+.theme-cyberpunk-neon .theme-hero-header p,
+.theme-cyberpunk-neon .theme-hero-header span,
+.theme-cyberpunk-neon .theme-hero-header div,
+.theme-cyberpunk-neon .theme-hero-header a { color: #86efac !important; }
+.theme-cyberpunk-neon .theme-badge {
+    background: rgba(57, 255, 20, 0.12);
+    color: #39ff14;
+    border: 1px solid rgba(57, 255, 20, 0.4);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===================================================================
+   11. MIDNIGHT-EMERALD  →  Midnight Emerald Luxury
+   Velvet black emerald · Jewel green · Shimmering gold accents
+   =================================================================== */
+.theme-midnight-emerald {
+    --bg-page: #04100c;
+    --bg-surface: #081d15;
+    --text-primary: #e6f7f0;
+    --text-secondary: #a3d9c3;
+    --border-color: rgba(16, 185, 129, 0.28);
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.55), 0 0 16px rgba(16, 185, 129, 0.1);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    background-image:
+        radial-gradient(ellipse at 80% 10%, rgba(16, 185, 129, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 90%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+}
+.theme-midnight-emerald .theme-card {
+    background: #081d15;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+}
+.theme-midnight-emerald .theme-card:hover {
+    border-color: #10b981;
+    box-shadow: 0 0 28px rgba(16, 185, 129, 0.22), 0 14px 40px rgba(0,0,0,0.65);
+    transform: translateY(-3px);
+}
+.theme-midnight-emerald .theme-hero-header {
+    background: linear-gradient(135deg, #030d0a 0%, #07261b 60%, #030d0a 100%);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+}
+.theme-midnight-emerald .theme-hero-header h1,
+.theme-midnight-emerald .theme-hero-header p,
+.theme-midnight-emerald .theme-hero-header span,
+.theme-midnight-emerald .theme-hero-header div,
+.theme-midnight-emerald .theme-hero-header a { color: #e6f7f0 !important; }
+.theme-midnight-emerald .theme-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* ===================================================================
+   12. SUNSET-CORAL  →  Sunset Twilight
+   Dusk indigo · Warm peach & coral gradients · Glowing dusk glass
+   =================================================================== */
+.theme-sunset-coral {
+    --bg-page: #100d22;
+    --bg-surface: rgba(255, 255, 255, 0.06);
+    --text-primary: #fdf8f6;
+    --text-secondary: #fbcfe8;
+    --border-color: rgba(251, 146, 60, 0.25);
+    --shadow-card: 0 10px 36px rgba(0, 0, 0, 0.45);
+    background: linear-gradient(135deg, #100d22 0%, #281033 45%, #42163b 85%, #591b3b 100%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+}
+.theme-sunset-coral .theme-card {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+}
+.theme-sunset-coral .theme-card:hover {
+    border-color: #fb923c;
+    box-shadow: 0 16px 48px rgba(251, 146, 60, 0.18);
+    transform: translateY(-3px);
+}
+.theme-sunset-coral .theme-hero-header {
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(251, 146, 60, 0.3);
+}
+.theme-sunset-coral .theme-hero-header h1,
+.theme-sunset-coral .theme-hero-header p,
+.theme-sunset-coral .theme-hero-header span,
+.theme-sunset-coral .theme-hero-header div,
+.theme-sunset-coral .theme-hero-header a { color: #fdf8f6 !important; }
+.theme-sunset-coral .theme-badge {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(244, 63, 94, 0.2));
+    color: #fed7aa;
+    border: 1px solid rgba(251, 146, 60, 0.35);
+    border-radius: 50px;
+}
+
+/* ===================================================================
+   13. ARCTIC-FROST  →  Arctic Glacial Frost
+   Crisp glacier white-blue · Frosted glass · Iced cyan shimmer
+   =================================================================== */
+.theme-arctic-frost {
+    --bg-page: #f0f6fc;
+    --bg-surface: #ffffff;
+    --text-primary: #0f2744;
+    --text-secondary: #335377;
+    --border-color: #d0e2f5;
+    --shadow-card: 0 8px 28px rgba(2, 132, 199, 0.08);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    background-image:
+        radial-gradient(circle at 15% 20%, rgba(186, 230, 253, 0.5) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(224, 242, 254, 0.6) 0%, transparent 45%);
+}
+.theme-arctic-frost .theme-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+}
+.theme-arctic-frost .theme-card:hover {
+    border-color: #38bdf8;
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px rgba(2, 132, 199, 0.14);
+}
+.theme-arctic-frost .theme-hero-header {
+    background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 50%, #eff6ff 100%);
+    border-bottom: 2px solid #bae6fd;
+}
+.theme-arctic-frost .theme-hero-header h1 {
+    color: #0369a1 !important;
+    font-weight: 800;
+}
+.theme-arctic-frost .theme-hero-header p,
+.theme-arctic-frost .theme-hero-header span,
+.theme-arctic-frost .theme-hero-header div,
+.theme-arctic-frost .theme-hero-header a { color: #0284c7 !important; }
+.theme-arctic-frost .theme-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+/* ===================================================================
+   14. MONOCHROME-SWISS  →  Swiss High-Fashion Monochrome
+   Architectural high contrast · Bold pure black & white · Sharp edges
+   =================================================================== */
+.theme-monochrome-swiss {
+    --bg-page: #f8f8f9;
+    --bg-surface: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #404040;
+    --border-color: #000000;
+    --shadow-card: 4px 4px 0px #000000;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+}
+.theme-monochrome-swiss .theme-card {
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 0px;
+    box-shadow: 4px 4px 0px #000000;
+    transition: all 0.2s ease;
+}
+.theme-monochrome-swiss .theme-card:hover {
+    box-shadow: 8px 8px 0px #000000;
+    transform: translate(-2px, -2px);
+}
+.theme-monochrome-swiss .theme-hero-header {
+    background: #000000;
+    border-bottom: 4px solid #000000;
+}
+.theme-monochrome-swiss .theme-hero-header h1,
+.theme-monochrome-swiss .theme-hero-header p,
+.theme-monochrome-swiss .theme-hero-header span,
+.theme-monochrome-swiss .theme-hero-header div,
+.theme-monochrome-swiss .theme-hero-header a { color: #ffffff !important; }
+.theme-monochrome-swiss .theme-hero-header h1 {
+    font-weight: 900;
+    letter-spacing: -0.04em;
+}
+.theme-monochrome-swiss .theme-badge {
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 0px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.theme-monochrome-swiss .theme-btn-accent,
+.theme-monochrome-swiss .theme-btn-outline-accent {
+    border-radius: 0px !important;
+}
+
+/* ===================================================================
    SHARED THEME BUTTONS & ACCENT
    =================================================================== */
 .theme-btn-accent {
@@ -575,6 +885,35 @@ body {
     display: flex; flex-direction: column; gap: 1.75rem;
 }
 
+/* 4. Bento-Grid — Asymmetric modern modular dashboard */
+.layout-bento-grid .portfolio-layout-container { max-width: 1100px; margin: 0 auto; }
+.layout-bento-grid .portfolio-main-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+}
+.layout-bento-grid [data-section="about"] { grid-column: span 12; }
+.layout-bento-grid [data-section="skills"] { grid-column: span 12; }
+@media (min-width: 768px) {
+    .layout-bento-grid [data-section="skills"] { grid-column: span 5; }
+    .layout-bento-grid [data-section="about"] { grid-column: span 7; }
+    .layout-bento-grid [data-section="projects"] { grid-column: span 12; }
+    .layout-bento-grid [data-section="experience"] { grid-column: span 7; }
+    .layout-bento-grid [data-section="education"] { grid-column: span 5; }
+    .layout-bento-grid [data-section="certifications"] { grid-column: span 6; }
+    .layout-bento-grid [data-section="contact"] { grid-column: span 6; }
+}
+
+/* 5. Split-Hero — Editorial Magazine side-by-side hero */
+.layout-split-hero .portfolio-layout-container { max-width: 980px; margin: 0 auto; }
+.layout-split-hero .theme-hero-header {
+    padding-top: 3.5rem !important;
+    padding-bottom: 3.5rem !important;
+}
+.layout-split-hero .portfolio-main-grid {
+    display: flex; flex-direction: column; gap: 2.2rem;
+}
+
 /* ===================================================================
    UNIVERSAL THEME HELPER CLASSES
    Used by the inline preview panel. Use CSS variables for all 8 themes.
@@ -616,6 +955,36 @@ body {
 .theme-creative-colorful .preview-project-name { color: #111 !important; }
 .theme-creative-colorful .preview-body-text,
 .theme-creative-colorful .preview-project-desc { color: #222 !important; opacity: 1 !important; }
+
+.theme-mindful-organic .preview-name { color: #f1f8f2 !important; }
+.theme-mindful-organic .preview-project-name { color: #152717 !important; }
+.theme-mindful-organic .preview-body-text,
+.theme-mindful-organic .preview-project-desc { color: #2d4531 !important; opacity: 1 !important; }
+
+.theme-arctic-frost .preview-name { color: #0369a1 !important; }
+.theme-arctic-frost .preview-project-name { color: #0f2744 !important; }
+.theme-arctic-frost .preview-body-text,
+.theme-arctic-frost .preview-project-desc { color: #1e3a5f !important; opacity: 1 !important; }
+
+.theme-monochrome-swiss .preview-name { color: #ffffff !important; }
+.theme-monochrome-swiss .preview-project-name { color: #000000 !important; }
+.theme-monochrome-swiss .preview-body-text,
+.theme-monochrome-swiss .preview-project-desc { color: #111111 !important; opacity: 1 !important; }
+
+.theme-cyberpunk-neon .preview-name { color: #ffffff !important; }
+.theme-cyberpunk-neon .preview-project-name { color: #39ff14 !important; }
+.theme-cyberpunk-neon .preview-body-text,
+.theme-cyberpunk-neon .preview-project-desc { color: #a7f3d0 !important; }
+
+.theme-midnight-emerald .preview-name { color: #e6f7f0 !important; }
+.theme-midnight-emerald .preview-project-name { color: #6ee7b7 !important; }
+.theme-midnight-emerald .preview-body-text,
+.theme-midnight-emerald .preview-project-desc { color: #d1fae5 !important; }
+
+.theme-sunset-coral .preview-name { color: #ffffff !important; }
+.theme-sunset-coral .preview-project-name { color: #fed7aa !important; }
+.theme-sunset-coral .preview-body-text,
+.theme-sunset-coral .preview-project-desc { color: #fce7f3 !important; }
 
 /* ===================================================================
    THEME EDITOR — VIEWPORT PREVIEW FRAMES

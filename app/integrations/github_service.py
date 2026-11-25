@@ -47,6 +47,8 @@ class GitHubService:
     def validate_username(username: str) -> str:
         """
         Validate and normalize GitHub username.
+        Accepts raw usernames (e.g. 'octocat'), handle formats ('@octocat'),
+        and full GitHub URLs (e.g. 'https://github.com/octocat').
         Raises GitHubUsernameInvalidError if username does not conform.
         """
         if not username or not isinstance(username, str):
@@ -56,12 +58,59 @@ class GitHubService:
         if cleaned.startswith("@"):
             cleaned = cleaned[1:]
 
+        # Handle full URL or host-prefixed formats (e.g., https://github.com/username)
+        if "github.com" in cleaned or cleaned.startswith("http://") or cleaned.startswith("https://"):
+            try:
+                from urllib.parse import urlparse
+                if not (cleaned.startswith("http://") or cleaned.startswith("https://")):
+                    cleaned = "https://" + cleaned
+                parsed = urlparse(cleaned)
+                path_parts = [p for p in parsed.path.split("/") if p]
+                if path_parts:
+                    cleaned = path_parts[0]
+            except Exception:
+                pass
+
         if not GITHUB_USERNAME_REGEX.match(cleaned):
             raise GitHubUsernameInvalidError(
                 f"Invalid GitHub username '{cleaned}'. Usernames may contain only alphanumeric "
                 "characters and single hyphens, and cannot start or end with a hyphen (max 39 characters)."
             )
         return cleaned
+
+    @classmethod
+    def get_token(cls) -> str:
+        """Retrieve GitHub token with dynamic .env reload fallback."""
+        token = ""
+        try:
+            token = (
+                current_app.config.get("GITHUB_TOKEN")
+                or current_app.config.get("GITHUB_ACCESS_TOKEN")
+                or os.environ.get("GITHUB_TOKEN")
+                or os.environ.get("GITHUB_ACCESS_TOKEN", "")
+            )
+        except RuntimeError:
+            token = (
+                os.environ.get("GITHUB_TOKEN")
+                or os.environ.get("GITHUB_ACCESS_TOKEN", "")
+            )
+
+        token = (token or "").strip()
+        if not token:
+            try:
+                from dotenv import dotenv_values
+                env_vals = dotenv_values("C:/portfolio/.env")
+                token = (env_vals.get("GITHUB_TOKEN") or env_vals.get("GITHUB_ACCESS_TOKEN") or "").strip()
+                if token:
+                    os.environ["GITHUB_TOKEN"] = token
+                    try:
+                        current_app.config["GITHUB_TOKEN"] = token
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+
+        return token
 
     @classmethod
     def get_headers(cls) -> Dict[str, str]:
@@ -71,24 +120,37 @@ class GitHubService:
             "User-Agent": "PortfolioAI-App/1.0",
         }
 
-        token = ""
-        try:
-            token = (
-                current_app.config.get("GITHUB_TOKEN")
-                or current_app.config.get("GITHUB_ACCESS_TOKEN")
-                or os.environ.get("GITHUB_TOKEN")
-                or os.environ.get("GITHUB_ACCESS_TOKEN", "")
-            ).strip()
-        except RuntimeError:
-            token = (
-                os.environ.get("GITHUB_TOKEN")
-                or os.environ.get("GITHUB_ACCESS_TOKEN", "")
-            ).strip()
-
+        token = cls.get_token()
         if token:
             headers["Authorization"] = f"Bearer {token}"
 
         return headers
+
+    @classmethod
+    def get_authenticated_username(cls) -> Optional[str]:
+        """Fetch the authenticated username using the configured token if available."""
+        token = cls.get_token()
+        if not token:
+            return None
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "PortfolioAI-App/1.0",
+            "Authorization": f"Bearer {token}",
+        }
+        try:
+            base_url = "https://api.github.com"
+            try:
+                base_url = current_app.config.get("GITHUB_API_BASE_URL", "https://api.github.com")
+            except RuntimeError:
+                pass
+            resp = requests.get(f"{base_url}/user", headers=headers, timeout=5)
+            if resp.status_code == 200:
+                data = resp.json()
+                if isinstance(data, dict):
+                    return data.get("login")
+        except Exception:
+            pass
+        return None
 
     @classmethod
     def fetch_user_repositories(

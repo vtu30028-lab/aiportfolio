@@ -68,6 +68,22 @@ def import_page():
         except Exception:
             default_username = ""
 
+    # If still not found, check other portfolios or query authenticated user from GITHUB_TOKEN
+    if not default_username:
+        for p in portfolios:
+            if p.github_url:
+                try:
+                    parsed = urlparse(p.github_url)
+                    path_parts = [part for part in parsed.path.split("/") if part]
+                    if path_parts:
+                        default_username = path_parts[0]
+                        break
+                except Exception:
+                    pass
+
+    if not default_username:
+        default_username = GitHubService.get_authenticated_username() or ""
+
     return render_template(
         "github_import.html",
         portfolios=portfolios,

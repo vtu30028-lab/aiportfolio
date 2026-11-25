@@ -6,6 +6,7 @@
 
 let currentFeatureType = "summary";
 let lastPromptInput = "";
+const originalBtnHtml = {};
 
 document.addEventListener("DOMContentLoaded", () => {
     const outputTextarea = document.getElementById("ai-output-textarea");
@@ -53,7 +54,7 @@ function showAlert(message, category = "info") {
 /**
  * Toggles the loading overlay and disable states during AI processing.
  */
-function setLoading(isLoading) {
+function setLoading(isLoading, type = null) {
     const overlay = document.getElementById("ai-loading-overlay");
     const badge = document.getElementById("preview-status-badge");
     const textarea = document.getElementById("ai-output-textarea");
@@ -73,10 +74,30 @@ function setLoading(isLoading) {
             : "badge bg-success bg-opacity-25 text-success small";
     }
 
-    if (textarea && isLoading) {
-        textarea.disabled = true;
-    } else if (textarea) {
-        textarea.disabled = false;
+    if (textarea) {
+        textarea.disabled = isLoading;
+        if (isLoading) {
+            textarea.placeholder = "Generating AI content... Please wait a few moments.";
+        }
+    }
+
+    const targetType = type || currentFeatureType;
+    if (targetType) {
+        const btn = document.getElementById(`btn-submit-${targetType}`);
+        if (btn) {
+            if (isLoading) {
+                if (!originalBtnHtml[targetType]) {
+                    originalBtnHtml[targetType] = btn.innerHTML;
+                }
+                btn.disabled = true;
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Generating...`;
+            } else {
+                btn.disabled = false;
+                if (originalBtnHtml[targetType]) {
+                    btn.innerHTML = originalBtnHtml[targetType];
+                }
+            }
+        }
     }
 }
 
@@ -92,12 +113,14 @@ async function handleGenerate(type, event) {
 
     if (type === "summary") {
         endpoint = "/ai/generate-summary";
+        const goalsVal = document.getElementById("summary-goals").value;
         payload = {
             level: document.getElementById("summary-level").value,
             name: document.getElementById("summary-name").value,
             skills: document.getElementById("summary-skills").value,
             education: document.getElementById("summary-education").value,
-            goals: document.getElementById("summary-goals").value,
+            goals: goalsVal,
+            career_goals: goalsVal,
             experience: document.getElementById("summary-experience").value,
         };
         lastPromptInput = `Level: ${payload.level} | Skills: ${payload.skills.slice(0, 80)}`;
@@ -123,10 +146,13 @@ async function handleGenerate(type, event) {
         lastPromptInput = `Project: ${payload.title} | Tech: ${payload.technologies}`;
     } else if (type === "skills") {
         endpoint = "/ai/analyze-skills";
+        const careerGoalVal = document.getElementById("skills-goals").value;
         payload = {
             target_role: document.getElementById("skills-target").value,
             current_skills: document.getElementById("skills-current").value,
-            career_goal: document.getElementById("skills-goals").value,
+            career_goal: careerGoalVal,
+            career_goals: careerGoalVal,
+            goals: careerGoalVal,
         };
         lastPromptInput = `Target: ${payload.target_role} | Skills: ${payload.current_skills.slice(0, 60)}`;
     } else if (type === "career") {
@@ -139,7 +165,7 @@ async function handleGenerate(type, event) {
         lastPromptInput = `Background: ${payload.background.slice(0, 60)} | Skills: ${payload.skills.slice(0, 60)}`;
     }
 
-    setLoading(true);
+    setLoading(true, type);
 
     try {
         const response = await fetch(endpoint, {
@@ -152,7 +178,7 @@ async function handleGenerate(type, event) {
         });
 
         const data = await response.json();
-        setLoading(false);
+        setLoading(false, type);
 
         if (response.ok && data.success) {
             const textarea = document.getElementById("ai-output-textarea");
@@ -160,13 +186,19 @@ async function handleGenerate(type, event) {
             if (textarea) {
                 textarea.value = data.result;
                 if (charCount) charCount.innerText = `${data.result.length} chars`;
+                textarea.focus();
             }
             showAlert("Content generated successfully! Review and refine below.", "success");
         } else {
-            showAlert(data.error || "Failed to generate content. Please try again.", "danger");
+            const errorMsg = data.error || "Failed to generate content. Please try again.";
+            showAlert(errorMsg, "danger");
+            const textarea = document.getElementById("ai-output-textarea");
+            if (textarea && !textarea.value) {
+                textarea.placeholder = `Notice: ${errorMsg}\nPlease check your inputs or try again.`;
+            }
         }
     } catch (err) {
-        setLoading(false);
+        setLoading(false, type);
         showAlert("Network or communication error. Please try again.", "danger");
     }
 }

@@ -11,7 +11,7 @@
                     <div class="brand-icon-box mx-auto mb-3" style="width: 52px; height: 52px; font-size: 1.4rem;">
                         <i class="bi bi-person-plus-fill"></i>
                     </div>
-                    <h3 class="fw-bold text-white mb-1">Create Your Account</h3>
+                    <h3 class="fw-bold mb-1" style="color: var(--text-heading); font-family: var(--font-heading);">Create Your Account</h3>
                     <p class="text-muted small">Join PortfolioAI to generate and publish your recruiter-ready portfolio</p>
                 </div>
 
@@ -20,11 +20,11 @@
 
                     <!-- Full Name -->
                     <div class="mb-3">
-                        <label for="{{ form.name.id }}" class="form-label text-light small fw-semibold">
+                        <label for="{{ form.name.id }}" class="form-label small fw-semibold" style="color: var(--text-main);">
                             {{ form.name.label.text }} <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted">
+                            <span class="input-group-text">
                                 <i class="bi bi-person"></i>
                             </span>
                             {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Alex Rivera", autocomplete="name", required=True) }}
@@ -38,11 +38,11 @@
 
                     <!-- Email Address -->
                     <div class="mb-3">
-                        <label for="{{ form.email.id }}" class="form-label text-light small fw-semibold">
+                        <label for="{{ form.email.id }}" class="form-label small fw-semibold" style="color: var(--text-main);">
                             {{ form.email.label.text }} <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted">
+                            <span class="input-group-text">
                                 <i class="bi bi-envelope"></i>
                             </span>
                             {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="alex@university.edu", autocomplete="email", required=True) }}
@@ -56,15 +56,15 @@
 
                     <!-- Password -->
                     <div class="mb-3">
-                        <label for="{{ form.password.id }}" class="form-label text-light small fw-semibold">
+                        <label for="{{ form.password.id }}" class="form-label small fw-semibold" style="color: var(--text-main);">
                             {{ form.password.label.text }} <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted">
+                            <span class="input-group-text">
                                 <i class="bi bi-lock"></i>
                             </span>
                             {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Minimum 8 characters", autocomplete="new-password", required=True) }}
-                            <button class="btn btn-secondary-glass border-secondary border-opacity-25" type="button" onclick="togglePasswordVisibility('{{ form.password.id }}', 'toggle-pwd-icon')">
+                            <button class="btn btn-secondary-glass" type="button" onclick="togglePasswordVisibility('{{ form.password.id }}', 'toggle-pwd-icon')">
                                 <i class="bi bi-eye" id="toggle-pwd-icon"></i>
                             </button>
                         </div>
@@ -78,15 +78,15 @@
 
                     <!-- Confirm Password -->
                     <div class="mb-4">
-                        <label for="{{ form.confirm_password.id }}" class="form-label text-light small fw-semibold">
+                        <label for="{{ form.confirm_password.id }}" class="form-label small fw-semibold" style="color: var(--text-main);">
                             {{ form.confirm_password.label.text }} <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-muted">
+                            <span class="input-group-text">
                                 <i class="bi bi-shield-lock"></i>
                             </span>
                             {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), placeholder="Re-enter password", autocomplete="new-password", required=True) }}
-                            <button class="btn btn-secondary-glass border-secondary border-opacity-25" type="button" onclick="togglePasswordVisibility('{{ form.confirm_password.id }}', 'toggle-cpwd-icon')">
+                            <button class="btn btn-secondary-glass" type="button" onclick="togglePasswordVisibility('{{ form.confirm_password.id }}', 'toggle-cpwd-icon')">
                                 <i class="bi bi-eye" id="toggle-cpwd-icon"></i>
                             </button>
                         </div>

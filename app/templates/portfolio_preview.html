@@ -7,19 +7,19 @@
     <!-- Preview Controls Header -->
     <div class="glass-card p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div class="d-flex align-items-center gap-2 flex-wrap">
-            <span class="badge bg-primary bg-opacity-25 text-info px-3 py-2 small">
-                <i class="bi bi-eye-fill me-1"></i> Owner Preview
+            <span class="badge px-3 py-2 small fw-semibold" style="background: rgba(17, 24, 39, 0.08); color: #111827; border: 1px solid rgba(17, 24, 39, 0.12);">
+                <i class="bi bi-eye-fill me-1 text-primary"></i> Owner Preview
             </span>
             {% if portfolio.is_published %}
-                <span class="badge bg-success bg-opacity-25 text-success px-2 py-2 small border border-success border-opacity-25">
+                <span class="badge bg-success bg-opacity-10 text-success px-2 py-2 small border border-success border-opacity-25">
                     <i class="bi bi-globe me-1"></i> Published Live
                 </span>
             {% else %}
-                <span class="badge bg-secondary bg-opacity-25 text-muted px-2 py-2 small">
+                <span class="badge px-2 py-2 small border" style="background: #f3f4f6; color: #4b5563; border-color: #d1d5db;">
                     <i class="bi bi-lock me-1"></i> Private Draft
                 </span>
             {% endif %}
-            <span class="text-muted small">Viewing: <strong class="text-white">{{ portfolio.title }}</strong></span>
+            <span class="small" style="color: #4b5563;">Viewing: <strong class="text-dark fw-bold">{{ portfolio.title }}</strong></span>
         </div>
 
         <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -64,36 +64,36 @@
 
     <!-- Published Live Banner with Instant QR Code & Link -->
     {% if portfolio.is_published %}
-    <div class="glass-card p-4 mb-4 border border-success border-opacity-50 shadow-lg" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.08));">
+    <div class="glass-card p-4 mb-4 shadow-sm" style="background: #ffffff !important; border: 1px solid rgba(245, 158, 11, 0.4) !important; color: #111827 !important;">
         <div class="row align-items-center g-4">
             <div class="col-auto text-center">
-                <div class="p-2 rounded-3 bg-white shadow-lg d-inline-block">
+                <div class="p-2 rounded-3 shadow-sm d-inline-block" style="background: #ffffff; border: 2px solid rgba(245, 158, 11, 0.35);">
                     <img src="{{ url_for('portfolio.get_qr_code', portfolio_id=portfolio.id) }}"
                          alt="QR Code for {{ portfolio.full_name }}"
                          style="width: 140px; height: 140px; display: block;">
                 </div>
                 <div class="mt-2">
-                    <a href="{{ url_for('portfolio.get_qr_code', portfolio_id=portfolio.id, download=1) }}" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold" style="font-size:0.8rem;">
-                        <i class="bi bi-download me-1"></i> Download QR (PNG)
+                    <a href="{{ url_for('portfolio.get_qr_code', portfolio_id=portfolio.id, download=1) }}" class="btn btn-sm btn-secondary-glass py-1 px-3 fw-semibold" style="font-size:0.8rem; border-color: rgba(245, 158, 11, 0.4); color: #b45309 !important;">
+                        <i class="bi bi-download me-1 text-warning"></i> Download QR (PNG)
                     </a>
                 </div>
             </div>
             <div class="col">
-                <div class="d-inline-flex align-items-center gap-2 badge bg-success bg-opacity-25 text-success mb-2 px-3 py-1 border border-success border-opacity-25">
-                    <i class="bi bi-check-circle-fill"></i> Published Live &amp; Scan-Ready
+                <div class="d-inline-flex align-items-center gap-2 badge mb-2 px-3 py-1" style="background: rgba(245, 158, 11, 0.12); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.35); font-weight: 600;">
+                    <i class="bi bi-check-circle-fill text-success"></i> Published Live &amp; Scan-Ready
                 </div>
-                <h4 class="text-white fw-bold mb-1">Your Portfolio QR Code is Live!</h4>
-                <p class="text-light text-opacity-75 small mb-3">
+                <h4 class="fw-bold mb-1" style="color: #111827 !important; font-family: var(--font-heading);">Your Portfolio QR Code is Live!</h4>
+                <p class="small mb-3" style="color: #4b5563 !important; line-height: 1.55;">
                     Anyone can scan this QR code with a smartphone camera to view your portfolio instantly. You can also share your public vanity URL with recruiters and on your resume.
                 </p>
                 <div class="input-group mb-2" style="max-width: 650px;">
-                    <span class="input-group-text bg-dark border-secondary border-opacity-25 text-success"><i class="bi bi-link-45deg fs-5"></i></span>
-                    <input type="text" id="livePublicUrlInput" class="form-control custom-input font-monospace text-light small" value="{{ portfolio.get_public_url() }}" readonly>
-                    <button class="btn btn-success fw-bold px-3" type="button" onclick="navigator.clipboard.writeText(document.getElementById('livePublicUrlInput').value); this.innerHTML='<i class=\'bi bi-check-lg\'></i> Copied!'; setTimeout(() => this.innerHTML='<i class=\'bi bi-clipboard\'></i> Copy Link', 2000);">
-                        <i class="bi bi-clipboard"></i> Copy Link
+                    <span class="input-group-text" style="background: #f9fafb !important; border: 1px solid rgba(17, 24, 39, 0.18) !important; color: #ea580c !important; font-weight: 700;"><i class="bi bi-link-45deg fs-5"></i></span>
+                    <input type="text" id="livePublicUrlInput" class="form-control font-monospace small" style="background-color: #ffffff !important; border: 1px solid rgba(17, 24, 39, 0.18) !important; color: #111827 !important; font-weight: 700;" value="{{ portfolio.get_public_url() }}" readonly>
+                    <button class="btn btn-primary-gradient fw-bold px-3" type="button" onclick="navigator.clipboard.writeText(document.getElementById('livePublicUrlInput').value); this.innerHTML='<i class=\'bi bi-check-lg\'></i> Copied!'; setTimeout(() => this.innerHTML='<i class=\'bi bi-clipboard\'></i> Copy Link', 2000);">
+                        <i class="bi bi-clipboard me-1"></i> Copy Link
                     </button>
-                    <a href="{{ portfolio.get_public_url() }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-glass px-3">
-                        <i class="bi bi-box-arrow-up-right me-1"></i> Visit Public Site
+                    <a href="{{ portfolio.get_public_url() }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-glass px-3" style="background: #ffffff !important; border: 1px solid rgba(17, 24, 39, 0.18) !important; color: #111827 !important; font-weight: 600;">
+                        <i class="bi bi-box-arrow-up-right me-1 text-warning"></i> Visit Public Site
                     </a>
                 </div>
             </div>
@@ -139,26 +139,26 @@
 
                 <div class="col">
                     <h1 class="display-6 fw-bold text-white mb-1">{{ portfolio.full_name }}</h1>
-                    <p class="lead text-primary-emphasis mb-2 fw-semibold fs-5">{{ portfolio.headline }}</p>
+                    <p class="lead mb-2 fw-bold fs-5" style="color: #fbbf24 !important;">{{ portfolio.headline }}</p>
 
                     <!-- Contact details -->
-                    <div class="d-flex flex-wrap align-items-center gap-3 text-muted small">
+                    <div class="d-flex flex-wrap align-items-center gap-3 small" style="color: #cbd5e1;">
                         {% if portfolio.location %}
                             <div class="d-flex align-items-center gap-1">
                                 <i class="bi bi-geo-alt text-danger"></i>
-                                <span>{{ portfolio.location }}</span>
+                                <span style="color: #e2e8f0;">{{ portfolio.location }}</span>
                             </div>
                         {% endif %}
 
                         <div class="d-flex align-items-center gap-1">
-                            <i class="bi bi-envelope text-info"></i>
-                            <a href="mailto:{{ portfolio.email }}" class="text-muted text-decoration-none hover-white">{{ portfolio.email }}</a>
+                            <i class="bi bi-envelope text-warning"></i>
+                            <a href="mailto:{{ portfolio.email }}" class="text-decoration-none" style="color: #f59e0b; font-weight: 500;">{{ portfolio.email }}</a>
                         </div>
 
                         {% if portfolio.phone %}
                             <div class="d-flex align-items-center gap-1">
                                 <i class="bi bi-telephone text-success"></i>
-                                <span>{{ portfolio.phone }}</span>
+                                <span style="color: #e2e8f0;">{{ portfolio.phone }}</span>
                             </div>
                         {% endif %}
                     </div>
@@ -182,10 +182,10 @@
             <!-- About Section -->
             <div class="mb-5">
                 <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-person-lines-fill text-primary"></i> About Me
+                    <i class="bi bi-person-lines-fill text-warning"></i> About Me
                 </h4>
                 <div class="glass-card-static p-4">
-                    <p class="text-light mb-0 line-height-lg" style="white-space: pre-line;">{{ portfolio.about }}</p>
+                    <p class="mb-0 line-height-lg" style="color: #e2e8f0 !important; white-space: pre-line;">{{ portfolio.about }}</p>
                 </div>
             </div>
 
@@ -195,7 +195,7 @@
             <div class="mb-5">
                 <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
                     <i class="bi bi-stars text-warning"></i> Technical &amp; Professional Skills
-                    <span class="badge bg-secondary bg-opacity-25 text-warning small ms-1">{{ skills|length }}</span>
+                    <span class="badge small ms-1" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">{{ skills|length }}</span>
                 </h4>
                 <div class="glass-card-static p-4">
                     <div class="d-flex flex-wrap gap-2">
@@ -211,10 +211,10 @@
             <div class="mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                     <h4 class="text-white fw-bold mb-0 d-flex align-items-center gap-2">
-                        <i class="bi bi-code-slash text-primary"></i> Featured Projects
-                        <span class="badge bg-secondary bg-opacity-25 text-info small ms-1">{{ portfolio.projects|length }}</span>
+                        <i class="bi bi-code-slash text-warning"></i> Featured Projects
+                        <span class="badge small ms-1" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">{{ portfolio.projects|length }}</span>
                     </h4>
-                    <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-outline-primary border-opacity-50">
+                    <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-secondary-glass" style="border-color: rgba(245, 158, 11, 0.4); color: #f59e0b !important;">
                         <i class="bi bi-github me-1"></i> Import More from GitHub
                     </a>
                 </div>
@@ -242,7 +242,7 @@
                                     </div>
 
                                     {% if project.description %}
-                                        <p class="text-light text-opacity-75 small mb-3 line-height-md" style="white-space: pre-line;">
+                                        <p class="small mb-3 line-height-md" style="color: #e2e8f0 !important; white-space: pre-line;">
                                             {{ project.description }}
                                         </p>
                                     {% endif %}
@@ -286,9 +286,9 @@
                 {% else %}
                     <!-- Empty Projects State -->
                     <div class="p-4 rounded-3 text-center" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.12);">
-                        <i class="bi bi-github fs-2 text-primary mb-2 d-block"></i>
+                        <i class="bi bi-github fs-2 text-warning mb-2 d-block"></i>
                         <h6 class="text-white fw-bold mb-1">No Projects Added Yet</h6>
-                        <p class="text-muted small mb-3">
+                        <p class="small mb-3" style="color: #cbd5e1;">
                             Connect your GitHub profile to fetch public repositories, polish descriptions with Gemini AI, and showcase them in this portfolio.
                         </p>
                         <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-primary-gradient px-4 py-2">
@@ -303,7 +303,7 @@
             {% if exps %}
             <div class="mb-5">
                 <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-briefcase text-info"></i> Work Experience
+                    <i class="bi bi-briefcase text-warning"></i> Work Experience
                 </h4>
                 <div class="glass-card-static p-4">
                     <div class="d-flex flex-column gap-4">
@@ -312,14 +312,14 @@
                             <div class="d-flex justify-content-between align-items-start flex-wrap gap-1 mb-1">
                                 <h5 class="text-white fw-bold mb-0">{{ exp.role if exp is mapping else exp }}</h5>
                                 {% if exp is mapping and (exp.duration or exp.dates) %}
-                                    <span class="badge bg-secondary bg-opacity-25 text-info small">{{ exp.duration or exp.dates }}</span>
+                                    <span class="badge small" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">{{ exp.duration or exp.dates }}</span>
                                 {% endif %}
                             </div>
                             {% if exp is mapping and (exp.company or exp.organization) %}
-                                <div class="text-primary-emphasis small fw-semibold mb-2">{{ exp.company or exp.organization }}</div>
+                                <div class="small fw-semibold mb-2" style="color: #fbbf24 !important;">{{ exp.company or exp.organization }}</div>
                             {% endif %}
                             {% if exp is mapping and (exp.description or exp.details) %}
-                                <p class="text-light text-opacity-75 small mb-0 line-height-md" style="white-space: pre-line;">{{ exp.description or exp.details }}</p>
+                                <p class="small mb-0 line-height-md" style="color: #e2e8f0 !important; white-space: pre-line;">{{ exp.description or exp.details }}</p>
                             {% endif %}
                         </div>
                         {% endfor %}
@@ -333,7 +333,7 @@
             {% if edus %}
             <div class="mb-5">
                 <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-mortarboard text-success"></i> Education &amp; Academic Background
+                    <i class="bi bi-mortarboard text-warning"></i> Education &amp; Academic Background
                 </h4>
                 <div class="glass-card-static p-4">
                     <div class="d-flex flex-column gap-3">
@@ -342,14 +342,14 @@
                             <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
                                 <h5 class="text-white fw-bold mb-0">{{ edu.degree if edu is mapping else edu }}</h5>
                                 {% if edu is mapping and (edu.year or edu.duration) %}
-                                    <span class="badge bg-secondary bg-opacity-25 text-success small">{{ edu.year or edu.duration }}</span>
+                                    <span class="badge small" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">{{ edu.year or edu.duration }}</span>
                                 {% endif %}
                             </div>
                             {% if edu is mapping and (edu.institution or edu.school) %}
-                                <div class="text-light small fw-semibold">{{ edu.institution or edu.school }}</div>
+                                <div class="small fw-semibold" style="color: #fbbf24 !important;">{{ edu.institution or edu.school }}</div>
                             {% endif %}
                             {% if edu is mapping and (edu.details or edu.gpa) %}
-                                <p class="text-muted small mb-0 mt-1">{{ edu.details or edu.gpa }}</p>
+                                <p class="small mb-0 mt-1" style="color: #cbd5e1 !important;">{{ edu.details or edu.gpa }}</p>
                             {% endif %}
                         </div>
                         {% endfor %}
@@ -369,13 +369,13 @@
                     <div class="row g-3">
                         {% for cert in certs %}
                         <div class="col-md-6">
-                            <div class="p-3 rounded-2" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);">
+                            <div class="p-3 rounded-2" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);">
                                 <div class="fw-bold text-white small">{{ cert.name if cert is mapping else cert }}</div>
                                 {% if cert is mapping and cert.issuer %}
-                                    <div class="text-info small">{{ cert.issuer }}</div>
+                                    <div class="small fw-semibold" style="color: #fbbf24 !important;">{{ cert.issuer }}</div>
                                 {% endif %}
-                                {% if cert is mapping and cert.year %}
-                                    <small class="text-muted">{{ cert.year }}</small>
+                                {% if cert is mapping and (cert.year or cert.date) %}
+                                    <small style="color: #cbd5e1 !important;">{{ cert.year or cert.date }}</small>
                                 {% endif %}
                             </div>
                         </div>
@@ -388,28 +388,28 @@
     </div>
 
     <!-- Metadata Footer Card -->
-    <div class="glass-card p-3 d-flex justify-content-between align-items-center text-muted small flex-wrap gap-2">
-        <span>Portfolio ID: <code class="text-light">#{{ portfolio.id }}</code></span>
-        <span>Created: {{ portfolio.created_at.strftime('%B %d, %Y at %H:%M UTC') }}</span>
-        <span>Last Updated: {{ portfolio.updated_at.strftime('%B %d, %Y at %H:%M UTC') }}</span>
+    <div class="glass-card p-3 d-flex justify-content-between align-items-center small flex-wrap gap-2" style="color: #4b5563;">
+        <span>Portfolio ID: <code class="fw-bold px-2 py-1 rounded" style="background: rgba(245, 158, 11, 0.12); color: #b45309; font-size: 0.85rem;">#{{ portfolio.id }}</code></span>
+        <span>Created: <strong class="text-dark">{{ portfolio.created_at.strftime('%B %d, %Y at %H:%M UTC') }}</strong></span>
+        <span>Last Updated: <strong class="text-dark">{{ portfolio.updated_at.strftime('%B %d, %Y at %H:%M UTC') }}</strong></span>
     </div>
 </div>
 
 <!-- QR Code & Public Share Modal -->
 <div class="modal fade" id="qrShareModal" tabindex="-1" aria-labelledby="qrShareModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border border-secondary border-opacity-50" style="background: #0f172a;">
-            <div class="modal-header border-bottom border-secondary border-opacity-25">
+        <div class="modal-content glass-card shadow-lg">
+            <div class="modal-header">
                 <div class="d-flex align-items-center gap-2">
-                    <div class="brand-icon-box" style="width: 32px; height: 32px; font-size: 0.9rem; background: linear-gradient(135deg, #10b981, #06b6d4);">
+                    <div class="brand-icon-box" style="width: 32px; height: 32px; font-size: 0.9rem; background: linear-gradient(135deg, #ea580c, #f59e0b); color: #ffffff;">
                         <i class="bi bi-qr-code"></i>
                     </div>
-                    <h5 class="modal-title text-white fw-bold mb-0" id="qrShareModalLabel">Share & QR Code</h5>
+                    <h5 class="modal-title fw-bold mb-0" id="qrShareModalLabel">Share &amp; QR Code</h5>
                 </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body text-light text-center py-4">
+            <div class="modal-body text-center py-4">
                 {% if portfolio.is_published %}
                     <p class="small text-muted mb-3">Scan this QR code with any smartphone camera to view the live portfolio.</p>
 
@@ -422,11 +422,12 @@
 
                     <!-- Public URL Box with Copy Button -->
                     <div class="mb-3 text-start">
-                        <label class="form-label small fw-semibold text-muted">Public Shareable URL:</label>
+                        <label class="form-label small fw-semibold text-dark">Public Shareable URL:</label>
                         <div class="input-group">
-                            <input type="text" id="publicUrlInput" class="form-control custom-input small font-monospace" value="{{ portfolio.get_public_url() }}" readonly>
-                            <button class="btn btn-primary-gradient px-3" type="button" id="copyUrlBtn" onclick="navigator.clipboard.writeText(document.getElementById('publicUrlInput').value); this.innerHTML='<i class=\'bi bi-check-lg\'></i> Copied!'; setTimeout(() => this.innerHTML='<i class=\'bi bi-clipboard\'></i> Copy', 2000);">
-                                <i class="bi bi-clipboard"></i> Copy
+                            <span class="input-group-text"><i class="bi bi-link-45deg text-warning fs-5"></i></span>
+                            <input type="text" id="publicUrlInput" class="form-control font-monospace small" style="background-color: #ffffff !important; border: 1px solid rgba(17, 24, 39, 0.18) !important; color: #111827 !important; font-weight: 700;" value="{{ portfolio.get_public_url() }}" readonly>
+                            <button class="btn btn-primary-gradient px-3 fw-bold" type="button" id="copyUrlBtn" onclick="navigator.clipboard.writeText(document.getElementById('publicUrlInput').value); this.innerHTML='<i class=\'bi bi-check-lg\'></i> Copied!'; setTimeout(() => this.innerHTML='<i class=\'bi bi-clipboard\'></i> Copy', 2000);">
+                                <i class="bi bi-clipboard me-1"></i> Copy
                             </button>
                         </div>
                     </div>

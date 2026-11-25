@@ -61,7 +61,7 @@ class NumberedCanvas(canvas.Canvas):
         # Footer text
         footer_text = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(letter[0] - 36, 24, footer_text)
-        self.drawString(36, 24, "Created with PortfolioAI — AI-Powered Developer Portfolio Generator")
+        self.drawString(36, 24, "Professional Developer Portfolio")
         self.restoreState()
 
 

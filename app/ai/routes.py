@@ -45,7 +45,7 @@ def generate_summary():
     skills = (data.get("skills") or "").strip()
     education = (data.get("education") or "").strip()
     experience = (data.get("experience") or "").strip()
-    career_goals = (data.get("career_goals") or "").strip()
+    career_goals = (data.get("career_goals") or data.get("goals") or "").strip()
     level = (data.get("level") or "intermediate").strip().lower()
 
     if not name:
@@ -153,7 +153,7 @@ def analyze_skills():
     data = request.get_json(silent=True) or request.form
     current_skills = (data.get("current_skills") or "").strip()
     target_role = (data.get("target_role") or "").strip()
-    career_goal = (data.get("career_goal") or "").strip()
+    career_goal = (data.get("career_goal") or data.get("career_goals") or data.get("goals") or "").strip()
 
     if not current_skills:
         return jsonify({"success": False, "error": "Please provide your current technical skills."}), 400

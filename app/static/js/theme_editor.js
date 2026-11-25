@@ -35,16 +35,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnSave        = document.getElementById("btnSaveTheme");
     const saveBtnSpinner = document.getElementById("saveBtnSpinner");
     const saveBtnIcon    = document.getElementById("saveBtnIcon");
+    const customColorPicker = document.getElementById("customColorPicker");
+    const customColorHexInput = document.getElementById("customColorHexInput");
     const btnReset       = document.getElementById("btnResetDefaults");
     const editorAlert    = document.getElementById("editorAlert");
 
     /* ── Known class lists ── */
     const THEME_CLASSES  = [
         "modern-dark","minimal-light","creative-gradient","professional-blue",
-        "creative-colorful","premium-elegant","terminal-hacker","student-starter"
+        "creative-colorful","premium-elegant","terminal-hacker","student-starter",
+        "mindful-organic","cyberpunk-neon","midnight-emerald","sunset-coral",
+        "arctic-frost","monochrome-swiss"
     ];
-    const FONT_CLASSES   = ["plus-jakarta-sans","outfit","inter","serif","mono"];
-    const LAYOUT_CLASSES = ["standard","compact","sidebar"];
+    const FONT_CLASSES   = [
+        "plus-jakarta-sans","outfit","inter","serif","mono",
+        "poppins","space-grotesk","playfair","dm-sans","fira-code"
+    ];
+    const LAYOUT_CLASSES = ["standard","compact","sidebar","bento-grid","split-hero"];
 
     /* ── Swap a prefixed CSS class on an element ── */
     function swapClass(el, prefix, list, newVal) {
@@ -121,18 +128,48 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    /* ══ 2. ACCENT COLOR ══ */
+    /* ══ 2. ACCENT COLOR (Presets + Custom Color) ══ */
+    function setAccentColor(hex) {
+        if (!hex) return;
+        hex = hex.trim();
+        if (!hex.startsWith("#")) hex = "#" + hex;
+        if (!/^#[0-9a-fA-F]{3,6}$/.test(hex)) return;
+
+        config.accent_color = hex;
+        if (activeColorHex) activeColorHex.textContent = hex;
+        if (customColorPicker && /^#[0-9a-fA-F]{6}$/.test(hex)) customColorPicker.value = hex;
+        if (customColorHexInput) customColorHexInput.value = hex.toUpperCase();
+
+        // Sync preset swatches if matches
+        colorSwatches.forEach(x => {
+            x.classList.toggle("active", x.dataset.color.toLowerCase() === hex.toLowerCase());
+        });
+
+        applyPreview();
+    }
+
     colorSwatches.forEach(s => {
         s.addEventListener("click", () => {
             const c = s.dataset.color;
-            if (!c) return;
-            colorSwatches.forEach(x => x.classList.remove("active"));
-            s.classList.add("active");
-            config.accent_color = c;
-            if (activeColorHex) activeColorHex.textContent = c;
-            applyPreview();
+            if (c) setAccentColor(c);
         });
     });
+
+    if (customColorPicker) {
+        customColorPicker.addEventListener("input", e => {
+            setAccentColor(e.target.value);
+        });
+    }
+
+    if (customColorHexInput) {
+        customColorHexInput.addEventListener("input", e => {
+            let val = e.target.value.trim();
+            if (val && !val.startsWith("#")) val = "#" + val;
+            if (/^#[0-9a-fA-F]{3,6}$/.test(val)) {
+                setAccentColor(val);
+            }
+        });
+    }
 
     /* ══ 3. FONT ══ */
     if (fontSelect) {
@@ -175,8 +212,10 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             themeCards.forEach(c => c.classList.toggle("active", c.dataset.theme === config.theme));
             if (activeThemeBadge) activeThemeBadge.textContent = "modern dark";
-            colorSwatches.forEach(s => s.classList.toggle("active", s.dataset.color === config.accent_color));
+            colorSwatches.forEach(s => s.classList.toggle("active", s.dataset.color.toLowerCase() === config.accent_color.toLowerCase()));
             if (activeColorHex) activeColorHex.textContent = config.accent_color;
+            if (customColorPicker)  customColorPicker.value  = config.accent_color;
+            if (customColorHexInput) customColorHexInput.value = config.accent_color.toUpperCase();
             if (fontSelect)   fontSelect.value   = config.font_family;
             if (layoutSelect) layoutSelect.value = config.layout_style;
             sectionToggles.forEach(t => { t.checked = true; });

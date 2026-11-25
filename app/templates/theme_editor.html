@@ -3,7 +3,11 @@
 {% block title %}Theme Builder & Live Customization — {{ portfolio.title }} | {{ app_name }}{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio_themes.css') }}?v=10">
+<!-- Google Fonts for Themes -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio_themes.css') }}?v=11">
 <style>
     .theme-studio-container { min-height: calc(100vh - 120px); }
     .customizer-panel { max-height: calc(100vh - 140px); overflow-y: auto; }
@@ -70,13 +74,13 @@
 
     /* Custom select / input */
     .custom-input {
-        background: rgba(255,255,255,0.06) !important;
-        border: 1px solid rgba(255,255,255,0.12) !important;
-        color: #e2e8f0 !important;
-        border-radius: 8px;
+        background: #ffffff !important;
+        border: 1px solid rgba(17, 24, 39, 0.16) !important;
+        color: #111827 !important;
+        border-radius: 10px;
     }
-    .custom-input:focus { border-color: rgba(99,102,241,0.5) !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important; outline:none; }
-    .custom-input option { background: #1e293b; color: #e2e8f0; }
+    .custom-input:focus { border-color: #f59e0b !important; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important; outline:none; }
+    .custom-input option { background: #ffffff; color: #111827; }
     .tracking-wider { letter-spacing:0.06em; }
 </style>
 {% endblock %}
@@ -247,59 +251,144 @@
                                 <div class="text-muted text-center" style="font-size:0.7rem;">Pastel &amp; Friendly</div>
                             </div>
                         </div>
+                        <!-- 9. Mindful Organic (Sage & Deep Forest Zen - matches reference design) -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'mindful-organic' %}active{% endif %}" data-theme="mindful-organic">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#edf3ec;border:1.5px solid #182f1d;">
+                                    <div class="small fw-bold" style="color:#182f1d;">🌿 Zen</div>
+                                    <div style="height:3px;width:24px;background:#182f1d;margin:4px auto;border-radius:50px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Mindful Organic</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Sage &amp; Forest Green</div>
+                            </div>
+                        </div>
+                        <!-- 10. Cyberpunk Neon -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'cyberpunk-neon' %}active{% endif %}" data-theme="cyberpunk-neon">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#05050a;border:1px solid #39ff14;box-shadow:0 0 6px rgba(57,255,20,0.4);">
+                                    <div class="small fw-bold font-monospace" style="color:#39ff14;">⚡CYBER</div>
+                                    <div style="height:3px;width:24px;background:#ff007f;margin:4px auto;box-shadow:0 0 6px #ff007f;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Cyberpunk Neon</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Obsidian &amp; High-Voltage</div>
+                            </div>
+                        </div>
+                        <!-- 11. Midnight Emerald -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'midnight-emerald' %}active{% endif %}" data-theme="midnight-emerald">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#04100c;border:1px solid rgba(16,185,129,0.5);">
+                                    <div class="small fw-bold" style="color:#10b981;">💎 Gem</div>
+                                    <div style="height:2px;width:24px;background:linear-gradient(90deg,#10b981,#d4af37);margin:4px auto;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Midnight Emerald</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Velvet &amp; Gold Jewel</div>
+                            </div>
+                        </div>
+                        <!-- 12. Sunset Coral -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'sunset-coral' %}active{% endif %}" data-theme="sunset-coral">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:linear-gradient(135deg,#100d22,#42163b);border:1px solid rgba(251,146,60,0.5);">
+                                    <div class="small fw-bold" style="color:#fb923c;">🌅 Dusk</div>
+                                    <div style="height:3px;width:24px;background:linear-gradient(90deg,#fb923c,#f43f5e);margin:4px auto;border-radius:50px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Sunset Coral</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Twilight &amp; Warm Peach</div>
+                            </div>
+                        </div>
+                        <!-- 13. Arctic Frost -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'arctic-frost' %}active{% endif %}" data-theme="arctic-frost">
+                                <div class="rounded-2 p-2 mb-2 text-center" style="background:#f0f6fc;border:1px solid #bae6fd;">
+                                    <div class="small fw-bold" style="color:#0284c7;">❄️ Frost</div>
+                                    <div style="height:3px;width:24px;background:#38bdf8;margin:4px auto;border-radius:50px;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Arctic Frost</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Glacier White &amp; Cyan</div>
+                            </div>
+                        </div>
+                        <!-- 14. Monochrome Swiss -->
+                        <div class="col-6">
+                            <div class="theme-choice-card p-3 h-100 {% if portfolio.theme == 'monochrome-swiss' %}active{% endif %}" data-theme="monochrome-swiss">
+                                <div class="rounded-0 p-2 mb-2 text-center" style="background:#ffffff;border:2px solid #000000;box-shadow:2px 2px 0 #000000;">
+                                    <div class="small fw-black" style="color:#000000;">SWISS</div>
+                                    <div style="height:2px;width:24px;background:#000000;margin:4px auto;"></div>
+                                </div>
+                                <div class="fw-semibold small text-white text-center">Swiss Mono</div>
+                                <div class="text-muted text-center" style="font-size:0.7rem;">Architectural Editorial</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <hr class="border-secondary border-opacity-25 my-4">
 
-                <!-- 2. Accent Color -->
+                <!-- 2. Accent Color (Preset Palette + Any Custom Color) -->
                 <div class="mb-4">
                     <label class="form-label text-light fw-bold small text-uppercase tracking-wider d-flex justify-content-between align-items-center">
-                        <span><i class="bi bi-droplet-half text-info me-1"></i> 2. Accent Color</span>
+                        <span><i class="bi bi-droplet-half text-info me-1"></i> 2. Accent Color (All Colors)</span>
                         <code id="activeColorHex" class="text-light small font-monospace">{{ portfolio.accent_color }}</code>
                     </label>
                     <div class="d-flex flex-wrap gap-2 pt-1" id="swatchContainer">
                         {% set swatches = [
-                            ('#6366f1','Indigo'),('#10b981','Emerald'),('#f43f5e','Rose'),
-                            ('#0ea5e9','Cyan'),('#f59e0b','Amber'),('#8b5cf6','Violet'),('#64748b','Slate')
+                            ('#6366f1','Indigo'), ('#3b82f6','Blue'), ('#0ea5e9','Cyan'), ('#06b6d4','Sky Teal'),
+                            ('#10b981','Emerald'), ('#166534','Deep Forest'), ('#84cc16','Lime'), ('#eab308','Gold'),
+                            ('#f59e0b','Amber'), ('#ea580c','Sunset Orange'), ('#f97316','Coral'), ('#f43f5e','Rose'),
+                            ('#ef4444','Crimson'), ('#ec4899','Pink'), ('#8b5cf6','Violet'), ('#7c3aed','Purple'),
+                            ('#64748b','Slate'), ('#1e293b','Charcoal'), ('#0a0a0a','Black'), ('#ffffff','White')
                         ] %}
                         {% for color_hex, color_name in swatches %}
-                        <div class="color-swatch {% if portfolio.accent_color == color_hex %}active{% endif %}"
-                             style="background-color:{{ color_hex }};"
+                        <div class="color-swatch {% if portfolio.accent_color | lower == color_hex | lower %}active{% endif %}"
+                             style="background-color:{{ color_hex }}; {% if color_hex == '#ffffff' %}border: 1px solid rgba(0,0,0,0.3);{% endif %}"
                              data-color="{{ color_hex }}"
                              title="{{ color_name }} ({{ color_hex }})">
                         </div>
                         {% endfor %}
                     </div>
+
+                    <!-- Custom Any-Color Picker Tool -->
+                    <div class="mt-3 pt-2 border-top border-secondary border-opacity-25 d-flex align-items-center gap-2">
+                        <label for="customColorPicker" class="small text-muted mb-0 fw-semibold text-nowrap">
+                            <i class="bi bi-eyedropper text-warning me-1"></i> Custom Color:
+                        </label>
+                        <input type="color" id="customColorPicker" class="form-control form-control-color p-0 border-0 rounded-circle" value="{{ portfolio.accent_color }}" title="Choose any custom hex color" style="width: 32px; height: 32px; cursor: pointer; background: transparent;">
+                        <input type="text" id="customColorHexInput" class="form-control form-control-sm font-monospace custom-input text-uppercase text-center" value="{{ portfolio.accent_color }}" maxlength="7" style="max-width: 105px; font-weight: 600;" placeholder="#6366F1">
+                    </div>
                 </div>
 
                 <hr class="border-secondary border-opacity-25 my-4">
 
-                <!-- 3. Font Family -->
+                <!-- 3. Font Family (10 Distinct Fonts) -->
                 <div class="mb-4">
                     <label for="fontSelect" class="form-label text-light fw-bold small text-uppercase tracking-wider">
                         <i class="bi bi-type text-warning me-1"></i> 3. Typography &amp; Font
                     </label>
                     <select id="fontSelect" class="form-select custom-input">
-                        <option value="plus-jakarta-sans" {% if portfolio.font_family == 'plus-jakarta-sans' %}selected{% endif %}>Plus Jakarta Sans</option>
-                        <option value="outfit"            {% if portfolio.font_family == 'outfit' %}selected{% endif %}>Outfit</option>
-                        <option value="inter"             {% if portfolio.font_family == 'inter' %}selected{% endif %}>Inter</option>
-                        <option value="serif"             {% if portfolio.font_family == 'serif' %}selected{% endif %}>Merriweather (Serif)</option>
-                        <option value="mono"              {% if portfolio.font_family == 'mono' %}selected{% endif %}>JetBrains Mono</option>
+                        <option value="plus-jakarta-sans" {% if portfolio.font_family == 'plus-jakarta-sans' %}selected{% endif %}>Plus Jakarta Sans (Modern Clean)</option>
+                        <option value="outfit"            {% if portfolio.font_family == 'outfit' %}selected{% endif %}>Outfit (Geometric Tech)</option>
+                        <option value="inter"             {% if portfolio.font_family == 'inter' %}selected{% endif %}>Inter (Silicon Valley UI)</option>
+                        <option value="poppins"           {% if portfolio.font_family == 'poppins' %}selected{% endif %}>Poppins (Friendly Geometric)</option>
+                        <option value="dm-sans"           {% if portfolio.font_family == 'dm-sans' %}selected{% endif %}>DM Sans (Crisp Modern Sans)</option>
+                        <option value="space-grotesk"     {% if portfolio.font_family == 'space-grotesk' %}selected{% endif %}>Space Grotesk (Tech Brutalist)</option>
+                        <option value="serif"             {% if portfolio.font_family == 'serif' %}selected{% endif %}>Merriweather (Classic Editorial Serif)</option>
+                        <option value="playfair"          {% if portfolio.font_family == 'playfair' %}selected{% endif %}>Playfair Display (Luxury High-Contrast)</option>
+                        <option value="mono"              {% if portfolio.font_family == 'mono' %}selected{% endif %}>JetBrains Mono (Developer Console)</option>
+                        <option value="fira-code"         {% if portfolio.font_family == 'fira-code' %}selected{% endif %}>Fira Code (Code Ligatures)</option>
                     </select>
                 </div>
 
                 <hr class="border-secondary border-opacity-25 my-4">
 
-                <!-- 4. Layout -->
+                <!-- 4. Layout Variation (5 Dynamic Layouts) -->
                 <div class="mb-4">
                     <label for="layoutSelect" class="form-label text-light fw-bold small text-uppercase tracking-wider">
-                        <i class="bi bi-grid-1x2 text-success me-1"></i> 4. Layout Variation
+                        <i class="bi bi-grid-1x2 text-success me-1"></i> 4. Layout Variation &amp; Structure
                     </label>
                     <select id="layoutSelect" class="form-select custom-input">
-                        <option value="standard" {% if portfolio.layout_style == 'standard' %}selected{% endif %}>Standard (Vertical)</option>
-                        <option value="compact"  {% if portfolio.layout_style == 'compact'  %}selected{% endif %}>Compact (Dense Grid)</option>
-                        <option value="sidebar"  {% if portfolio.layout_style == 'sidebar'  %}selected{% endif %}>Sidebar (Sticky Profile)</option>
+                        <option value="standard"   {% if portfolio.layout_style == 'standard'   %}selected{% endif %}>Standard (Vertical Clean Flow)</option>
+                        <option value="compact"    {% if portfolio.layout_style == 'compact'    %}selected{% endif %}>Compact (Dense Dual-Column Grid)</option>
+                        <option value="sidebar"    {% if portfolio.layout_style == 'sidebar'    %}selected{% endif %}>Sidebar (Sticky Profile Column)</option>
+                        <option value="bento-grid" {% if portfolio.layout_style == 'bento-grid' %}selected{% endif %}>Bento Grid (Modern Asymmetric Mosaic)</option>
+                        <option value="split-hero" {% if portfolio.layout_style == 'split-hero' %}selected{% endif %}>Split Hero (Editorial Magazine Style)</option>
                     </select>
                 </div>
 
@@ -514,18 +603,18 @@
 <!-- QR Code & Public Share Modal -->
 <div class="modal fade" id="themeQrModal" tabindex="-1" aria-labelledby="themeQrModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border border-secondary border-opacity-50" style="background: #0f172a;">
-            <div class="modal-header border-bottom border-secondary border-opacity-25">
+        <div class="modal-content glass-card shadow-lg">
+            <div class="modal-header border-bottom">
                 <div class="d-flex align-items-center gap-2">
-                    <div class="brand-icon-box" style="width: 32px; height: 32px; font-size: 0.9rem; background: linear-gradient(135deg, #10b981, #06b6d4);">
+                    <div class="brand-icon-box" style="width: 32px; height: 32px; font-size: 0.9rem; background: linear-gradient(135deg, #ea580c, #f59e0b); color: #ffffff;">
                         <i class="bi bi-qr-code"></i>
                     </div>
-                    <h5 class="modal-title text-white fw-bold mb-0" id="themeQrModalLabel">Portfolio QR Code &amp; Share</h5>
+                    <h5 class="modal-title fw-bold text-dark mb-0" id="themeQrModalLabel">Portfolio QR Code &amp; Share</h5>
                 </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body text-light text-center py-4">
+            <div class="modal-body text-center py-4">
                 {% if portfolio.is_published %}
                     <p class="small text-muted mb-3">Scan with any smartphone camera to view your portfolio live.</p>
 
@@ -577,5 +666,5 @@
         visible_sections: {{ portfolio.get_section_visibility() | tojson }}
     };
 </script>
-<script src="{{ url_for('static', filename='js/theme_editor.js') }}?v=10"></script>
+<script src="{{ url_for('static', filename='js/theme_editor.js') }}?v=11"></script>
 {% endblock %}

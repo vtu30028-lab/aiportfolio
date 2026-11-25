@@ -19,10 +19,55 @@ ALLOWED_THEMES = [
     "premium-elegant",      # Premium Elegant
     "terminal-hacker",      # Terminal / Hacker
     "student-starter",      # Student Starter
+    # Extra Modern Themes
+    "mindful-organic",      # Mindful Organic / Scandinavian Zen (Sage & Forest)
+    "cyberpunk-neon",       # Cyberpunk High-Voltage (Obsidian & Electric Neon)
+    "midnight-emerald",     # Midnight Emerald Luxury (Jeweled Velvet & Gold)
+    "sunset-coral",         # Sunset Twilight (Dusk Indigo & Warm Coral)
+    "arctic-frost",         # Arctic Frost Glass (Glacial White & Iced Cyan)
+    "monochrome-swiss",     # Swiss Monochrome (Architectural High-Fashion)
 ]
-ALLOWED_ACCENT_COLORS = ["#6366f1", "#10b981", "#f43f5e", "#0ea5e9", "#f59e0b", "#8b5cf6", "#64748b"]
-ALLOWED_FONTS = ["plus-jakarta-sans", "outfit", "inter", "serif", "mono"]
-ALLOWED_LAYOUTS = ["standard", "compact", "sidebar"]
+ALLOWED_ACCENT_COLORS = [
+    "#6366f1",  # Indigo
+    "#3b82f6",  # Blue
+    "#0ea5e9",  # Cyan
+    "#06b6d4",  # Sky Teal
+    "#10b981",  # Emerald
+    "#166534",  # Deep Forest
+    "#84cc16",  # Lime
+    "#eab308",  # Gold
+    "#f59e0b",  # Amber
+    "#ea580c",  # Sunset Orange
+    "#f97316",  # Coral
+    "#f43f5e",  # Rose
+    "#ef4444",  # Crimson
+    "#ec4899",  # Pink
+    "#8b5cf6",  # Violet
+    "#7c3aed",  # Purple
+    "#64748b",  # Slate
+    "#1e293b",  # Charcoal
+    "#0a0a0a",  # Pitch Black
+    "#ffffff",  # Pure White
+]
+ALLOWED_FONTS = [
+    "plus-jakarta-sans",
+    "outfit",
+    "inter",
+    "serif",
+    "mono",
+    "poppins",
+    "space-grotesk",
+    "playfair",
+    "dm-sans",
+    "fira-code",
+]
+ALLOWED_LAYOUTS = [
+    "standard",
+    "compact",
+    "sidebar",
+    "bento-grid",
+    "split-hero",
+]
 DEFAULT_SECTION_VISIBILITY = {
     "about": True,
     "skills": True,

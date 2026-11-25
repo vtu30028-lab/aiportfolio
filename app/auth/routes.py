@@ -4,7 +4,7 @@ Handles user registration, login, session state, and secure logout.
 """
 
 from urllib.parse import urlsplit
-from flask import render_template, redirect, url_for, flash, request, session
+from flask import render_template, redirect, url_for, flash, request, session, current_app
 from flask_login import login_user, logout_user, current_user, login_required
 from app.extensions import db
 from app.models import User
@@ -87,11 +87,24 @@ def login():
     return render_template("login.html", form=form)
 
 
-@auth_bp.route("/logout", methods=["POST"])
-@login_required
+@auth_bp.route("/logout", methods=["GET", "POST"])
 def logout():
-    """Terminate the authenticated session via CSRF-protected POST request."""
-    logout_user()
-    session.clear()
+    """Terminate the authenticated session and thoroughly purge remember-me tokens."""
+    if current_user.is_authenticated:
+        logout_user()
+
+    # Clear user identity and session data while preserving flashes and CSRF tokens
+    user_keys = [k for k in list(session.keys()) if k not in ("_flashes", "_csrf_token", "_remember")]
+    for k in user_keys:
+        session.pop(k, None)
+
     flash("You have been signed out successfully.", "info")
-    return redirect(url_for("main.index"))
+    response = redirect(url_for("auth.login"))
+
+    # Explicitly clear remember_token cookie on the response
+    cookie_name = current_app.config.get("REMEMBER_COOKIE_NAME", "remember_token")
+    cookie_domain = current_app.config.get("REMEMBER_COOKIE_DOMAIN")
+    cookie_path = current_app.config.get("REMEMBER_COOKIE_PATH", "/")
+    response.delete_cookie(cookie_name, domain=cookie_domain, path=cookie_path)
+
+    return response

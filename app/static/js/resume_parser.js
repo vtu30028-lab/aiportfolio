@@ -234,6 +234,25 @@ function populateReviewForm(data, pageCount) {
             expList.innerHTML = '<li class="small text-muted">No experience found.</li>';
         }
     }
+
+    // Certifications preview list
+    const certList = document.getElementById("certifications-list-preview");
+    if (certList) {
+        certList.innerHTML = "";
+        const certs = data.certifications || [];
+        if (certs.length) {
+            certs.forEach((c) => {
+                const li = document.createElement("li");
+                li.className = "mb-1 text-light";
+                const name = typeof c === "string" ? c : (c.name || "Certification");
+                const issuer = typeof c === "object" && c.issuer ? ` - ${c.issuer}` : "";
+                li.innerHTML = `<strong>${name}</strong> <span class="text-muted small">${issuer}</span>`;
+                certList.appendChild(li);
+            });
+        } else {
+            certList.innerHTML = '<li class="small text-muted">No certifications found.</li>';
+        }
+    }
 }
 
 function toggleDestinationChoice() {
@@ -270,6 +289,11 @@ async function handleImportPortfolio(e) {
         about: document.getElementById("review-about").value,
         github_url: document.getElementById("review-github").value,
         linkedin_url: document.getElementById("review-linkedin").value,
+        skills: document.getElementById("review-skills-raw") ? document.getElementById("review-skills-raw").value : "",
+        education: parsedResumeData && parsedResumeData.education ? parsedResumeData.education : [],
+        experience: parsedResumeData && parsedResumeData.experience ? parsedResumeData.experience : [],
+        projects: parsedResumeData && parsedResumeData.projects ? parsedResumeData.projects : [],
+        certifications: parsedResumeData && parsedResumeData.certifications ? parsedResumeData.certifications : [],
     };
 
     const payload = {

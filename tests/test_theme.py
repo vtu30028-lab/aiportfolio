@@ -142,6 +142,13 @@ def test_theme_editor_page_loads_authenticated(client, app):
     assert "Premium Elegant" in html
     assert "Terminal Hacker" in html
     assert "Student Starter" in html
+    assert "Mindful Organic" in html
+    assert "Cyberpunk Neon" in html
+    assert "Midnight Emerald" in html
+    assert "Sunset Coral" in html
+    assert "Arctic Frost" in html
+    assert "Swiss Mono" in html
+    assert "customColorPicker" in html
     assert "Senior Engineer Showcase" in html
 
 
@@ -203,7 +210,7 @@ def test_cross_user_theme_isolation(client, app):
 
 
 def test_all_eight_themes_render_successfully(client, app):
-    """Test all 8 themes render valid HTML with the user's authentic portfolio data."""
+    """Test all 14 themes render valid HTML with the user's authentic portfolio data."""
     user_id = create_and_login_user(client, app)
     port_id = create_populated_portfolio(app, user_id)
 
@@ -216,6 +223,12 @@ def test_all_eight_themes_render_successfully(client, app):
         "premium-elegant",
         "terminal-hacker",
         "student-starter",
+        "mindful-organic",
+        "cyberpunk-neon",
+        "midnight-emerald",
+        "sunset-coral",
+        "arctic-frost",
+        "monochrome-swiss",
     ]
 
     for theme_name in themes:
@@ -314,6 +327,58 @@ def test_save_valid_theme_preferences(client, app):
         assert visibility["skills"] is False
         assert visibility["certifications"] is False
         assert visibility["about"] is True
+
+
+def test_save_custom_colors_extra_themes_and_fonts(client, app):
+    """Test saving new mindful-organic theme, custom hex color picker, poppins font, and bento-grid layout."""
+    user_id = create_and_login_user(client, app)
+    port_id = create_populated_portfolio(app, user_id)
+
+    page = client.get(f"/portfolios/{port_id}/theme")
+    csrf_token = extract_csrf_token(page)
+
+    payload = {
+        "theme": "mindful-organic",
+        "accent_color": "#22c55e",  # Custom any-color hex
+        "font_family": "poppins",
+        "layout_style": "bento-grid",
+        "visible_sections": {
+            "about": True,
+            "skills": True,
+            "projects": True,
+            "experience": True,
+            "education": True,
+            "certifications": True,
+            "contact": True,
+        },
+    }
+
+    response = client.post(
+        f"/portfolios/{port_id}/theme",
+        json=payload,
+        headers={"X-CSRFToken": csrf_token},
+    )
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["success"] is True
+
+    # Verify updated in database
+    with app.app_context():
+        port = db.session.get(Portfolio, port_id)
+        assert port.theme == "mindful-organic"
+        assert port.accent_color == "#22c55e"
+        assert port.font_family == "poppins"
+        assert port.layout_style == "bento-grid"
+
+    # Verify live preview renders with custom color, theme, and font
+    live_res = client.get(f"/portfolios/{port_id}/live")
+    assert live_res.status_code == 200
+    html = live_res.data.decode("utf-8")
+    assert "theme-mindful-organic" in html
+    assert "--theme-accent: #22c55e" in html
+    assert "font-poppins" in html
+    assert "layout-bento-grid" in html
 
 
 def test_invalid_theme_preferences_rejected(client, app):

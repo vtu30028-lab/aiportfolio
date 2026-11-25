@@ -5,26 +5,27 @@
 {% block extra_head %}
 <style>
     .portfolio-grid-card {
-        background: rgba(15, 23, 42, 0.72);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 14px;
+        background: #ffffff;
+        border: 1px solid rgba(17, 24, 39, 0.08);
+        border-radius: 20px;
         transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     .portfolio-grid-card:hover {
-        border-color: rgba(99, 102, 241, 0.45);
+        border-color: rgba(232, 149, 71, 0.45);
         transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(99, 102, 241, 0.16);
+        box-shadow: 0 12px 32px rgba(232, 149, 71, 0.12);
     }
     .portfolio-card-header {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        border-bottom: 1px solid rgba(17, 24, 39, 0.06);
         padding-bottom: 0.85rem;
         margin-bottom: 1rem;
     }
     .portfolio-card-footer {
-        border-top: 1px solid rgba(255, 255, 255, 0.07);
+        border-top: 1px solid rgba(17, 24, 39, 0.06);
         padding-top: 0.9rem;
         margin-top: 1rem;
     }
@@ -91,16 +92,16 @@
                     <div>
                         <!-- Card Header -->
                         <div class="d-flex justify-content-between align-items-start portfolio-card-header gap-2">
-                            <div class="d-flex align-items-center gap-2 min-w-0">
+                            <div class="d-flex align-items-center gap-2 min-w-0" style="min-width: 0; flex: 1 1 auto;">
                                 <div class="brand-icon-box flex-shrink-0" style="width: 38px; height: 38px; font-size: 1rem;">
                                     <i class="bi bi-person-badge"></i>
                                 </div>
-                                <div class="min-w-0">
-                                    <h5 class="text-white fw-bold mb-0 text-truncate" title="{{ p.title }}">{{ p.title }}</h5>
-                                    <small class="text-muted text-truncate d-block">{{ p.full_name }}</small>
+                                <div class="min-w-0" style="min-width: 0; flex: 1 1 auto; overflow: hidden;">
+                                    <h5 class="text-white fw-bold mb-1 text-truncate" title="{{ p.title }}" style="font-size: 1rem; max-width: 100%;">{{ p.title }}</h5>
+                                    <small class="text-muted text-truncate d-block" title="{{ p.full_name }}" style="font-size: 0.8rem; max-width: 100%;">{{ p.full_name }}</small>
                                 </div>
                             </div>
-                            <div class="d-flex flex-column align-items-end gap-1 flex-shrink-0">
+                            <div class="d-flex flex-column align-items-end gap-1 flex-shrink-0 ms-2">
                                 <form method="POST" action="{{ url_for('portfolio.toggle_publish', portfolio_id=p.id) }}" class="d-inline mb-0">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="next" value="{{ url_for('portfolio.index') }}">
@@ -199,18 +200,18 @@
                 <!-- Delete Confirmation Modal -->
                 <div class="modal fade" id="deleteModal{{ p.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ p.id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content glass-card border border-danger border-opacity-50" style="background: #0f172a;">
-                            <div class="modal-header border-bottom border-secondary border-opacity-25">
-                                <h5 class="modal-title text-white fw-bold" id="deleteModalLabel{{ p.id }}">
+                        <div class="modal-content glass-card shadow-lg">
+                            <div class="modal-header border-bottom">
+                                <h5 class="modal-title fw-bold text-dark" id="deleteModalLabel{{ p.id }}">
                                     <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> Confirm Deletion
                                 </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body text-light">
+                            <div class="modal-body text-dark">
                                 Are you sure you want to delete portfolio <strong>"{{ p.title }}"</strong>?
                                 <p class="text-danger small mt-2 mb-0">This action cannot be undone.</p>
                             </div>
-                            <div class="modal-footer border-top border-secondary border-opacity-25">
+                            <div class="modal-footer border-top">
                                 <button type="button" class="btn btn-secondary-glass" data-bs-dismiss="modal">Cancel</button>
                                 <form method="POST" action="{{ url_for('portfolio.delete', portfolio_id=p.id) }}" class="d-inline">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

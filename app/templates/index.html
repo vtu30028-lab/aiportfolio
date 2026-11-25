@@ -16,21 +16,20 @@
                     <span>Next-Gen AI Portfolio Builder & Career Engine</span>
                 </div>
 
-                <h1 class="display-4 fw-extrabold mb-3 line-height-tight">
-                    Showcase Your Tech Brilliance with
-                    <span class="gradient-accent">Generative AI</span>
+                <h1 class="display-4 fw-bold mb-3 line-height-tight" style="font-family: var(--font-heading); color: var(--text-heading); letter-spacing: -0.03em;">
+                    Awaken <span style="font-weight: 800; color: #152618;">Your Tech Story</span> with <span class="gradient-accent">Mindful AI</span>
                 </h1>
 
-                <p class="lead text-muted mb-4 fs-6">
-                    Effortlessly convert your PDF resume and GitHub repositories into a sleek, responsive, recruiter-ready portfolio. Analyze skill gaps against target job descriptions and export to PDF and dynamic QR codes in minutes.
+                <p class="lead text-muted mb-4 fs-6" style="max-width: 540px; line-height: 1.65;">
+                    Your journey begins with verified technical depth, high-impact project storytelling, and recruiter-ready presentation built seamlessly from your resume and GitHub repositories.
                 </p>
 
                 <div class="d-flex flex-wrap gap-3 mb-4">
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary-gradient px-4 py-3 fs-6">
-                        <i class="bi bi-lightning-charge-fill"></i> Build Your Portfolio Free
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary-gradient rounded-pill px-4 py-3 fs-6 fw-semibold shadow-sm">
+                        <i class="bi bi-sparkles me-1"></i> Build Your Portfolio
                     </a>
-                    <a href="#themes" class="btn btn-secondary-glass px-4 py-3 fs-6">
-                        <i class="bi bi-palette2"></i> Explore Themes
+                    <a href="#themes" class="btn btn-secondary-glass rounded-pill px-4 py-3 fs-6 fw-semibold">
+                        Explore Themes
                     </a>
                 </div>
 
@@ -159,26 +158,82 @@
 </section>
 
 <!-- ==========================================
-     Key Statistics Section
+     Mindful Core Journey & Philosophy Section
+     (Editorial Forest Pine Band matching UI design)
      ========================================== -->
-<section class="py-4 border-top border-bottom border-secondary border-opacity-10" style="background: rgba(10, 14, 23, 0.5);">
-    <div class="container">
-        <div class="row text-center g-4">
-            <div class="col-6 col-md-3">
-                <div class="h2 fw-bold text-white mb-1 font-monospace">{{ stats.portfolios_generated }}</div>
-                <div class="text-muted small text-uppercase fw-semibold tracking-wider">Portfolios Generated</div>
+<section class="py-5 dark-section position-relative" style="background-color: #152618; color: #ffffff; border-top: 1px solid rgba(255, 255, 255, 0.08); border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+    <div class="container py-lg-4">
+        <div class="row align-items-center g-5">
+            <!-- Left Headline -->
+            <div class="col-lg-5">
+                <h2 class="display-6 fw-bold text-white mb-3" style="line-height: 1.25; font-family: var(--font-heading); letter-spacing: -0.02em;">
+                    Our portfolio journey is built on <span style="color: #e89547; font-weight: 800;">trust, presence,</span> and <span style="color: #a0d8a6; font-weight: 800;">transformation</span>.
+                </h2>
+                <p class="text-white-50 mb-4 fs-6" style="line-height: 1.6;">
+                    We eliminate artificial fluff and replace it with verified engineering achievements, objective skill metrics, and recruiter-focused clarity.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge rounded-pill px-3 py-2" style="background: rgba(255, 255, 255, 0.12); color: #ffffff; font-weight: 500;">
+                        <i class="bi bi-shield-check text-success me-1"></i> Zero Hallucinations
+                    </span>
+                    <span class="badge rounded-pill px-3 py-2" style="background: rgba(255, 255, 255, 0.12); color: #ffffff; font-weight: 500;">
+                        <i class="bi bi-speedometer2 text-warning me-1"></i> Instant Sync & Export
+                    </span>
+                </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="h2 fw-bold text-primary mb-1 font-monospace">{{ stats.match_rate }}</div>
-                <div class="text-muted small text-uppercase fw-semibold tracking-wider">Skill Gap Precision</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="h2 fw-bold text-white mb-1 font-monospace">{{ stats.avg_creation_time }}</div>
-                <div class="text-muted small text-uppercase fw-semibold tracking-wider">Avg Build Duration</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="h2 fw-bold text-info mb-1 font-monospace">{{ stats.active_themes }} Curated</div>
-                <div class="text-muted small text-uppercase fw-semibold tracking-wider">Responsive Themes</div>
+
+            <!-- Right 2x2 Feature Pillars with Top Divider Rules -->
+            <div class="col-lg-7">
+                <div class="row g-4">
+                    <div class="col-sm-6">
+                        <div class="pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.22);">
+                            <h5 class="text-white fw-bold mb-2 fs-6" style="font-family: var(--font-heading);">Balance Over Burnout</h5>
+                            <p class="text-white-50 small mb-0" style="line-height: 1.55;">
+                                Your career begins with clean, authentic code, validated skills, and sustainable professional presentation.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.22);">
+                            <h5 class="text-white fw-bold mb-2 fs-6" style="font-family: var(--font-heading);">Insight Drives Action</h5>
+                            <p class="text-white-50 small mb-0" style="line-height: 1.55;">
+                                Objective skill gap analytics uncover high-leverage missing competencies and tailored project ideas.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.22);">
+                            <h5 class="text-white fw-bold mb-2 fs-6" style="font-family: var(--font-heading);">Growth Is a Practice</h5>
+                            <p class="text-white-50 small mb-0" style="line-height: 1.55;">
+                                Seamless GitHub synchronization keeps your active repositories, commit histories, and stars automatically fresh.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.22);">
+                            <h5 class="text-white fw-bold mb-2 fs-6" style="font-family: var(--font-heading);">Whole-Self Storytelling</h5>
+                            <p class="text-white-50 small mb-0" style="line-height: 1.55;">
+                                Verified academic depth, personal projects, and STAR-method narrative descriptions align harmoniously.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats summary below grid -->
+                <div class="row g-3 mt-3 pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div class="col-4">
+                        <div class="h4 fw-bold text-white mb-0 font-monospace">{{ stats.portfolios_generated }}</div>
+                        <div class="text-white-50 small text-uppercase" style="font-size: 0.72rem;">Portfolios Generated</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="h4 fw-bold mb-0 font-monospace" style="color: #e89547;">{{ stats.match_rate }}</div>
+                        <div class="text-white-50 small text-uppercase" style="font-size: 0.72rem;">Skill Match Rate</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="h4 fw-bold mb-0 font-monospace" style="color: #a0d8a6;">{{ stats.avg_creation_time }}</div>
+                        <div class="text-white-50 small text-uppercase" style="font-size: 0.72rem;">Avg Creation Time</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -189,12 +244,19 @@
      ========================================== -->
 <section id="features" class="py-5 my-4">
     <div class="container py-lg-4">
-        <div class="text-center max-w-700 mx-auto mb-5">
-            <span class="badge-glow mb-2">Engineered for CSE College Capstone & Job Seekers</span>
-            <h2 class="display-6 fw-bold mb-3 gradient-title">Everything You Need to Stand Out</h2>
-            <p class="text-muted">
-                PortfolioAI eliminates the guesswork. Our generative AI and parsing algorithms turn raw resumes and GitHub code into verified, recruiter-facing digital portfolios.
-            </p>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
+            <div style="max-width: 780px;">
+                <span class="badge-glow mb-2">Engineered for CSE College Capstone & Job Seekers</span>
+                <h2 class="display-6 fw-bold mb-2" style="font-family: var(--font-heading); color: var(--text-heading); letter-spacing: -0.02em;">
+                    Supportive capabilities tailored to your <span style="font-weight: 800; color: #152618;">engineering</span> and <span style="font-weight: 800; color: #3b5a40;">career growth</span> path
+                </h2>
+                <p class="text-muted mb-0">
+                    PortfolioAI eliminates the guesswork. Generative AI and automated parsing turn resumes and GitHub code into verified, recruiter-facing portfolios.
+                </p>
+            </div>
+            <a href="#themes" class="btn btn-link text-decoration-none fw-semibold d-inline-flex align-items-center mt-3 mt-md-0" style="color: #152618; white-space: nowrap;">
+                Explore all features <i class="bi bi-arrow-right ms-2"></i>
+            </a>
         </div>
 
         <div class="row g-4">

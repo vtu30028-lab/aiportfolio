@@ -9,7 +9,7 @@ import json
 from flask import render_template, request, jsonify, abort
 from flask_login import login_required, current_user
 from app.extensions import db, limiter
-from app.models import Portfolio
+from app.models import Portfolio, Project
 from app.resume import resume_bp
 from app.resume.parser import (
     ResumeParser,
@@ -117,13 +117,30 @@ def import_to_portfolio():
         skills_str = None
 
     exp_raw = approved.get("experience") or approved.get("work_experience")
-    experience_str = json.dumps(exp_raw) if exp_raw and isinstance(exp_raw, list) else None
+    if isinstance(exp_raw, list):
+        experience_str = json.dumps(exp_raw)
+    elif isinstance(exp_raw, str):
+        experience_str = exp_raw.strip()
+    else:
+        experience_str = None
 
     edu_raw = approved.get("education")
-    education_str = json.dumps(edu_raw) if edu_raw and isinstance(edu_raw, list) else None
+    if isinstance(edu_raw, list):
+        education_str = json.dumps(edu_raw)
+    elif isinstance(edu_raw, str):
+        education_str = edu_raw.strip()
+    else:
+        education_str = None
 
     cert_raw = approved.get("certifications")
-    certifications_str = json.dumps(cert_raw) if cert_raw and isinstance(cert_raw, list) else None
+    if isinstance(cert_raw, list):
+        certifications_str = json.dumps(cert_raw)
+    elif isinstance(cert_raw, str):
+        certifications_str = cert_raw.strip()
+    else:
+        certifications_str = None
+
+    projects_raw = approved.get("projects") or []
 
     try:
         if create_new or not portfolio_id:
@@ -146,6 +163,22 @@ def import_to_portfolio():
                 certifications=certifications_str,
             )
             db.session.add(portfolio)
+            db.session.flush()
+
+            # Add projects extracted from resume
+            if isinstance(projects_raw, list):
+                for p in projects_raw:
+                    if isinstance(p, dict) and p.get("title"):
+                        proj_obj = Project(
+                            portfolio_id=portfolio.id,
+                            title=p.get("title", "").strip(),
+                            description=p.get("description", "").strip() if p.get("description") else None,
+                            technologies=p.get("technologies", "").strip() if p.get("technologies") else None,
+                            github_url=p.get("link", "").strip() if p.get("link") else None,
+                            import_source="resume",
+                        )
+                        db.session.add(proj_obj)
+
             db.session.commit()
             return jsonify({
                 "success": True,
@@ -188,6 +221,23 @@ def import_to_portfolio():
                 portfolio.education = education_str
             if certifications_str:
                 portfolio.certifications = certifications_str
+
+            # Add projects from resume if not already present
+            if isinstance(projects_raw, list):
+                existing_titles = {p.title.lower() for p in portfolio.projects}
+                for p in projects_raw:
+                    if isinstance(p, dict) and p.get("title"):
+                        title_clean = p.get("title", "").strip()
+                        if title_clean and title_clean.lower() not in existing_titles:
+                            proj_obj = Project(
+                                portfolio_id=portfolio.id,
+                                title=title_clean,
+                                description=p.get("description", "").strip() if p.get("description") else None,
+                                technologies=p.get("technologies", "").strip() if p.get("technologies") else None,
+                                github_url=p.get("link", "").strip() if p.get("link") else None,
+                                import_source="resume",
+                            )
+                            db.session.add(proj_obj)
 
             db.session.commit()
             return jsonify({
