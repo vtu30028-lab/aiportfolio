@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, flash
 from config import config_by_name
 from app.extensions import db, migrate, login_manager, csrf, limiter
@@ -9,7 +11,15 @@ def create_app(config_name=None):
     if config_name is None:
         config_name = os.environ.get("FLASK_ENV", "development")
 
-    app = Flask(__name__)
+    root_dir = Path(__file__).resolve().parent.parent.parent
+    template_dir = root_dir / "frontend" / "templates"
+    static_dir = root_dir / "frontend" / "static"
+
+    app = Flask(
+        __name__,
+        template_folder=str(template_dir),
+        static_folder=str(static_dir),
+    )
     app.config.from_object(config_by_name.get(config_name, config_by_name["default"]))
 
     # Ensure upload and export directories exist

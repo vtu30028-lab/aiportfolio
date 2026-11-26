@@ -4,6 +4,14 @@ Supports local development, production gunicorn, and cloud container deployments
 """
 
 import os
+import sys
+from pathlib import Path
+
+# Add backend directory to Python module search path
+BACKEND_DIR = Path(__file__).resolve().parent / "backend"
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
 from app import create_app
 
 # Instantiate application using environment configuration
