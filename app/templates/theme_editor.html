@@ -82,6 +82,77 @@
     .custom-input:focus { border-color: #f59e0b !important; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important; outline:none; }
     .custom-input option { background: #ffffff; color: #111827; }
     .tracking-wider { letter-spacing:0.06em; }
+
+    /* ── Preview layout wrappers — override media queries so changes show immediately ── */
+    .preview-layout-container { padding: 1rem 1.2rem; }
+
+    /* Sidebar column is hidden by default; shown only in sidebar layout */
+    .preview-sidebar-col { display: none; }
+
+    /* 1. Standard — single column, full flow */
+    .layout-standard .preview-layout-container { max-width: 100%; }
+    .layout-standard .portfolio-main-grid { display: flex; flex-direction: column; gap: 1rem; }
+
+    /* 2. Compact — two-column dense grid */
+    .layout-compact .portfolio-main-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.9rem;
+        align-items: start;
+    }
+    .layout-compact [data-section="contact"] { grid-column: 1 / -1; }
+
+    /* 3. Sidebar — always show two-column in preview (no media query restriction) */
+    .layout-sidebar .preview-layout-container {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 1rem;
+        align-items: start;
+    }
+    .layout-sidebar .preview-sidebar-col {
+        display: block;
+        position: sticky;
+        top: 0.5rem;
+    }
+    .layout-sidebar .portfolio-main-grid {
+        display: flex; flex-direction: column; gap: 0.9rem;
+    }
+    .layout-sidebar .preview-section { padding: 0.8rem 1rem; }
+
+    /* 4. Bento-Grid — responsive modular mosaic */
+    .layout-bento-grid .portfolio-main-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.8rem;
+    }
+    .layout-bento-grid [data-section="about"]          { grid-column: span 4; }
+    .layout-bento-grid [data-section="skills"]         { grid-column: span 2; }
+    .layout-bento-grid [data-section="projects"]       { grid-column: span 6; }
+    .layout-bento-grid [data-section="experience"]     { grid-column: span 4; }
+    .layout-bento-grid [data-section="education"]      { grid-column: span 2; }
+    .layout-bento-grid [data-section="certifications"] { grid-column: span 3; }
+    .layout-bento-grid [data-section="contact"]        { grid-column: span 3; }
+
+    /* 5. Split-Hero — editorial: big bold hero + flowing content */
+    .layout-split-hero .preview-hero {
+        padding: 3rem 2rem 2.5rem !important;
+        min-height: 180px;
+    }
+    .layout-split-hero .preview-hero .preview-name {
+        font-size: 1.8rem !important;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 1.1;
+    }
+    .layout-split-hero .portfolio-main-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+        align-items: start;
+    }
+    .layout-split-hero [data-section="about"],
+    .layout-split-hero [data-section="projects"],
+    .layout-split-hero [data-section="contact"] { grid-column: 1 / -1; }
 </style>
 {% endblock %}
 
@@ -469,127 +540,147 @@
                             </div>
                         </header>
 
-                        <!-- ABOUT -->
-                        <section class="preview-section" data-section="about">
-                            <p class="preview-section-label theme-accent-text">About Me</p>
-                            <div class="theme-card preview-card">
-                                <p class="preview-body-text">{{ (portfolio.about[:300] + ('…' if portfolio.about|length > 300 else '')) if portfolio.about else 'Experienced software engineering professional specializing in full-stack web applications, modern architectures, and AI-driven solutions.' }}</p>
-                            </div>
-                        </section>
+                        <!-- ── Layout wrapper — required so CSS layout rules apply ── -->
+                        <div class="portfolio-layout-container preview-layout-container">
 
-                        <!-- SKILLS -->
-                        {% set skills = portfolio.get_skills_list() %}
-                        {% if not skills %}
-                            {% set skills = ['Python', 'Java', 'Web Technologies', 'React', 'SQL', 'Git', 'Machine Learning', 'Data Structures', 'REST APIs', 'Cloud Computing'] %}
-                        {% endif %}
-                        <section class="preview-section" data-section="skills">
-                            <p class="preview-section-label theme-accent-text">Technical &amp; Professional Skills</p>
-                            <div class="theme-card preview-card">
-                                <div class="preview-badge-row">
-                                    {% for skill in skills[:14] %}<span class="theme-badge preview-skill-tag">{{ skill }}</span>{% endfor %}
-                                    {% if skills|length > 14 %}<span class="theme-badge preview-skill-tag" style="opacity:0.5;">+{{ skills|length - 14 }} more</span>{% endif %}
+                            <!-- Sidebar profile column (only visible in sidebar layout) -->
+                            <div class="portfolio-sidebar-col preview-sidebar-col">
+                                <div class="theme-card p-3 text-center">
+                                    <div class="preview-avatar mx-auto mb-2" style="width:52px;height:52px;font-size:1rem;">{{ portfolio.full_name[:2] | upper }}</div>
+                                    <p class="preview-project-name mb-1" style="font-size:0.85rem;">{{ portfolio.full_name }}</p>
+                                    <p class="preview-section-label theme-accent-text mb-2">{{ portfolio.headline[:40] if portfolio.headline else 'Software Engineer' }}{% if portfolio.headline|length > 40 %}…{% endif %}</p>
+                                    {% if portfolio.location %}<p class="preview-project-desc mb-1"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ portfolio.location }}</p>{% endif %}
+                                    {% if portfolio.email %}<p class="preview-project-desc mb-0" style="font-size:0.7rem;word-break:break-all;">{{ portfolio.email }}</p>{% endif %}
                                 </div>
                             </div>
-                        </section>
 
-                        <!-- PROJECTS -->
-                        <section class="preview-section" data-section="projects">
-                            <p class="preview-section-label theme-accent-text">Featured Projects</p>
-                            <div class="preview-grid">
-                                {% if portfolio.projects %}
-                                    {% for project in portfolio.projects[:4] %}
-                                    <div class="theme-card preview-project-card">
-                                        <p class="preview-project-label theme-accent-text">Project</p>
-                                        <p class="preview-project-name">{{ project.title or project.name }}</p>
-                                        {% if project.description %}<p class="preview-project-desc">{{ project.description[:90] }}{% if project.description|length > 90 %}…{% endif %}</p>{% endif %}
+                            <!-- Main content grid -->
+                            <div class="portfolio-main-grid">
+
+                                <!-- ABOUT -->
+                                <section class="preview-section" data-section="about">
+                                    <p class="preview-section-label theme-accent-text">About Me</p>
+                                    <div class="theme-card preview-card">
+                                        <p class="preview-body-text">{{ (portfolio.about[:300] + ('…' if portfolio.about|length > 300 else '')) if portfolio.about else 'Experienced software engineering professional specializing in full-stack web applications, modern architectures, and AI-driven solutions.' }}</p>
                                     </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <div class="theme-card preview-project-card">
-                                        <p class="preview-project-label theme-accent-text">AI / ML</p>
-                                        <p class="preview-project-name">Healthcare Chatbot</p>
-                                        <p class="preview-project-desc">Intelligent conversational assistant for patient guidance and medical triage.</p>
-                                    </div>
-                                    <div class="theme-card preview-project-card">
-                                        <p class="preview-project-label theme-accent-text">Data Science</p>
-                                        <p class="preview-project-name">Customer Segmentation</p>
-                                        <p class="preview-project-desc">Unsupervised clustering model to analyze customer behaviors and traits.</p>
-                                    </div>
+                                </section>
+
+                                <!-- SKILLS -->
+                                {% set skills = portfolio.get_skills_list() %}
+                                {% if not skills %}
+                                    {% set skills = ['Python', 'Java', 'Web Technologies', 'React', 'SQL', 'Git', 'Machine Learning', 'Data Structures', 'REST APIs', 'Cloud Computing'] %}
                                 {% endif %}
-                            </div>
-                        </section>
+                                <section class="preview-section" data-section="skills">
+                                    <p class="preview-section-label theme-accent-text">Technical &amp; Professional Skills</p>
+                                    <div class="theme-card preview-card">
+                                        <div class="preview-badge-row">
+                                            {% for skill in skills[:14] %}<span class="theme-badge preview-skill-tag">{{ skill }}</span>{% endfor %}
+                                            {% if skills|length > 14 %}<span class="theme-badge preview-skill-tag" style="opacity:0.5;">+{{ skills|length - 14 }} more</span>{% endif %}
+                                        </div>
+                                    </div>
+                                </section>
 
-                        <!-- EXPERIENCE -->
-                        {% set exps = portfolio.get_experience_list() %}
-                        <section class="preview-section" data-section="experience">
-                            <p class="preview-section-label theme-accent-text">Work Experience</p>
-                            <div class="theme-card preview-card">
-                                {% if exps %}
-                                    {% for exp in exps[:2] %}
-                                    <div class="mb-2 pb-2 {% if not loop.last %}border-bottom border-secondary border-opacity-25{% endif %}">
-                                        <p class="preview-project-name mb-0">{{ exp.role if exp is mapping else exp }}</p>
-                                        {% if exp is mapping and (exp.company or exp.duration) %}
-                                            <p class="preview-project-desc text-info mb-1">{{ exp.company }} {% if exp.duration %}• {{ exp.duration }}{% endif %}</p>
+                                <!-- PROJECTS -->
+                                <section class="preview-section" data-section="projects">
+                                    <p class="preview-section-label theme-accent-text">Featured Projects</p>
+                                    <div class="preview-grid">
+                                        {% if portfolio.projects %}
+                                            {% for project in portfolio.projects[:4] %}
+                                            <div class="theme-card preview-project-card">
+                                                <p class="preview-project-label theme-accent-text">Project</p>
+                                                <p class="preview-project-name">{{ project.title or project.name }}</p>
+                                                {% if project.description %}<p class="preview-project-desc">{{ project.description[:90] }}{% if project.description|length > 90 %}…{% endif %}</p>{% endif %}
+                                            </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="theme-card preview-project-card">
+                                                <p class="preview-project-label theme-accent-text">AI / ML</p>
+                                                <p class="preview-project-name">Healthcare Chatbot</p>
+                                                <p class="preview-project-desc">Intelligent conversational assistant for patient guidance and medical triage.</p>
+                                            </div>
+                                            <div class="theme-card preview-project-card">
+                                                <p class="preview-project-label theme-accent-text">Data Science</p>
+                                                <p class="preview-project-name">Customer Segmentation</p>
+                                                <p class="preview-project-desc">Unsupervised clustering model to analyze customer behaviors and traits.</p>
+                                            </div>
                                         {% endif %}
                                     </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <div class="mb-1">
-                                        <p class="preview-project-name mb-0">Software Engineering Lead / Intern</p>
-                                        <p class="preview-project-desc text-info mb-1">Tech Solutions &amp; Academic Projects • 2023 - Present</p>
-                                        <p class="preview-body-text" style="font-size:0.8rem;">Designed and developed full-stack web applications and led engineering sprints.</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </section>
+                                </section>
 
-                        <!-- EDUCATION -->
-                        {% set edus = portfolio.get_education_list() %}
-                        <section class="preview-section" data-section="education">
-                            <p class="preview-section-label theme-accent-text">Education &amp; Academic Background</p>
-                            <div class="theme-card preview-card">
-                                {% if edus %}
-                                    {% for edu in edus[:2] %}
-                                    <div class="mb-1">
-                                        <p class="preview-project-name mb-0">{{ edu.degree if edu is mapping else edu }}</p>
-                                        {% if edu is mapping and edu.institution %}
-                                            <p class="preview-project-desc text-info mb-0">{{ edu.institution }} {% if edu.year %}• {{ edu.year }}{% endif %}</p>
+                                <!-- EXPERIENCE -->
+                                {% set exps = portfolio.get_experience_list() %}
+                                <section class="preview-section" data-section="experience">
+                                    <p class="preview-section-label theme-accent-text">Work Experience</p>
+                                    <div class="theme-card preview-card">
+                                        {% if exps %}
+                                            {% for exp in exps[:2] %}
+                                            <div class="mb-2 pb-2 {% if not loop.last %}border-bottom border-secondary border-opacity-25{% endif %}">
+                                                <p class="preview-project-name mb-0">{{ exp.role if exp is mapping else exp }}</p>
+                                                {% if exp is mapping and (exp.company or exp.duration) %}
+                                                    <p class="preview-project-desc text-info mb-1">{{ exp.company }} {% if exp.duration %}• {{ exp.duration }}{% endif %}</p>
+                                                {% endif %}
+                                            </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="mb-1">
+                                                <p class="preview-project-name mb-0">Software Engineering Lead / Intern</p>
+                                                <p class="preview-project-desc text-info mb-1">Tech Solutions &amp; Academic Projects • 2023 - Present</p>
+                                                <p class="preview-body-text" style="font-size:0.8rem;">Designed and developed full-stack web applications and led engineering sprints.</p>
+                                            </div>
                                         {% endif %}
                                     </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <div class="mb-1">
-                                        <p class="preview-project-name mb-0">Bachelor of Technology (B.Tech) in CSE</p>
-                                        <p class="preview-project-desc text-info mb-0">Computer Science &amp; Engineering • 2021 - 2025</p>
+                                </section>
+
+                                <!-- EDUCATION -->
+                                {% set edus = portfolio.get_education_list() %}
+                                <section class="preview-section" data-section="education">
+                                    <p class="preview-section-label theme-accent-text">Education &amp; Academic Background</p>
+                                    <div class="theme-card preview-card">
+                                        {% if edus %}
+                                            {% for edu in edus[:2] %}
+                                            <div class="mb-1">
+                                                <p class="preview-project-name mb-0">{{ edu.degree if edu is mapping else edu }}</p>
+                                                {% if edu is mapping and edu.institution %}
+                                                    <p class="preview-project-desc text-info mb-0">{{ edu.institution }} {% if edu.year %}• {{ edu.year }}{% endif %}</p>
+                                                {% endif %}
+                                            </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="mb-1">
+                                                <p class="preview-project-name mb-0">Bachelor of Technology (B.Tech) in CSE</p>
+                                                <p class="preview-project-desc text-info mb-0">Computer Science &amp; Engineering • 2021 - 2025</p>
+                                            </div>
+                                        {% endif %}
                                     </div>
-                                {% endif %}
-                            </div>
-                        </section>
+                                </section>
 
-                        <!-- CERTIFICATIONS -->
-                        {% set certs = portfolio.get_certifications_list() %}
-                        <section class="preview-section" data-section="certifications">
-                            <p class="preview-section-label theme-accent-text">Licenses &amp; Certifications</p>
-                            <div class="theme-card preview-card">
-                                <div class="preview-badge-row">
-                                    {% if certs %}
-                                        {% for cert in certs[:6] %}
-                                            <span class="theme-badge preview-skill-tag">{{ cert.name if cert is mapping else cert }}</span>
-                                        {% endfor %}
-                                    {% else %}
-                                        <span class="theme-badge preview-skill-tag">AWS Cloud Practitioner</span>
-                                        <span class="theme-badge preview-skill-tag">Google Generative AI</span>
-                                        <span class="theme-badge preview-skill-tag">Python Specialization</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </section>
+                                <!-- CERTIFICATIONS -->
+                                {% set certs = portfolio.get_certifications_list() %}
+                                <section class="preview-section" data-section="certifications">
+                                    <p class="preview-section-label theme-accent-text">Licenses &amp; Certifications</p>
+                                    <div class="theme-card preview-card">
+                                        <div class="preview-badge-row">
+                                            {% if certs %}
+                                                {% for cert in certs[:6] %}
+                                                    <span class="theme-badge preview-skill-tag">{{ cert.name if cert is mapping else cert }}</span>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="theme-badge preview-skill-tag">AWS Cloud Practitioner</span>
+                                                <span class="theme-badge preview-skill-tag">Google Generative AI</span>
+                                                <span class="theme-badge preview-skill-tag">Python Specialization</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </section>
 
-                        <!-- CONTACT -->
-                        <section class="preview-section preview-cta" data-section="contact">
-                            <button class="theme-btn-accent preview-btn">Get In Touch</button>
-                            <button class="theme-btn-outline-accent preview-btn-outline">View Portfolio</button>
-                        </section>
+                                <!-- CONTACT -->
+                                <section class="preview-section preview-cta" data-section="contact">
+                                    <button class="theme-btn-accent preview-btn">Get In Touch</button>
+                                    <button class="theme-btn-outline-accent preview-btn-outline">View Portfolio</button>
+                                </section>
+
+                            </div><!-- /portfolio-main-grid -->
+                        </div><!-- /portfolio-layout-container -->
 
                     </div><!-- /livePreviewPanel -->
                 </div>
