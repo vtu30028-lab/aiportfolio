@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio_themes.css') }}?v=11">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio_themes.css') }}?v=12">
 <style>
     .theme-studio-container { min-height: calc(100vh - 120px); }
     .customizer-panel { max-height: calc(100vh - 140px); overflow-y: auto; }
@@ -153,6 +153,60 @@
     .layout-split-hero [data-section="about"],
     .layout-split-hero [data-section="projects"],
     .layout-split-hero [data-section="contact"] { grid-column: 1 / -1; }
+
+    /* 6. Magazine — 3-col print-editorial grid */
+    .layout-magazine .preview-hero {
+        padding: 2.8rem 2rem 2.2rem !important;
+        min-height: 150px;
+        border-bottom: 4px double var(--theme-accent, #6366f1);
+    }
+    .layout-magazine .preview-hero .preview-name {
+        font-size: 1.6rem !important;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+    }
+    .layout-magazine .portfolio-main-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.85rem;
+        align-items: start;
+    }
+    .layout-magazine [data-section="about"],
+    .layout-magazine [data-section="projects"],
+    .layout-magazine [data-section="contact"] { grid-column: 1 / -1; }
+
+    /* 7. Timeline — vertical progression with accent line */
+    .layout-timeline .preview-layout-container {
+        border-left: 4px solid var(--theme-accent, #6366f1);
+        margin-left: 0.75rem;
+        padding-left: 1.5rem !important;
+    }
+    .layout-timeline .portfolio-main-grid {
+        display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .layout-timeline [data-section] {
+        border-left: 3px solid var(--theme-accent, #6366f1);
+        padding-left: 0.85rem;
+        border-radius: 0 8px 8px 0;
+    }
+
+    /* 8. Minimal Zen — ultra narrow centered column, big whitespace */
+    .layout-minimal-zen .preview-layout-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 1.2rem 2rem 2rem !important;
+    }
+    .layout-minimal-zen .portfolio-main-grid {
+        display: flex; flex-direction: column; gap: 2.2rem;
+    }
+    .layout-minimal-zen .preview-hero {
+        border-bottom: 1px solid var(--theme-accent, #6366f1);
+        padding-bottom: 2rem !important;
+    }
+    .layout-minimal-zen [data-section] {
+        border-top: 1px solid rgba(var(--theme-accent-rgb, 99,102,241), 0.2);
+        padding-top: 0.5rem;
+    }
 </style>
 {% endblock %}
 
@@ -455,11 +509,14 @@
                         <i class="bi bi-grid-1x2 text-success me-1"></i> 4. Layout Variation &amp; Structure
                     </label>
                     <select id="layoutSelect" class="form-select custom-input">
-                        <option value="standard"   {% if portfolio.layout_style == 'standard'   %}selected{% endif %}>Standard (Vertical Clean Flow)</option>
-                        <option value="compact"    {% if portfolio.layout_style == 'compact'    %}selected{% endif %}>Compact (Dense Dual-Column Grid)</option>
-                        <option value="sidebar"    {% if portfolio.layout_style == 'sidebar'    %}selected{% endif %}>Sidebar (Sticky Profile Column)</option>
-                        <option value="bento-grid" {% if portfolio.layout_style == 'bento-grid' %}selected{% endif %}>Bento Grid (Modern Asymmetric Mosaic)</option>
-                        <option value="split-hero" {% if portfolio.layout_style == 'split-hero' %}selected{% endif %}>Split Hero (Editorial Magazine Style)</option>
+                        <option value="standard"   {% if portfolio.layout_style == 'standard'   %}selected{% endif %}>⬛ Standard — Clean Vertical Flow</option>
+                        <option value="compact"    {% if portfolio.layout_style == 'compact'    %}selected{% endif %}>⚡ Compact — Dense Dual-Column Grid</option>
+                        <option value="sidebar"    {% if portfolio.layout_style == 'sidebar'    %}selected{% endif %}>📌 Sidebar — Sticky Profile Column</option>
+                        <option value="bento-grid" {% if portfolio.layout_style == 'bento-grid' %}selected{% endif %}>🧩 Bento Grid — Asymmetric Mosaic</option>
+                        <option value="split-hero" {% if portfolio.layout_style == 'split-hero' %}selected{% endif %}>🎯 Split Hero — Bold Editorial Hero</option>
+                        <option value="magazine"   {% if portfolio.layout_style == 'magazine'   %}selected{% endif %}>📰 Magazine — 3-Col Print Editorial</option>
+                        <option value="timeline"   {% if portfolio.layout_style == 'timeline'   %}selected{% endif %}>📅 Timeline — Vertical Progression</option>
+                        <option value="minimal-zen"{% if portfolio.layout_style == 'minimal-zen'%}selected{% endif %}>🌿 Minimal Zen — Ultra Clean Focus</option>
                     </select>
                 </div>
 
@@ -757,5 +814,5 @@
         visible_sections: {{ portfolio.get_section_visibility() | tojson }}
     };
 </script>
-<script src="{{ url_for('static', filename='js/theme_editor.js') }}?v=11"></script>
+<script src="{{ url_for('static', filename='js/theme_editor.js') }}?v=12"></script>
 {% endblock %}

@@ -67,6 +67,9 @@ ALLOWED_LAYOUTS = [
     "sidebar",
     "bento-grid",
     "split-hero",
+    "magazine",      # Editorial 3-col print-inspired magazine grid
+    "timeline",      # Vertical progression timeline with connecting line
+    "minimal-zen",   # Ultra minimal narrow centered column, big whitespace
 ]
 DEFAULT_SECTION_VISIBILITY = {
     "about": True,

@@ -101,7 +101,7 @@
     </div>
     {% endif %}
 
-    <!-- Portfolio Profile Presentation Frame -->
+    <!-- Portfolio Themed Preview (loads live themed view in iframe) -->
     <div class="hero-preview-frame p-0 mb-4">
         <!-- Mockup Browser Bar -->
         <div class="browser-bar d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -118,272 +118,25 @@
                 <span class="badge bg-dark text-info font-monospace small px-2 py-1 text-capitalize border border-secondary border-opacity-25">
                     Theme: {{ portfolio.theme.replace('-', ' ') }}
                 </span>
+                <span class="badge bg-dark text-warning font-monospace small px-2 py-1 text-capitalize border border-secondary border-opacity-25">
+                    Layout: {{ portfolio.layout_style.replace('-', ' ') }}
+                </span>
                 <a href="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass py-0 px-2 small">
-                    <i class="bi bi-box-arrow-up-right me-1"></i> Live View
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Full View
                 </a>
             </div>
         </div>
 
-        <div class="p-4 p-md-5">
-            <!-- Profile Hero Area -->
-            <div class="row align-items-center g-4 mb-5 pb-4 border-bottom border-secondary border-opacity-25">
-                <div class="col-auto">
-                    {% if portfolio.profile_image %}
-                        <img src="{{ portfolio.profile_image }}" alt="{{ portfolio.full_name }}" class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover; border: 2px solid var(--border-accent);">
-                    {% else %}
-                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow font-monospace" style="width: 100px; height: 100px; font-size: 2.2rem; background: var(--gradient-primary); border: 2px solid var(--border-accent);">
-                            {{ portfolio.full_name[:2].upper() }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="col">
-                    <h1 class="display-6 fw-bold text-white mb-1">{{ portfolio.full_name }}</h1>
-                    <p class="lead mb-2 fw-bold fs-5" style="color: #fbbf24 !important;">{{ portfolio.headline }}</p>
-
-                    <!-- Contact details -->
-                    <div class="d-flex flex-wrap align-items-center gap-3 small" style="color: #cbd5e1;">
-                        {% if portfolio.location %}
-                            <div class="d-flex align-items-center gap-1">
-                                <i class="bi bi-geo-alt text-danger"></i>
-                                <span style="color: #e2e8f0;">{{ portfolio.location }}</span>
-                            </div>
-                        {% endif %}
-
-                        <div class="d-flex align-items-center gap-1">
-                            <i class="bi bi-envelope text-warning"></i>
-                            <a href="mailto:{{ portfolio.email }}" class="text-decoration-none" style="color: #f59e0b; font-weight: 500;">{{ portfolio.email }}</a>
-                        </div>
-
-                        {% if portfolio.phone %}
-                            <div class="d-flex align-items-center gap-1">
-                                <i class="bi bi-telephone text-success"></i>
-                                <span style="color: #e2e8f0;">{{ portfolio.phone }}</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Social Connect Buttons -->
-                <div class="col-12 col-md-auto d-flex gap-2">
-                    {% if portfolio.github_url %}
-                        <a href="{{ portfolio.github_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-glass">
-                            <i class="bi bi-github me-1"></i> GitHub
-                        </a>
-                    {% endif %}
-                    {% if portfolio.linkedin_url %}
-                        <a href="{{ portfolio.linkedin_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-glass">
-                            <i class="bi bi-linkedin me-1 text-info"></i> LinkedIn
-                        </a>
-                    {% endif %}
-                </div>
+        <!-- Themed Portfolio iframe -->
+        <div style="position: relative; width: 100%; min-height: 800px; background: #06090e;">
+            <iframe id="portfolioPreviewFrame"
+                    src="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}"
+                    style="width: 100%; height: 800px; border: none; display: block;"
+                    title="Portfolio Live Preview"></iframe>
+            <!-- Resize handle hint -->
+            <div class="text-center py-2" style="background: rgba(0,0,0,0.3);">
+                <small class="text-muted"><i class="bi bi-arrows-expand me-1"></i>Scroll inside frame to see full portfolio • <a href="{{ url_for('portfolio.live_portfolio', portfolio_id=portfolio.id) }}" target="_blank" class="text-info text-decoration-none">Open full page <i class="bi bi-box-arrow-up-right"></i></a></small>
             </div>
-
-            <!-- About Section -->
-            <div class="mb-5">
-                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-person-lines-fill text-warning"></i> About Me
-                </h4>
-                <div class="glass-card-static p-4">
-                    <p class="mb-0 line-height-lg" style="color: #e2e8f0 !important; white-space: pre-line;">{{ portfolio.about }}</p>
-                </div>
-            </div>
-
-            <!-- Technical Skills Section -->
-            {% set skills = portfolio.get_skills_list() %}
-            {% if skills %}
-            <div class="mb-5">
-                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-stars text-warning"></i> Technical &amp; Professional Skills
-                    <span class="badge small ms-1" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">{{ skills|length }}</span>
-                </h4>
-                <div class="glass-card-static p-4">
-                    <div class="d-flex flex-wrap gap-2">
-                        {% for skill in skills %}
-                            <span class="badge-tag py-2 px-3 fs-6">{{ skill }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Featured Projects Section -->
-            <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                    <h4 class="text-white fw-bold mb-0 d-flex align-items-center gap-2">
-                        <i class="bi bi-code-slash text-warning"></i> Featured Projects
-                        <span class="badge small ms-1" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">{{ portfolio.projects|length }}</span>
-                    </h4>
-                    <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-secondary-glass" style="border-color: rgba(245, 158, 11, 0.4); color: #f59e0b !important;">
-                        <i class="bi bi-github me-1"></i> Import More from GitHub
-                    </a>
-                </div>
-
-                {% if portfolio.projects %}
-                    <div class="row g-4">
-                        {% for project in portfolio.projects %}
-                        <div class="col-md-6">
-                            <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between position-relative">
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h5 class="text-white fw-bold mb-0">{{ project.title }}</h5>
-                                        <div class="d-flex align-items-center gap-2">
-                                            {% if project.stars_count > 0 %}
-                                                <span class="badge bg-warning bg-opacity-10 text-warning small">
-                                                    <i class="bi bi-star-fill me-1"></i>{{ project.stars_count }}
-                                                </span>
-                                            {% endif %}
-                                            {% if project.forks_count > 0 %}
-                                                <span class="badge bg-secondary bg-opacity-25 text-light small">
-                                                    <i class="bi bi-diagram-2 me-1"></i>{{ project.forks_count }}
-                                                </span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    {% if project.description %}
-                                        <p class="small mb-3 line-height-md" style="color: #e2e8f0 !important; white-space: pre-line;">
-                                            {{ project.description }}
-                                        </p>
-                                    {% endif %}
-
-                                    {% if project.technologies %}
-                                        <div class="d-flex flex-wrap gap-1 mb-3">
-                                            {% for tech in project.technologies.split(',') %}
-                                                {% if tech.strip() %}
-                                                    <span class="badge-tag">{{ tech.strip() }}</span>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="border-top border-secondary border-opacity-25 pt-3 mt-2 d-flex justify-content-between align-items-center gap-2">
-                                    <div class="d-flex gap-2">
-                                        {% if project.github_url %}
-                                            <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary-glass">
-                                                <i class="bi bi-github me-1"></i> Code
-                                            </a>
-                                        {% endif %}
-                                        {% if project.live_url %}
-                                            <a href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-info">
-                                                <i class="bi bi-box-arrow-up-right me-1"></i> Live Demo
-                                            </a>
-                                        {% endif %}
-                                    </div>
-
-                                    <form method="POST" action="{{ url_for('portfolio.delete_project', portfolio_id=portfolio.id, project_id=project.id) }}" onsubmit="return confirm('Remove project \'{{ project.title }}\' from this portfolio?');" class="mb-0">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn btn-sm text-danger border-0 p-1" title="Delete Project">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <!-- Empty Projects State -->
-                    <div class="p-4 rounded-3 text-center" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.12);">
-                        <i class="bi bi-github fs-2 text-warning mb-2 d-block"></i>
-                        <h6 class="text-white fw-bold mb-1">No Projects Added Yet</h6>
-                        <p class="small mb-3" style="color: #cbd5e1;">
-                            Connect your GitHub profile to fetch public repositories, polish descriptions with Gemini AI, and showcase them in this portfolio.
-                        </p>
-                        <a href="{{ url_for('github.import_page', portfolio_id=portfolio.id) }}" class="btn btn-sm btn-primary-gradient px-4 py-2">
-                            <i class="bi bi-plus-lg me-1"></i> Import GitHub Repositories
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Professional Experience Section -->
-            {% set exps = portfolio.get_experience_list() %}
-            {% if exps %}
-            <div class="mb-5">
-                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-briefcase text-warning"></i> Work Experience
-                </h4>
-                <div class="glass-card-static p-4">
-                    <div class="d-flex flex-column gap-4">
-                        {% for exp in exps %}
-                        <div class="pb-3 border-bottom border-secondary border-opacity-25 last-border-none">
-                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-1 mb-1">
-                                <h5 class="text-white fw-bold mb-0">{{ exp.role if exp is mapping else exp }}</h5>
-                                {% if exp is mapping and (exp.duration or exp.dates) %}
-                                    <span class="badge small" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">{{ exp.duration or exp.dates }}</span>
-                                {% endif %}
-                            </div>
-                            {% if exp is mapping and (exp.company or exp.organization) %}
-                                <div class="small fw-semibold mb-2" style="color: #fbbf24 !important;">{{ exp.company or exp.organization }}</div>
-                            {% endif %}
-                            {% if exp is mapping and (exp.description or exp.details) %}
-                                <p class="small mb-0 line-height-md" style="color: #e2e8f0 !important; white-space: pre-line;">{{ exp.description or exp.details }}</p>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Education Section -->
-            {% set edus = portfolio.get_education_list() %}
-            {% if edus %}
-            <div class="mb-5">
-                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-mortarboard text-warning"></i> Education &amp; Academic Background
-                </h4>
-                <div class="glass-card-static p-4">
-                    <div class="d-flex flex-column gap-3">
-                        {% for edu in edus %}
-                        <div class="pb-3 border-bottom border-secondary border-opacity-25 last-border-none">
-                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
-                                <h5 class="text-white fw-bold mb-0">{{ edu.degree if edu is mapping else edu }}</h5>
-                                {% if edu is mapping and (edu.year or edu.duration) %}
-                                    <span class="badge small" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">{{ edu.year or edu.duration }}</span>
-                                {% endif %}
-                            </div>
-                            {% if edu is mapping and (edu.institution or edu.school) %}
-                                <div class="small fw-semibold" style="color: #fbbf24 !important;">{{ edu.institution or edu.school }}</div>
-                            {% endif %}
-                            {% if edu is mapping and (edu.details or edu.gpa) %}
-                                <p class="small mb-0 mt-1" style="color: #cbd5e1 !important;">{{ edu.details or edu.gpa }}</p>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Certifications Section -->
-            {% set certs = portfolio.get_certifications_list() %}
-            {% if certs %}
-            <div class="mb-4">
-                <h4 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-award text-warning"></i> Licenses &amp; Certifications
-                </h4>
-                <div class="glass-card-static p-4">
-                    <div class="row g-3">
-                        {% for cert in certs %}
-                        <div class="col-md-6">
-                            <div class="p-3 rounded-2" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);">
-                                <div class="fw-bold text-white small">{{ cert.name if cert is mapping else cert }}</div>
-                                {% if cert is mapping and cert.issuer %}
-                                    <div class="small fw-semibold" style="color: #fbbf24 !important;">{{ cert.issuer }}</div>
-                                {% endif %}
-                                {% if cert is mapping and (cert.year or cert.date) %}
-                                    <small style="color: #cbd5e1 !important;">{{ cert.year or cert.date }}</small>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            {% endif %}
         </div>
     </div>
 

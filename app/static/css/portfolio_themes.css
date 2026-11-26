@@ -911,7 +911,72 @@ body {
     padding-bottom: 3.5rem !important;
 }
 .layout-split-hero .portfolio-main-grid {
-    display: flex; flex-direction: column; gap: 2.2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+.layout-split-hero [data-section="about"],
+.layout-split-hero [data-section="projects"],
+.layout-split-hero [data-section="contact"] { grid-column: 1 / -1; }
+
+/* 6. Magazine — 3-col print-editorial grid */
+.layout-magazine .portfolio-layout-container { max-width: 1100px; margin: 0 auto; }
+.layout-magazine .theme-hero-header {
+    padding-top: 3rem !important; padding-bottom: 2.8rem !important;
+    border-bottom: 4px double var(--theme-accent);
+}
+.layout-magazine .portfolio-main-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+    align-items: start;
+}
+.layout-magazine [data-section="about"],
+.layout-magazine [data-section="projects"],
+.layout-magazine [data-section="contact"] { grid-column: 1 / -1; }
+
+/* 7. Timeline — vertical progression with accent connecting line */
+.layout-timeline .portfolio-layout-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-left: 2.5rem !important;
+    border-left: 4px solid var(--theme-accent);
+    margin-left: 2.5rem;
+}
+.layout-timeline .portfolio-main-grid {
+    display: flex; flex-direction: column; gap: 2rem;
+    position: relative;
+}
+.layout-timeline .theme-section {
+    position: relative;
+    border-left: 3px solid var(--theme-accent);
+    padding-left: 1.25rem;
+    border-radius: 0 12px 12px 0;
+}
+.layout-timeline .theme-section::before {
+    content: '';
+    position: absolute;
+    left: -1.6rem; top: 1.4rem;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--theme-accent);
+    border: 3px solid var(--bg-page, #0d1117);
+    box-shadow: 0 0 10px rgba(var(--theme-accent-rgb, 99,102,241), 0.5);
+}
+
+/* 8. Minimal Zen — ultra narrow centered column, maximal whitespace */
+.layout-minimal-zen .portfolio-layout-container { max-width: 540px; margin: 0 auto; }
+.layout-minimal-zen .theme-hero-header {
+    border-bottom: 1px solid var(--theme-accent) !important;
+    padding-bottom: 2.5rem !important;
+}
+.layout-minimal-zen .portfolio-main-grid {
+    display: flex; flex-direction: column; gap: 3.5rem;
+}
+.layout-minimal-zen .theme-section {
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(var(--theme-accent-rgb, 99,102,241), 0.2);
 }
 
 /* ===================================================================
