@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}400 — Bad Request | {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-5 text-center">
+    <div class="glass-card max-w-600 mx-auto p-5">
+        <div class="display-1 fw-bold gradient-accent font-monospace mb-2">400</div>
+        <h2 class="text-white fw-bold mb-3">Invalid or Expired Request</h2>
+        <p class="text-muted mb-4">
+            Your session or security token may have expired. Please refresh the page or sign in again.
+        </p>
+        <div class="d-flex justify-content-center gap-2">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary-gradient px-4 py-2">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            </a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-secondary-glass px-4 py-2">
+                <i class="bi bi-house-door-fill me-1"></i> Homepage
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

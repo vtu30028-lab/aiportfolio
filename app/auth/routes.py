@@ -6,7 +6,7 @@ Handles user registration, login, session state, and secure logout.
 from urllib.parse import urlsplit
 from flask import render_template, redirect, url_for, flash, request, session, current_app
 from flask_login import login_user, logout_user, current_user, login_required
-from app.extensions import db
+from app.extensions import db, csrf
 from app.models import User
 from app.auth import auth_bp
 from app.auth.forms import RegistrationForm, LoginForm

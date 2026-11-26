@@ -110,21 +110,22 @@ h1, h2, h3, h4, h5, h6 {
    ========================================================================== */
 
 /* 1. On Light Canvas and Cards: normalize text-white and text-light to dark */
-body .text-white:not(.custom-navbar *):not(.app-sidebar *):not(.mobile-topbar *):not(.hero-preview-frame *):not(footer *):not(.btn-primary-gradient *):not(.btn-primary *):not(.btn-danger *):not(.badge-dark *):not(.dark-section *):not(.dropdown-menu-dark *):not([style*="background: #111827"] *):not([style*="background:#111827"] *):not([style*="background: #152618"] *):not([style*="background:#152618"] *):not(.badge.bg-primary *):not(.badge.bg-success *):not(.badge.bg-danger *):not(.badge.bg-dark *) {
+body .text-white:not(.custom-navbar *):not(.app-sidebar *):not(.mobile-topbar *):not(.hero-preview-frame *):not(footer *):not(.btn-primary-gradient *):not(.btn-primary *):not(.btn-danger *):not(.badge-dark *):not(.dark-section *):not(#tech-stack *):not(.dropdown-menu-dark *):not([style*="background: #111827"] *):not([style*="background:#111827"] *):not([style*="background: #152618"] *):not([style*="background:#152618"] *):not(.badge.bg-primary *):not(.badge.bg-success *):not(.badge.bg-danger *):not(.badge.bg-dark *) {
     color: #111827 !important;
 }
 
-body .text-light:not(.custom-navbar *):not(.app-sidebar *):not(.mobile-topbar *):not(.hero-preview-frame *):not(footer *):not(.btn-primary-gradient *):not(.badge-dark *):not(.dark-section *):not([style*="background: #111827"] *):not([style*="background:#111827"] *):not([style*="background: #152618"] *):not([style*="background:#152618"] *) {
+body .text-light:not(.custom-navbar *):not(.app-sidebar *):not(.mobile-topbar *):not(.hero-preview-frame *):not(footer *):not(.btn-primary-gradient *):not(.badge-dark *):not(.dark-section *):not(#tech-stack *):not([style*="background: #111827"] *):not([style*="background:#111827"] *):not([style*="background: #152618"] *):not([style*="background:#152618"] *) {
     color: #1f2937 !important;
 }
 
-body .text-muted:not(.custom-navbar *):not(.app-sidebar *):not(.mobile-topbar *):not(.hero-preview-frame *):not(footer *):not(.dark-section *):not([style*="background: #111827"] *):not([style*="background:#111827"] *) {
+body .text-muted:not(.custom-navbar *):not(.app-sidebar *):not(.mobile-topbar *):not(.hero-preview-frame *):not(footer *):not(.dark-section *):not(#tech-stack *):not([style*="background: #111827"] *):not([style*="background:#111827"] *) {
     color: #556c59 !important;
 }
 
-/* 2. Text Inside Dark Containers (Sidebar, Mockup Frame, Philosophy Section, Footer) */
+/* 2. Text Inside Dark Containers (Sidebar, Mockup Frame, Philosophy Section, Footer, Tech Stack) */
 .dark-container,
 .dark-section,
+#tech-stack,
 .hero-preview-frame,
 .app-sidebar,
 .mobile-topbar,
@@ -134,9 +135,11 @@ footer {
 
 .dark-container h1, .dark-container h2, .dark-container h3, .dark-container h4, .dark-container h5, .dark-container h6,
 .dark-section h1, .dark-section h2, .dark-section h3, .dark-section h4, .dark-section h5, .dark-section h6,
+#tech-stack h1, #tech-stack h2, #tech-stack h3, #tech-stack h4, #tech-stack h5, #tech-stack h6,
 .hero-preview-frame h1, .hero-preview-frame h2, .hero-preview-frame h3, .hero-preview-frame h4, .hero-preview-frame h5, .hero-preview-frame h6,
 .dark-container .text-white,
 .dark-section .text-white,
+#tech-stack .text-white,
 .hero-preview-frame .text-white,
 .hero-preview-frame strong.text-white {
     color: #ffffff !important;
@@ -144,12 +147,14 @@ footer {
 
 .dark-container .text-light,
 .dark-section .text-light,
+#tech-stack .text-light,
 .hero-preview-frame .text-light {
     color: #f1f5f9 !important;
 }
 
 .dark-container .text-muted,
 .dark-section .text-muted,
+#tech-stack .text-muted,
 .hero-preview-frame .text-muted {
     color: #cbd5e1 !important;
 }
@@ -704,8 +709,9 @@ footer {
     flex-shrink: 0;
 }
 
-/* Deep Solid High-Contrast Band (Matching middle section of reference image) */
+/* Deep Solid High-Contrast Band (#tech-stack, dark-section) */
 section.dark-section,
+#tech-stack,
 section.border-top.border-bottom {
     background: #111827 !important;
     border-color: rgba(255, 255, 255, 0.10) !important;
@@ -713,20 +719,72 @@ section.border-top.border-bottom {
 }
 
 section.dark-section .text-white,
+#tech-stack .text-white,
 section.border-top.border-bottom .text-white {
     color: #ffffff !important;
 }
 
 section.dark-section .text-muted,
+#tech-stack .text-muted,
 section.border-top.border-bottom .text-muted {
-    color: #94a3b8 !important;
+    color: #cbd5e1 !important;
 }
 
 section.dark-section .text-primary,
+#tech-stack .text-primary,
 section.border-top.border-bottom .text-primary,
 section.dark-section .text-info,
+#tech-stack .text-info,
 section.border-top.border-bottom .text-info {
     color: #f59e0b !important; /* Radiant warm amber */
+}
+
+/* Glass cards inside dark sections, footer, and tech stack */
+section.dark-section .glass-card,
+section.dark-section .glass-card-static,
+#tech-stack .glass-card,
+#tech-stack .glass-card-static,
+footer .glass-card,
+footer .glass-card-static {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #f1f5f9 !important;
+}
+
+section.dark-section .glass-card:hover,
+#tech-stack .glass-card:hover,
+footer .glass-card:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(245, 158, 11, 0.40) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Tech Stack Table Styles */
+#tech-stack table.table-dark {
+    --bs-table-bg: transparent !important;
+    background: transparent !important;
+    color: #f1f5f9 !important;
+}
+
+#tech-stack table.table-dark tr,
+#tech-stack table.table-dark th,
+#tech-stack table.table-dark td {
+    background: transparent !important;
+}
+
+#tech-stack table.table-dark th {
+    color: #94a3b8 !important;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+#tech-stack table.table-dark td {
+    color: #cbd5e1 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+#tech-stack table.table-dark td.text-white {
+    color: #ffffff !important;
 }
 
 /* Footer Styling */

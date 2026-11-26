@@ -21,9 +21,11 @@ class Config:
 
     # Database
     db_url = os.environ.get("DATABASE_URL", f"sqlite:///{BASE_DIR / 'portfolio.db'}")
-    # Fix for SQLAlchemy 2.0+ which deprecates 'postgres://' scheme
+    # Fix for SQLAlchemy 2.0+ which deprecates 'postgres://' scheme and ensure psycopg2 driver is used
     if db_url and db_url.startswith("postgres://"):
-        db_url = db_url.replace("postgres://", "postgresql://", 1)
+        db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif db_url and db_url.startswith("postgresql://") and not db_url.startswith("postgresql+"):
+        db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
     SQLALCHEMY_DATABASE_URI = db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {

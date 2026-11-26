@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
 from config import config_by_name
 from app.extensions import db, migrate, login_manager, csrf, limiter
 
@@ -118,6 +118,18 @@ def create_app(config_name=None):
         }
 
     # Custom HTTP error handlers
+    from flask_wtf.csrf import CSRFError
+
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(error):
+        if not app.testing and request.path == "/logout":
+            return redirect(url_for("auth.logout"))
+        return render_template("errors/400.html", error=error), 400
+
+    @app.errorhandler(400)
+    def handle_bad_request(error):
+        return render_template("errors/400.html", error=error), 400
+
     @app.errorhandler(404)
     def handle_not_found(error):
         return render_template("errors/404.html", error=error), 404

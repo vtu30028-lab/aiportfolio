@@ -464,90 +464,90 @@
 <!-- ==========================================
      Technical Architecture / Capstone Highlights
      ========================================== -->
-<section id="tech-stack" class="py-5 border-top border-secondary border-opacity-10" style="background: rgba(10, 14, 23, 0.6);">
+<section id="tech-stack" class="py-5 dark-section position-relative" style="background-color: #111827 !important; color: #ffffff !important; border-top: 1px solid rgba(255, 255, 255, 0.08); border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
     <div class="container py-lg-4">
         <div class="row align-items-center g-5">
             <div class="col-lg-5">
-                <span class="badge-glow mb-2">Advanced Software Engineering</span>
-                <h3 class="display-6 fw-bold text-white mb-3">Engineered for Reliability, Security & Speed</h3>
-                <p class="text-muted small mb-4">
+                <span class="badge-glow mb-2" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); color: #fbbf24;">Advanced Software Engineering</span>
+                <h3 class="display-6 fw-bold text-white mb-3" style="font-family: var(--font-heading); color: #ffffff !important; letter-spacing: -0.02em;">Engineered for Reliability, Security &amp; Speed</h3>
+                <p class="small mb-4" style="color: #cbd5e1 !important; line-height: 1.65; font-size: 0.95rem;">
                     Designed as a production-grade CSE college project following modular architecture, secure session handling, CSRF protections, rate limiting, and standard relational database normalization.
                 </p>
 
                 <div class="d-flex flex-column gap-3">
                     <div class="d-flex align-items-start gap-3">
-                        <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1rem; flex-shrink: 0;">
+                        <div class="brand-icon-box" style="width: 38px; height: 38px; font-size: 1.05rem; flex-shrink: 0; background: linear-gradient(135deg, #ea580c, #f59e0b); color: #ffffff;">
                             <i class="bi bi-shield-lock-fill"></i>
                         </div>
                         <div>
-                            <h6 class="text-white mb-1">Defense-in-Depth Security</h6>
-                            <p class="text-muted small mb-0">CSRF validation, Werkzeug scrypt password hashing, session cookies with HttpOnly & SameSite flags, and input validation.</p>
+                            <h6 class="text-white mb-1 fw-bold" style="color: #ffffff !important;">Defense-in-Depth Security</h6>
+                            <p class="small mb-0" style="color: #cbd5e1 !important; line-height: 1.5;">CSRF validation, Werkzeug scrypt password hashing, session cookies with HttpOnly &amp; SameSite flags, and input validation.</p>
                         </div>
                     </div>
 
                     <div class="d-flex align-items-start gap-3">
-                        <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1rem; flex-shrink: 0; background: linear-gradient(135deg, #0ea5e9, #38bdf8);">
+                        <div class="brand-icon-box" style="width: 38px; height: 38px; font-size: 1.05rem; flex-shrink: 0; background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: #ffffff;">
                             <i class="bi bi-database-fill"></i>
                         </div>
                         <div>
-                            <h6 class="text-white mb-1">Dual-Database Architecture</h6>
-                            <p class="text-muted small mb-0">SQLite for lightning-fast zero-configuration local development; seamless PostgreSQL switchover for cloud production deployments.</p>
+                            <h6 class="text-white mb-1 fw-bold" style="color: #ffffff !important;">Dual-Database Architecture</h6>
+                            <p class="small mb-0" style="color: #cbd5e1 !important; line-height: 1.5;">SQLite for lightning-fast zero-configuration local development; seamless PostgreSQL switchover for cloud production deployments.</p>
                         </div>
                     </div>
 
                     <div class="d-flex align-items-start gap-3">
-                        <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1rem; flex-shrink: 0; background: linear-gradient(135deg, #10b981, #059669);">
+                        <div class="brand-icon-box" style="width: 38px; height: 38px; font-size: 1.05rem; flex-shrink: 0; background: linear-gradient(135deg, #10b981, #059669); color: #ffffff;">
                             <i class="bi bi-speedometer"></i>
                         </div>
                         <div>
-                            <h6 class="text-white mb-1">Rate Limiting & Safety Limits</h6>
-                            <p class="text-muted small mb-0">Flask-Limiter protects AI endpoints against abuse while 10MB payload size limits guarantee server stability.</p>
+                            <h6 class="text-white mb-1 fw-bold" style="color: #ffffff !important;">Rate Limiting &amp; Safety Limits</h6>
+                            <p class="small mb-0" style="color: #cbd5e1 !important; line-height: 1.5;">Flask-Limiter protects AI endpoints against abuse while 10MB payload size limits guarantee server stability.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-7">
-                <div class="glass-card p-4">
+                <div class="glass-card p-4" style="background: rgba(255, 255, 255, 0.04) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important;">
                     <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
-                        <h6 class="text-white fw-bold mb-0"><i class="bi bi-diagram-3-fill text-primary me-2"></i>System Architecture Overview</h6>
-                        <span class="badge bg-success bg-opacity-25 text-success small">v1.0 Modular Blueprints</span>
+                        <h6 class="text-white fw-bold mb-0" style="color: #ffffff !important;"><i class="bi bi-diagram-3-fill text-warning me-2"></i>System Architecture Overview</h6>
+                        <span class="badge small px-2 py-1" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);">v1.0 Modular Blueprints</span>
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-dark table-borderless small mb-0">
+                        <table class="table table-dark table-borderless small mb-0 align-middle" style="background: transparent !important;">
                             <thead>
-                                <tr class="text-muted border-bottom border-secondary border-opacity-25">
-                                    <th>Subsystem</th>
-                                    <th>Technology</th>
-                                    <th>Role & Responsibilities</th>
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.15);">
+                                    <th style="color: #94a3b8; font-weight: 600; background: transparent;">Subsystem</th>
+                                    <th style="color: #94a3b8; font-weight: 600; background: transparent;">Technology</th>
+                                    <th style="color: #94a3b8; font-weight: 600; background: transparent;">Role &amp; Responsibilities</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="fw-semibold text-white">Backend Engine</td>
-                                    <td><span class="badge bg-secondary bg-opacity-50">Python 3.13 / Flask 3.1</span></td>
-                                    <td class="text-muted">Application factory, REST routing, Blueprints</td>
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
+                                    <td class="fw-semibold text-white" style="color: #ffffff !important; background: transparent;">Backend Engine</td>
+                                    <td style="background: transparent;"><span class="badge" style="background: rgba(148, 163, 184, 0.18); color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.3);">Python 3.13 / Flask 3.1</span></td>
+                                    <td style="color: #cbd5e1 !important; background: transparent;">Application factory, REST routing, Blueprints</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
+                                    <td class="fw-semibold text-white" style="color: #ffffff !important; background: transparent;">Generative AI</td>
+                                    <td style="background: transparent;"><span class="badge" style="background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35);">Google Gen AI SDK</span></td>
+                                    <td style="color: #cbd5e1 !important; background: transparent;">Bio generation, STAR project bullets, skills gap</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
+                                    <td class="fw-semibold text-white" style="color: #ffffff !important; background: transparent;">Resume Parsing</td>
+                                    <td style="background: transparent;"><span class="badge" style="background: rgba(129, 140, 248, 0.18); color: #a5b4fc; border: 1px solid rgba(129, 140, 248, 0.35);">pypdf + AI extraction</span></td>
+                                    <td style="color: #cbd5e1 !important; background: transparent;">Document text extraction &amp; structured normalization</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
+                                    <td class="fw-semibold text-white" style="color: #ffffff !important; background: transparent;">Data Layer</td>
+                                    <td style="background: transparent;"><span class="badge" style="background: rgba(52, 211, 153, 0.18); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.35);">SQLAlchemy ORM</span></td>
+                                    <td style="color: #cbd5e1 !important; background: transparent;">Relational schema: Users, Portfolios, Projects, Skills</td>
                                 </tr>
                                 <tr>
-                                    <td class="fw-semibold text-white">Generative AI</td>
-                                    <td><span class="badge bg-primary bg-opacity-50">Google Gen AI SDK</span></td>
-                                    <td class="text-muted">Bio generation, STAR project bullets, skills gap</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-semibold text-white">Resume Parsing</td>
-                                    <td><span class="badge bg-info bg-opacity-50">pypdf + AI extraction</span></td>
-                                    <td class="text-muted">Document text extraction & structured normalization</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-semibold text-white">Data Layer</td>
-                                    <td><span class="badge bg-success bg-opacity-50">SQLAlchemy ORM</span></td>
-                                    <td class="text-muted">Relational schema: Users, Portfolios, Projects, Skills</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-semibold text-white">Export Engine</td>
-                                    <td><span class="badge bg-warning bg-opacity-50 text-dark">ReportLab & QRcode</span></td>
-                                    <td class="text-muted">Dynamic vector PDF generation & vanity QR codes</td>
+                                    <td class="fw-semibold text-white" style="color: #ffffff !important; background: transparent;">Export Engine</td>
+                                    <td style="background: transparent;"><span class="badge" style="background: rgba(251, 191, 36, 0.18); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35);">ReportLab &amp; QRcode</span></td>
+                                    <td style="color: #cbd5e1 !important; background: transparent;">Dynamic vector PDF generation &amp; vanity QR codes</td>
                                 </tr>
                             </tbody>
                         </table>
