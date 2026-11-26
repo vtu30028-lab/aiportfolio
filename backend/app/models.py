@@ -333,17 +333,44 @@ class Portfolio(db.Model):
     def get_public_url(self) -> str:
         """Construct the public portfolio URL for QR code and sharing."""
         from flask import current_app, request
+        import os
+
         base_url = ""
+
+        # 1. If inside an active web request, dynamically use the live visitor host
         try:
-            base_url = current_app.config.get("PUBLIC_BASE_URL", "").rstrip("/")
-        except RuntimeError:
+            proto = request.headers.get("X-Forwarded-Proto", request.scheme)
+            host = request.headers.get("X-Forwarded-Host", request.host)
+            if host and "localhost" not in host and "127.0.0.1" not in host:
+                base_url = f"{proto}://{host}"
+        except (RuntimeError, AttributeError):
             pass
 
+        # 2. Check explicitly configured PUBLIC_BASE_URL
         if not base_url:
             try:
-                base_url = request.host_url.rstrip("/")
-            except RuntimeError:
+                configured = current_app.config.get("PUBLIC_BASE_URL", "").rstrip("/")
+                if configured and ("localhost" not in configured or not os.environ.get("RENDER")):
+                    base_url = configured
+            except (RuntimeError, AttributeError):
+                pass
+
+        # 3. Check Render automatic environment variable (RENDER_EXTERNAL_URL)
+        if not base_url or "localhost" in base_url:
+            render_url = (os.environ.get("RENDER_EXTERNAL_URL") or "").rstrip("/")
+            if render_url:
+                base_url = render_url
+
+        # 4. Fallback to request.url_root or localhost
+        if not base_url:
+            try:
+                base_url = request.url_root.rstrip("/")
+            except (RuntimeError, AttributeError):
                 base_url = "http://localhost:5000"
+
+        # Ensure HTTPS if on onrender.com
+        if "onrender.com" in base_url and base_url.startswith("http://"):
+            base_url = "https://" + base_url[7:]
 
         slug = self.ensure_slug()
         return f"{base_url}/p/{slug}"

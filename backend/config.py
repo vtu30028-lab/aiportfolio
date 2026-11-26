@@ -48,8 +48,11 @@ class Config:
     )
     GITHUB_API_BASE_URL = "https://api.github.com"
 
-    # Public & QR Code Base URL
-    PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "").rstrip("/")
+    # Public & QR Code Base URL (supports Render automatic external URL)
+    PUBLIC_BASE_URL = (
+        os.environ.get("PUBLIC_BASE_URL")
+        or os.environ.get("RENDER_EXTERNAL_URL", "")
+    ).rstrip("/")
 
     # Rate Limiting
     RATELIMIT_DEFAULT = "200 per day; 50 per hour"
